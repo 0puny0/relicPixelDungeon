@@ -40,11 +40,12 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Dread;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Preparation;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Sleep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SoulMark;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.WarFever;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TheHaywire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
@@ -56,6 +57,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.SpellSprite;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Surprise;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Wound;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.Dewdrop;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArmband;
@@ -772,12 +774,21 @@ public abstract class Mob extends Char {
 		if(buff(Dagger.SilentProc.class)!=null){
 			Buff.affect(Dungeon.hero, Dagger.SilentProc.class);
 		}
-		if (Dungeon.hero.isAlive() && !Dungeon.level.heroFOV[pos]) {
-			GLog.i( Messages.get(this, "died") );
-		}else {
-
+		Talent.DeathShadowTracker dsTracker = Dungeon.hero.buff(Talent.DeathShadowTracker.class);
+		if (dsTracker != null){
+			Preparation prep = Dungeon.hero.buff(Preparation.class);
+			if (prep != null){
+				for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] )) {
+					if (mob.alignment != Char.Alignment.ALLY && mob.fieldOfView[Dungeon.hero.pos]) {
+						Buff.affect( mob, Terror.class, 1 + Dungeon.hero.pointsInTalent(Talent.DEATH_SHADOW));
+					}
+				}
+			}
 		}
 
+		if (Dungeon.hero.isAlive() && !Dungeon.level.heroFOV[pos]) {
+			GLog.i( Messages.get(this, "died") );
+		}
 		boolean soulMarked = buff(SoulMark.class) != null;
 
 		super.die( cause );
@@ -794,8 +805,9 @@ public abstract class Mob extends Char {
 				}
 			}
 		}
-		if(Dungeon.hero.isAlive() && Dungeon.level.heroFOV[pos]&&Dungeon.hero.hasTalent(Talent.WAR_FEVER)){
-			Buff.prolong(Dungeon.hero, WarFever.class,WarFever.DURATION).addLevel();
+		if(Dungeon.hero.isAlive() &&Dungeon.hero.hasTalent(Talent.THE_HAYWIRE)
+				&& Dungeon.level.heroFOV[pos]&&alignment==Alignment.ENEMY){
+			Buff.prolong(Dungeon.hero, TheHaywire.class,4f);
 		}
 	}
 
@@ -804,16 +816,16 @@ public abstract class Mob extends Char {
 
 		float dropBonus = RingOfWealth.dropChanceMultiplier( Dungeon.hero );
 
-		Talent.BountyHunterTracker bhTracker = Dungeon.hero.buff(Talent.BountyHunterTracker.class);
-		if (bhTracker != null){
-			Preparation prep = Dungeon.hero.buff(Preparation.class);
-			if (prep != null){
-				// 2/4/8/16% per prep level, multiplied by talent points
-				float bhBonus = 0.02f * (float)Math.pow(2, prep.attackLevel()-1);
-				bhBonus *= Dungeon.hero.pointsInTalent(Talent.BOUNTY_HUNTER);
-				dropBonus += bhBonus;
-			}
-		}
+//		Talent.DeathShadowTracker dsTracker = Dungeon.hero.buff(Talent.DeathShadowTracker.class);
+//		if (dsTracker != null){
+//			Preparation prep = Dungeon.hero.buff(Preparation.class);
+//			if (prep != null){
+//				// 2/4/8/16% per prep level, multiplied by talent points
+//				float bhBonus = 0.02f * (float)Math.pow(2, prep.attackLevel()-1);
+//				bhBonus *= Dungeon.hero.pointsInTalent(Talent.BOUNTY_HUNTER);
+//				dropBonus += bhBonus;
+//			}
+//		}
 
 		return lootChance * dropBonus;
 	}
@@ -964,7 +976,7 @@ public abstract class Mob extends Char {
 							if(Dungeon.level.distance(pos, enemy.pos) >=2){
 								enemyStealth = Float.POSITIVE_INFINITY;
 							}else {
-								enemyStealth+=Dungeon.hero.pointsInTalent(Talent.SILENT_STEPS)*0.5f;
+								enemyStealth+=Dungeon.hero.pointsInTalent(Talent.SILENT_STEPS)*1f;
 							}
 							break;
 						}

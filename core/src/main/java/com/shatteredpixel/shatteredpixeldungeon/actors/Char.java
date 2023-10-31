@@ -84,6 +84,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.MirrorImage;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.PrismaticImage;
 import com.shatteredpixel.shatteredpixeldungeon.effects.SpellSprite;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.KindOfWeapon;
@@ -370,8 +371,8 @@ public abstract class Char extends Actor {
 			Preparation prep = buff(Preparation.class);
 			if (prep != null){//刺客暗杀效果
 				dmg = prep.damageRoll(this);
-				if (this == Dungeon.hero && Dungeon.hero.hasTalent(Talent.BOUNTY_HUNTER)) {
-					Buff.affect(Dungeon.hero, Talent.BountyHunterTracker.class, 0.0f);
+				if (this == Dungeon.hero && Dungeon.hero.hasTalent(Talent.DEATH_SHADOW)) {
+					Buff.affect(Dungeon.hero, Talent.DeathShadowTracker.class, 0.0f);
 				}
 			} else {
 				dmg = damageRoll();
@@ -414,7 +415,6 @@ public abstract class Char extends Actor {
 			if (endure != null){
 				dmg = endure.adjustDamageTaken(dmg);
 			}
-
 			if (enemy.buff(ScrollOfChallenge.ChallengeArena.class) != null){
 				dmg *= 0.67f;
 			}
@@ -422,10 +422,16 @@ public abstract class Char extends Actor {
 			if ( buff(Weakness.class) != null ){
 				dmg *= 0.67f;
 			}
-			
+
 			int effectiveDamage = enemy.defenseProc( this, Math.round(dmg) );
 			effectiveDamage = Math.max( effectiveDamage - dr, 0 );
 
+			if(effectiveDamage!=0&&enemy.buff(BrokenSeal.ShieldFX.class)!=null){
+				effectiveDamage*=0.4f;
+				if(effectiveDamage==0){
+					effectiveDamage=1;
+				}
+			}
 			if (enemy.buff(Viscosity.ViscosityTracker.class) != null){
 				effectiveDamage = enemy.buff(Viscosity.ViscosityTracker.class).deferDamage(effectiveDamage);
 				enemy.buff(Viscosity.ViscosityTracker.class).detach();
@@ -985,6 +991,7 @@ public abstract class Char extends Actor {
 	protected final HashSet<Class> immunities = new HashSet<>();
 	
 	public boolean isImmune(Class effect ){
+
 		HashSet<Class> immunes = new HashSet<>(immunities);
 		for (Property p : properties()){
 			immunes.addAll(p.immunities());
@@ -992,12 +999,12 @@ public abstract class Char extends Actor {
 		for (Buff b : buffs()){
 			immunes.addAll(b.immunities());
 		}
-		
 		for (Class c : immunes){
 			if (c.isAssignableFrom(effect)){
 				return true;
 			}
 		}
+
 		return false;
 	}
 

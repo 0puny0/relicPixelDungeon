@@ -42,7 +42,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barkskin;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Berserk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bless;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BlessingPower;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Combo;
@@ -59,8 +58,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Regeneration;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SnipersMark;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terraforming;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TheHaywire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.WarFever;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.NaturesPower;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Endure;
@@ -83,7 +82,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClassArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.AntiMagic;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Brimstone;
-import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Flow;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Viscosity;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.AlchemistsToolkit;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CapeOfThorns;
@@ -95,7 +93,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArm
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
-import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 import com.shatteredpixel.shatteredpixeldungeon.items.journal.Guidebook;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.CrystalKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.GoldenKey;
@@ -107,7 +104,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMight;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDivineInspiration;
-import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfArcana;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfCommand;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEvasion;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfForce;
@@ -122,10 +118,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLivingEarth;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.GreatAxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.GreatShield;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.HolyShield;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.KnifeFork;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.KnightLance;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LongSword;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagicShield;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Nunchaku;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.PricklyShield;
@@ -134,7 +127,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Flail;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.SwordShield;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WarHammer;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
@@ -505,15 +497,8 @@ public class Hero extends Char {
 		}
 		if(buff(Hunger.class).isStuffed()) accuracy*=0.85;
 		if(target.buff(Talent.FeintedTracker.class)!=null){
-			if(pointsInTalent(Talent.FEINTED)==1){
-				accuracy*=2f;
-			}else {
 				accuracy=INFINITE_ACCURACY;
-			}
 			target.buff(Talent.FeintedTracker.class).detach();
-		}
-		if(Dungeon.level.water[pos]&&pointsInTalent(Talent.GOOD_SWIMMER)>1){
-			accuracy*=1.15f;
 		}
 		if (wep != null) {
 			return (int)(attackSkill * accuracy * wep.accuracyFactor( this, target ));
@@ -531,9 +516,6 @@ public class Hero extends Char {
 			Buff.affect(this, SwordShield.RiposteTracker.class).enemy = enemy;
 			return UNABLE_EVASION;
 		}
-		if(subClass==HeroSubClass.SURVIVOR&&Dungeon.level.water[pos]&&!Dungeon.level.adjacent(enemy.pos,pos)){
-			return INFINITE_EVASION;
-		}
 		if (buff(Terraforming.ProduceWaterTracker.class)!=null){
 			return INFINITE_EVASION;
 		}
@@ -544,9 +526,6 @@ public class Hero extends Char {
 		if(buff(Hunger.class).isStuffed()) evasion*=0.85;
 		if (paralysed > 0) {
 			evasion /= 2;
-		}
-		if(Dungeon.level.water[pos]&&hasTalent(Talent.GOOD_SWIMMER)){
-			evasion*=1.15f;
 		}
 		if (belongings.armor() != null) {
 			evasion = belongings.armor().evasionFactor(this, evasion);
@@ -561,9 +540,9 @@ public class Hero extends Char {
 		if (belongings.armor() != null) {
 
 			int armDr = Random.NormalIntRange( belongings.armor().DRMin(), belongings.armor().DRMax());
-			if (buff(HoldFast.class) != null){
-				armDr = Math.round ((0.45f+0.10f*pointsInTalent(Talent.HOLD_FAST))*belongings.armor().DRMax());
-			}
+//			if (buff(HoldFast.class) != null){
+//				armDr = Math.round ((0.45f+0.10f*pointsInTalent(Talent.HOLD_FAST))*belongings.armor().DRMax());
+//			}
 			if (STR() < belongings.armor().STRReq()){
 				armDr -= 2*(belongings.armor().STRReq() - STR());
 			}
@@ -627,19 +606,14 @@ public class Hero extends Char {
 		} else {
 			((HeroSprite)sprite).sprint( 1f );
 		}
-		if ((Dungeon.level.map[pos] == Terrain.FURROWED_GRASS||Dungeon.level.map[pos] == Terrain.HIGH_GRASS)&&subClass==HeroSubClass.SURVIVOR){
-			speed *= 1.5f;
-		}
-		if(pointsInTalent(Talent.WAR_FEVER)>=2&&buff(WarFever.class)!=null){
-			speed*=2;
-		}
 		NaturesPower.naturesPowerTracker natStrength = buff(NaturesPower.naturesPowerTracker.class);
 		if (natStrength != null){
 			speed *= (2f + 0.25f*pointsInTalent(Talent.GROWING_POWER));
 		}
-
 		speed = AscensionChallenge.modifyHeroSpeed(speed);
-		
+		if(buff(TheHaywire.class)!=null){
+			speed+=1f;
+		}
 		return speed;
 		
 	}
@@ -734,6 +708,7 @@ public class Hero extends Char {
 		BuffIndicator.refreshBoss();
 
 		Talent.onAct(this);
+
 		if (paralysed > 0) {
 			
 			curAction = null;
@@ -741,7 +716,6 @@ public class Hero extends Char {
 			spendAndNext( TICK );
 			return false;
 		}
-		
 		boolean actResult;
 		if (curAction == null) {
 			
@@ -1218,6 +1192,9 @@ public class Hero extends Char {
 			Buff.affect(this, HoldFast.class);
 		}
 		if (!fullRest) {
+			if(subClass== HeroSubClass.SURVIVOR){
+				Terraforming.isSneak();
+			}
 			Buff.affect(this, Aim.class,1);
 			if (!Document.ADVENTURERS_GUIDE.isPageRead(Document.GUIDE_PREPARE_ATKS)){
 				GLog.p(Messages.get(Guidebook.class, "hint"));
@@ -1233,10 +1210,8 @@ public class Hero extends Char {
 	@Override
 	public int attackProc( final Char enemy, int damage ) {
 		damage = super.attackProc( enemy, damage );
-		if(enemy.buff(Talent.FeintedTracker.class)!=null&&pointsInTalent(Talent.FEINTED)>=3){
-			if(belongings.weapon() instanceof Weapon){
-				damage+=((Weapon)belongings.weapon()).excessSTR(this)*RingOfForce.extraStrengthBonus(Dungeon.hero);
-			}
+		if(enemy.buff(Talent.FeintedTracker.class)!=null&&pointsInTalent(Talent.FEINTED)>1){
+			damage+=Math.round((pointsInTalent(Talent.FEINTED)-1)*damage*0.25f);
 		}
 		KindOfWeapon wep = belongings.weapon();
 
@@ -1346,10 +1321,6 @@ public class Hero extends Char {
 
 
 		dmg = (int)Math.ceil(dmg * RingOfCommand.damageResistanceBonus( this ));
-		if(Dungeon.level.water[pos]&&pointsInTalent(Talent.GOOD_SWIMMER)>2){
-			dmg*=0.85;
-		}
-
 		if (buff(Talent.WarriorFoodImmunity.class) != null){
 			if (pointsInTalent(Talent.IRON_STOMACH) == 1)       dmg = Math.round(dmg*0.25f);
 			else if (pointsInTalent(Talent.IRON_STOMACH) == 2)  dmg = Math.round(dmg*0.00f);
@@ -1364,7 +1335,9 @@ public class Hero extends Char {
 		int effectiveDamage = preHP - postHP;
 
 		if (effectiveDamage <= 0) return;
-
+		if(isAlive()&&hasTalent(Talent.INDOMITABLE_SPIRIT)){
+			Buff.affect(this, Barrier.class).incShield(Math.round(effectiveDamage*0.2f*pointsInTalent(Talent.INDOMITABLE_SPIRIT)));
+		}
 		//flash red when hit for serious damage.
 		float percentDMG = effectiveDamage / (float)preHP; //percent of current HP that was taken
 		float percentHP = 1 - ((HT - postHP) / (float)HT); //percent health after damage was taken
@@ -1948,6 +1921,9 @@ public class Hero extends Char {
 			} else {
 				Sample.INSTANCE.play( Assets.Sounds.STEP, 1, Random.Float( 0.96f, 1.05f ) );
 			}
+			if(subClass==HeroSubClass.SURVIVOR){
+				Terraforming.isSneak();
+			}
 		}
 	}
 	
@@ -1994,7 +1970,8 @@ public class Hero extends Char {
 				if (door == Terrain.LOCKED_DOOR) {
 					hasKey = Notes.remove(new IronKey(Dungeon.depth));
 					if (hasKey) Level.set(doorCell, Terrain.DOOR);
-					if(subClass==HeroSubClass.SURVIVOR){
+
+					if(Dungeon.hero.hasTalent(Talent.TEMPORARY_REST)){
 						Terraforming.isClosed();
 					}
 				} else if (door == Terrain.CRYSTAL_DOOR) {
@@ -2126,7 +2103,7 @@ public class Hero extends Char {
 						} else if (Dungeon.level.map[curr] == Terrain.SECRET_TRAP) {
 							chance = 0.4f - (Dungeon.depth / 250f);
 							if(hasTalent(Talent.KEEN_SENSES)){
-								chance+=0.2f+0.25f*pointsInTalent(Talent.KEEN_SENSES);
+								chance+=0.1f+0.3f*pointsInTalent(Talent.KEEN_SENSES);
 							}
 							
 						//unintentional door detection scales from 20% at floor 0 to 0% at floor 20
@@ -2160,6 +2137,9 @@ public class Hero extends Char {
 								} else if (oldValue == Terrain.SECRET_DOOR){
 									talisman.charge(10);
 								}
+							}
+							if (oldValue == Terrain.SECRET_DOOR&&hasTalent(Talent.TEMPORARY_REST)){
+								Terraforming.isClosed();
 							}
 						}
 					}

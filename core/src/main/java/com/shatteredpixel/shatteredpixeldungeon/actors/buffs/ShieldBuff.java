@@ -29,6 +29,8 @@ import com.watabou.utils.Bundle;
 public abstract class ShieldBuff extends Buff {
 	
 	private int shielding;
+
+	private float partialShield;
 	
 	@Override
 	public boolean attachTo(Char target) {
@@ -51,9 +53,12 @@ public abstract class ShieldBuff extends Buff {
 	}
 	
 	public void setShield( int shield ) {
+		partialShield+=shield;
 		if(target instanceof Hero&&((Hero)target).hasTalent(Talent.COAGULATION_SHIELD)){
-			shield+= Math.floor(shield* (0.05f + 0.1f*((Hero)target).pointsInTalent(Talent.COAGULATION_SHIELD)));
+			partialShield+= shield* (0.05f + 0.1f*((Hero)target).pointsInTalent(Talent.COAGULATION_SHIELD));
 		}
+		shield=(int) partialShield;
+		partialShield-=(int)partialShield;
 		if (this.shielding <= shield) this.shielding = shield;
 		if (target != null) target.needsShieldUpdate = true;
 	}
@@ -63,7 +68,14 @@ public abstract class ShieldBuff extends Buff {
 	}
 
 	public void incShield( int amt ){
+		partialShield+=amt;
+		if(target instanceof Hero&&((Hero)target).hasTalent(Talent.COAGULATION_SHIELD)){
+			partialShield+= amt* (0.05f + 0.1f*((Hero)target).pointsInTalent(Talent.COAGULATION_SHIELD));
+		}
+		amt=(int) partialShield;
+		partialShield-=(int)partialShield;
 		shielding += amt;
+
 		if (target != null) target.needsShieldUpdate = true;
 	}
 	
@@ -91,19 +103,22 @@ public abstract class ShieldBuff extends Buff {
 		if (target != null) target.needsShieldUpdate = true;
 		return dmg;
 	}
-	
+
 	private static final String SHIELDING = "shielding";
-	
+	private static final String PARTIALSHIELD="partialshield";
+
 	@Override
 	public void storeInBundle( Bundle bundle ) {
 		super.storeInBundle( bundle );
 		bundle.put( SHIELDING, shielding);
+		bundle.put( PARTIALSHIELD, partialShield);
 	}
 	
 	@Override
 	public void restoreFromBundle( Bundle bundle ) {
 		super.restoreFromBundle( bundle );
 		shielding = bundle.getInt( SHIELDING );
+		partialShield = bundle.getFloat(PARTIALSHIELD );
 	}
 	
 }

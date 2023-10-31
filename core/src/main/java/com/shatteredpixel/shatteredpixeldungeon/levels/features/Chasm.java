@@ -30,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terraforming;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
@@ -103,7 +104,10 @@ public class Chasm implements Hero.Doom {
 		jumpConfirmed = false;
 		Hero hero=Dungeon.hero;
 		if(hero.subClass== HeroSubClass.SURVIVOR){
-			Terraforming.isClosed();
+			Terraforming.isSneak();
+			if(hero.hasTalent(Talent.TEMPORARY_REST)){
+				Terraforming.isClosed();
+			}
 		}
 		Sample.INSTANCE.play( Assets.Sounds.FALLING );
 

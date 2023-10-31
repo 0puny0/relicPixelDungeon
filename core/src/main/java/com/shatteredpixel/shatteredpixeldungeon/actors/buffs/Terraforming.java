@@ -7,6 +7,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.StormCloud;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.IronKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
@@ -157,7 +159,9 @@ public class Terraforming  extends Buff implements ActionIndicator.Action {
                 }
             }) ;
             hero.spendAndNext(TICK);
-            isClosed();
+            if (Dungeon.hero.hasTalent(Talent.TEMPORARY_REST)){
+                isClosed();
+            }
         }
 
         @Override
@@ -175,7 +179,7 @@ public class Terraforming  extends Buff implements ActionIndicator.Action {
     }
     @Override
     public int indicatorColor() {
-        return 0x00b300;
+        return 0xa9a9a9;
     }
 
     @Override
@@ -199,6 +203,21 @@ public class Terraforming  extends Buff implements ActionIndicator.Action {
         }
         Buff.affect(Dungeon.hero,RelaxVigilance.class);
     }
+    public static void isSneak(){
+        if(Dungeon.level.water[Dungeon.hero.pos]||Dungeon.level.map[Dungeon.hero.pos] == Terrain.FURROWED_GRASS){
+            for (Mob m : Dungeon.level.mobs){
+                if (Dungeon.level.adjacent(m.pos, Dungeon.hero.pos) && m.alignment != Dungeon.hero.alignment){
+                    return ;
+                }
+            }
+            if(Dungeon.hero.buff(Sneak.class)==null){
+                Buff.affect(Dungeon.hero,Sneak.class);
+            }
+        }else if(Dungeon.hero.buff(Sneak.class)!=null){
+            Dungeon.hero.buff(Sneak.class).detach();
+        }
+    }
+
     public static class RelaxVigilance extends Buff {
         {
             announced = true;
@@ -210,4 +229,44 @@ public class Terraforming  extends Buff implements ActionIndicator.Action {
         @Override
         public void tintIcon(Image icon) { icon.hardlight(0f, 0.4f, 0.8f); }
     }
+    public static class Sneak extends Invisibility {
+        {
+            announced = false;
+        }
+        @Override
+        public void tintIcon(Image icon) { icon.hardlight(0f, 0.8f, 0.35f); }
+        @Override
+        public float iconFadePercent() {
+            return 0;
+        }
+        @Override
+        public boolean act() {
+            if (target.isAlive()) {
+                spend( TICK );
+                for (Mob m : Dungeon.level.mobs){
+                    if (Dungeon.level.adjacent(m.pos, target.pos) && m.alignment != target.alignment){
+                        detach();
+                        return true;
+                    }
+                }
+            } else {
+                detach();
+            }
+            return true;
+        }
+
+        @Override
+        public boolean attachTo(Char target) {
+            if (super.attachTo( target )) {
+                if (target instanceof Hero && ((Hero) target).hasTalent(Talent.SNEAK_SHIELD)){
+                    Buff.affect(target, Talent.SneakShieldTracker.class);
+                }
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+    }
+
 }

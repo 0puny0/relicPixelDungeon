@@ -4,7 +4,9 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEnergy;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Blocking;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ShamanSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.watabou.utils.Bundle;
@@ -39,6 +41,9 @@ public class ManaBarrier extends ShieldBuff{
     public void fillBarrier(){
         setShield(2+((Hero)target).lvl/2);
         countStop=true;
+        if(target.buff(BarrierFX.class)==null){
+            Buff.affect(target, BarrierFX.class);
+        }
     }
 
     @Override
@@ -53,6 +58,9 @@ public class ManaBarrier extends ShieldBuff{
             dmg -= shielding();
             decShield(shielding());
         }
+        if(shielding()<=0&&target.buff(BarrierFX.class)!=null){
+            target.buff(BarrierFX.class).detach();
+        }
         return dmg;
     }
     public int CD(){
@@ -63,7 +71,6 @@ public class ManaBarrier extends ShieldBuff{
         }else {
             return initial;
         }
-
     }
     @Override
     public int icon() {
@@ -92,5 +99,15 @@ public class ManaBarrier extends ShieldBuff{
         super.restoreFromBundle(bundle);
         countdown = bundle.getInt( COUNTDOWN );
         countStop = bundle.getBoolean( COUNTSTOP );
+    }
+    public static class BarrierFX extends Buff{
+        @Override
+        public void fx(boolean on) {
+            if (on) {
+                target.sprite.add(CharSprite.State.SHIELDED);
+            } else if (target.buff(Barrier.class)==null) {
+                target.sprite.remove(CharSprite.State.SHIELDED);
+            }
+        }
     }
 }

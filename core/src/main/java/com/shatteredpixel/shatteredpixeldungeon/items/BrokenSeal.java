@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.items;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ShieldBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -30,14 +31,18 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Blocking;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndBag;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndUseItem;
+import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 
@@ -84,7 +89,7 @@ public class BrokenSeal extends Item {
 	}
 
 	public int maxShield(int armTier, int armLvl ){
-		return armTier + armLvl + Dungeon.hero.pointsInTalent(Talent.IRON_WILL);
+		return armTier + armLvl;
 	}
 
 	@Override
@@ -212,6 +217,30 @@ public class BrokenSeal extends Item {
 			setShield(Math.min(maxShield(),shielding()+shield));
 		}
 
+		@Override
+		public void setShield(int shield) {
+			super.setShield(shield);
+			if (shielding()>0&&target.buff(ShieldFX.class)==null){
+				Buff.affect(target,ShieldFX.class);
+			}
+		}
+
+		@Override
+		public void incShield(int amt) {
+			super.incShield(amt);
+			if (shielding()>0&&target.buff(ShieldFX.class)==null){
+				Buff.affect(target,ShieldFX.class);
+			}
+		}
+
+		@Override
+		public void detach() {
+			if(shielding()<=0&&target.buff(ShieldFX.class)!=null){
+				target.buff(ShieldFX.class).detach();
+			}
+			super.detach();
+		}
+
 		public synchronized void setArmor(Armor arm){
 			armor = arm;
 		}
@@ -221,7 +250,6 @@ public class BrokenSeal extends Item {
 			if (((Hero)target).heroClass != HeroClass.WARRIOR && ((Hero) target).hasTalent(Talent.IRON_WILL)){
 				return ((Hero) target).pointsInTalent(Talent.IRON_WILL);
 			}
-
 			if (armor != null && armor.isEquipped((Hero)target) && armor.checkSeal() != null) {
 				return armor.checkSeal().maxShield(armor.tier, armor.level());
 			} else {
@@ -239,9 +267,27 @@ public class BrokenSeal extends Item {
 				dmg = 0;
 			} else {
 				dmg -= shielding();
+				if(Dungeon.hero.hasTalent(Talent.IRON_WILL)){
+					dmg-=1+Dungeon.hero.pointsInTalent(Talent.IRON_WILL);
+					if(dmg<0)dmg=0;
+				}
 				decShield(shielding());
 			}
+			if(shielding()<=0&&target.buff(ShieldFX.class)!=null){
+				target.buff(ShieldFX.class).detach();
+			}
 			return dmg;
+		}
+	}
+	public static class ShieldFX extends Buff {
+		@Override
+		public int icon() {
+			return BuffIndicator.SUPER_ARMOR;
+		}
+
+		@Override
+		public void tintIcon(Image icon) {
+			icon.hardlight(1.5f, 0.8f, 0.3f);
 		}
 	}
 }

@@ -227,17 +227,6 @@ public enum HeroClass {
 		if (DeviceCompat.isDebug()){
 		textTime(hero);
 		}
-		/*福利版本
-		KingsCrown crown=new KingsCrown();
-		crown.collect();
-		TengusMask mask=new TengusMask();
-		mask.collect();
-		Dart dart=new Dart();
-		dart.quantity(1).collect();
-		ScrollOfTransmutation scroll666=new ScrollOfTransmutation();
-		scroll666.quantity(5).collect();
-		scroll666.identify();
-//		*/
 	}
 
 	public Badges.Badge masteryBadge() {

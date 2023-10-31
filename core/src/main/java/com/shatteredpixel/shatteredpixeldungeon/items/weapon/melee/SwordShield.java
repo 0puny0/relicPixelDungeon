@@ -85,7 +85,7 @@ public class SwordShield extends MeleeWeapon {
 				@Override
 				public void call() {
 					GLog.p(Messages.get(SwordShield.class, "back"));
-					target.attack(enemy,0.5f,0,100000);
+					target.attack(enemy,0.67f,0,100000);
 					next();
 				}
 			});

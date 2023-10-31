@@ -720,8 +720,6 @@ public abstract class Wand extends Item {
 			LockedFloor lock = target.buff(LockedFloor.class);
 			if (lock == null || lock.regenOn()){
 				float chargeMulti=RingOfEnergy.wandChargeMultiplier(target);
-				if(target.buff(Terraforming.RelaxVigilance.class)!=null&&Dungeon.hero.pointsInTalent(Talent.TEMPORARY_REST)>2)
-					chargeMulti*=1.15f;
 				partialCharge += (1f/turnsToCharge) * chargeMulti;
 
 			}

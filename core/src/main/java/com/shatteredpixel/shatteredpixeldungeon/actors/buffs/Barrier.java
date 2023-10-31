@@ -66,7 +66,7 @@ public class Barrier extends ShieldBuff {
 		
 		return true;
 	}
-	
+
 	@Override
 	public void fx(boolean on) {
 		if (on) {

@@ -110,7 +110,7 @@ public class Shadows extends Invisibility {
 	public void prolong() {
 		left = 2;
 	}
-	
+
 	@Override
 	public int icon() {
 		return BuffIndicator.SHADOWS;

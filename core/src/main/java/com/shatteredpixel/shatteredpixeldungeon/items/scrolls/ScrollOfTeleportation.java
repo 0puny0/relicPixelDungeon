@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terraforming;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
@@ -130,7 +131,10 @@ public class ScrollOfTeleportation extends Scroll {
 				Dungeon.hero.interrupt();
 			}
 			if(ch instanceof Hero&&((Hero)ch).subClass== HeroSubClass.SURVIVOR){
-				Terraforming.isClosed();
+				if(((Hero)ch).hasTalent(Talent.TEMPORARY_REST)){
+					Terraforming.isClosed();
+				}
+				Terraforming.isSneak();
 			}
 			return true;
 			

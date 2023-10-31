@@ -48,7 +48,6 @@ public class TestValue  extends TestGenerator{
         }
         public SettingsWindow() {
             super();
-
             o_lvl = new OptionSlider(Messages.get(this, "lvl"), "1", "30", 1, 30) {
                 @Override
                 protected void onChange() {
@@ -94,6 +93,7 @@ public class TestValue  extends TestGenerator{
             };
             add(b_confirm);
             layout();
+            resetValue();
         }
 
         private void layout() {

@@ -9,7 +9,6 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
 public class SpiritualCane extends MeleeWeapon{
     {
-        image = ItemSpriteSheet.SPIRITUAL_CANE;
         hitSound = Assets.Sounds.HIT;
         hitSoundPitch=1.1f;
         DMG=0.75f;

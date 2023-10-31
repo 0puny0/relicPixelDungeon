@@ -263,23 +263,23 @@ public enum DictionaryJournal {
         WEAPONS.d.put("weapon_ench3",       ItemSpriteSheet.STONE_ENCHANT);
         WEAPONS.d.put("weapon_ench4",       ItemSpriteSheet.STONE_ENCHANT);
         //missile
-        WEAPONS.d.put("missile_dart",       ItemSpriteSheet.DART);
-        WEAPONS.d.put("missile_darttipped", ItemSpriteSheet.PARALYTIC_DART);
-        WEAPONS.d.put("missile_stone",      ItemSpriteSheet.THROWING_STONE);
-        WEAPONS.d.put("missile_knife",      ItemSpriteSheet.THROWING_KNIFE);
-        WEAPONS.d.put("missile_fishing",    ItemSpriteSheet.FISHING_SPEAR);
-        WEAPONS.d.put("missile_shuriken",   ItemSpriteSheet.SHURIKEN);
-        WEAPONS.d.put("missile_club",       ItemSpriteSheet.THROWING_CLUB);
-        WEAPONS.d.put("missile_spear",      ItemSpriteSheet.THROWING_SPEAR);
-        WEAPONS.d.put("missile_kunai",      ItemSpriteSheet.KUNAI);
-        WEAPONS.d.put("missile_bolas",      ItemSpriteSheet.BOLAS);
-        WEAPONS.d.put("missile_javelin",    ItemSpriteSheet.JAVELIN);
-        WEAPONS.d.put("missile_boomerang",  ItemSpriteSheet.BOOMERANG);
-        WEAPONS.d.put("missile_axe",        ItemSpriteSheet.TOMAHAWK);
-        WEAPONS.d.put("missile_hammer",     ItemSpriteSheet.THROWING_HAMMER);
-        WEAPONS.d.put("missile_trident",    ItemSpriteSheet.TRIDENT);
-        WEAPONS.d.put("missile_cube",       ItemSpriteSheet.FORCE_CUBE);
-        WEAPONS.d.put("missile_spiritbow",  ItemSpriteSheet.SPIRIT_BOW);
+//        WEAPONS.d.put("missile_dart",       ItemSpriteSheet.DART);
+//        WEAPONS.d.put("missile_darttipped", ItemSpriteSheet.PARALYTIC_DART);
+//        WEAPONS.d.put("missile_stone",      ItemSpriteSheet.THROWING_STONE);
+//        WEAPONS.d.put("missile_knife",      ItemSpriteSheet.THROWING_KNIFE);
+//        WEAPONS.d.put("missile_fishing",    ItemSpriteSheet.FISHING_SPEAR);
+//        WEAPONS.d.put("missile_shuriken",   ItemSpriteSheet.SHURIKEN);
+//        WEAPONS.d.put("missile_club",       ItemSpriteSheet.THROWING_CLUB);
+//        WEAPONS.d.put("missile_spear",      ItemSpriteSheet.THROWING_SPEAR);
+//        WEAPONS.d.put("missile_kunai",      ItemSpriteSheet.KUNAI);
+//        WEAPONS.d.put("missile_bolas",      ItemSpriteSheet.BOLAS);
+//        WEAPONS.d.put("missile_javelin",    ItemSpriteSheet.JAVELIN);
+//        WEAPONS.d.put("missile_boomerang",  ItemSpriteSheet.BOOMERANG);
+//        WEAPONS.d.put("missile_axe",        ItemSpriteSheet.TOMAHAWK);
+//        WEAPONS.d.put("missile_hammer",     ItemSpriteSheet.THROWING_HAMMER);
+//        WEAPONS.d.put("missile_trident",    ItemSpriteSheet.TRIDENT);
+//        WEAPONS.d.put("missile_cube",       ItemSpriteSheet.FORCE_CUBE);
+//        WEAPONS.d.put("missile_spiritbow",  ItemSpriteSheet.SPIRIT_BOW);
 
         //Documents
         DOCUMENTS.d.put("info_intro",       ItemSpriteSheet.EBONY_CHEST);

@@ -27,7 +27,6 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 public class Gauntlet extends MeleeWeapon {
 	
 	{
-		image = ItemSpriteSheet.GAUNTLET;
 		hitSound = Assets.Sounds.HIT;
 		hitSoundPitch=1.2f;
         DMG=0.75f;

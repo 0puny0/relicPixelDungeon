@@ -21,14 +21,12 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels.features;
 
-import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Roots;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vulnerable;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -47,7 +45,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.food.Berry;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
-import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Random;
 
 public class HighGrass {
@@ -66,18 +63,12 @@ public class HighGrass {
 			if (ch instanceof Hero &&( ((Hero) ch).heroClass == HeroClass.HUNTRESS|| ((Hero) ch).subClass== HeroSubClass.SURVIVOR)){
 				//Do nothing
 				freezeTrample = true;
-			} else if(ch!=null&&ch.alignment== Char.Alignment.ENEMY){
-				if(Dungeon.hero.hasTalent(Talent.VINE_TRAP)&&ch.buff(Talent.VineTrapTracker.class)==null){
-					Buff.affect(ch, Talent.VineTrapTracker.class);
-					Buff.affect(ch, Vulnerable.class,Dungeon.hero.pointsInTalent(Talent.VINE_TRAP)==1?1:2);
-					Buff.affect(ch, Roots.class,Dungeon.hero.pointsInTalent(Talent.VINE_TRAP)==3?2:1);
-				}
-				Level.set(pos, Terrain.GRASS);
-			}else {
+			} else{
 				Level.set(pos, Terrain.GRASS);
 			}
 			
-		} else {
+		} else
+		{
 			if (ch instanceof Hero &&( ((Hero) ch).heroClass == HeroClass.HUNTRESS|| ((Hero) ch).subClass== HeroSubClass.SURVIVOR)){
 				Level.set(pos, Terrain.FURROWED_GRASS);
 				freezeTrample = true;
@@ -155,9 +146,17 @@ public class HighGrass {
 			}
 			
 		}
-		
-		freezeTrample = false;
-		
+			freezeTrample = false;
+
+		if(Dungeon.hero.hasTalent(Talent.NATURES_AID)&&ch!=null&&ch.alignment== Char.Alignment.ENEMY){
+			Buff.affect(ch, Vulnerable.class,1.34f);
+			if(Dungeon.hero.pointsInTalent(Talent.NATURES_AID)>1){
+				Buff.affect(ch, Blindness.class,1.34f);
+				}
+			if(Dungeon.hero.pointsInTalent(Talent.NATURES_AID)>2){
+				Buff.affect(ch, Roots.class,1.34f);
+				}
+		}
 		if (ShatteredPixelDungeon.scene() instanceof GameScene) {
 			GameScene.updateMap(pos);
 			

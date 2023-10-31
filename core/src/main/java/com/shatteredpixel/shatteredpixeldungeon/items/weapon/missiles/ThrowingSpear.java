@@ -27,7 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 public class ThrowingSpear extends MissileWeapon {
 	
 	{
-		image = ItemSpriteSheet.THROWING_SPEAR;
+		image = ItemSpriteSheet.THROWING_SPEAR3;
 		hitSound = Assets.Sounds.HIT_STAB;
 		hitSoundPitch = 1f;
 		

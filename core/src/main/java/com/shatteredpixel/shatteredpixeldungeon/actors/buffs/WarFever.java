@@ -29,7 +29,7 @@ public class WarFever extends FlavourBuff{
         return Messages.get(this, "desc",level,dispTurns());
     }
     public  void addLevel(){
-        if(level>= (Dungeon.hero.pointsInTalent(Talent.WAR_FEVER)>=3?3:2)){
+        if(level>= (Dungeon.hero.pointsInTalent(Talent.INDOMITABLE_SPIRIT)>=3?3:2)){
             return;
         }
             level++;

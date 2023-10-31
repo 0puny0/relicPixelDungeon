@@ -27,7 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 public class ThrowingHammer extends MissileWeapon {
 	
 	{
-		image = ItemSpriteSheet.THROWING_HAMMER;
+		image = ItemSpriteSheet.THROWING_CLUB5;
 		hitSound = Assets.Sounds.HIT_CRUSH;
 		hitSoundPitch = 0.8f;
 		

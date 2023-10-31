@@ -29,6 +29,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Degrade;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terraforming;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
@@ -145,11 +147,9 @@ public class Item implements Bundlable {
 	}
 	
 	public void execute( Hero hero, String action ) {
-
 		GameScene.cancel();
 		curUser = hero;
 		curItem = this;
-		
 		if (action.equals( AC_DROP )) {
 			
 			if (hero.belongings.backpack.contains(this) || isEquipped(hero)) {
@@ -639,6 +639,7 @@ public class Item implements Bundlable {
 		public void onSelect( Integer target ) {
 			if (target != null) {
 				curItem.cast( curUser, target );
+				Invisibility.dispel();
 			}
 		}
 		@Override

@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEnergy;
+import com.watabou.utils.Bundle;
 
 public class Regeneration extends Buff {
 	
@@ -35,7 +36,19 @@ public class Regeneration extends Buff {
 	}
 	
 	private static final float REGENERATION_DELAY = 10;
-	
+	private float partialRegen;
+	private static final String PARTIALREGEN 	= "partialRegen";
+	@Override
+	public void storeInBundle( Bundle bundle ) {
+		super.storeInBundle(bundle);
+		bundle.put( PARTIALREGEN, partialRegen );
+	}
+
+	@Override
+	public void restoreFromBundle( Bundle bundle ) {
+		super.restoreFromBundle( bundle );
+		partialRegen = bundle.getFloat(PARTIALREGEN);
+	}
 	@Override
 	public boolean act() {
 		if (target.isAlive()) {
@@ -43,6 +56,11 @@ public class Regeneration extends Buff {
 			if (target.HP < regencap() && !((Hero)target).toHungry()) {
 				LockedFloor lock = target.buff(LockedFloor.class);
 				if (lock == null || lock.regenOn()) {
+					partialRegen+=target.HT/200f;
+					if(partialRegen> 1){
+						target.HP+=(int)partialRegen;
+						partialRegen -= (int)partialRegen;
+					}
 					target.HP += 1;
 					if (target.HP == regencap()) {
 						((Hero) target).resting = false;
@@ -62,10 +80,7 @@ public class Regeneration extends Buff {
 				}
 			}
 			if(((Hero)target).toWellfed()){
-				delay*=0.75f;
-			}
-			if(target.buff(Terraforming.RelaxVigilance.class)!=null){
-				delay*=0.8f;
+				delay*=0.67f;
 			}
 			spend( delay );
 			

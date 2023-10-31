@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BlessingPower;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terraforming;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -112,6 +113,7 @@ public class TengusMask extends Item {
 	}
 	public void initSubclassHero(HeroSubClass way){
 		if(way==HeroSubClass.SAVIOR){
+			Buff.affect(Dungeon.hero, BlessingPower.class);
 			BlessingPearl pearl=new BlessingPearl();
 			if (!pearl.collect()){
 				Dungeon.level.drop(pearl,Dungeon.hero.pos);

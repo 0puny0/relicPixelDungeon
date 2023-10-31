@@ -98,7 +98,6 @@ public class BlessingPearl extends Item{
                             Sample.INSTANCE.play(Assets.Sounds.UNLOCK);
                             i.inlay= EquipableItem.Inlay.blessingPeal;
                             BlessingPower.setHolyWeapon(i);
-                            Buff.affect(Dungeon.hero, BlessingPower.class);
                             curItem.detach(Dungeon.hero.belongings.backpack);
                             if(item.isEquipped(Dungeon.hero)){
                                 BlessingPower.setBlessingEquip(true);

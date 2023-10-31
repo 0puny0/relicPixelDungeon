@@ -123,8 +123,8 @@ public class Hunger extends Buff implements Hero.Doom {
 			if(target.buff( Shadows.class )!=null){
 				stepTime*=1.5f;
 			}
-			if(target.buff(Terraforming.RelaxVigilance.class)!=null&&Dungeon.hero.pointsInTalent(Talent.TEMPORARY_REST)>1){
-				stepTime*=1.25f;
+			if(target.buff(Terraforming.RelaxVigilance.class)!=null){
+				stepTime*=Dungeon.hero.pointsInTalent(Talent.TEMPORARY_REST)==3?2f:1.5f;
 			}
 			spend(stepTime );
 
@@ -152,6 +152,11 @@ public class Hunger extends Buff implements Hero.Doom {
 			if(energy<val){
 				hero.HP = Math.min(hero.HT, hero.HP +Math.round(val-energy)/(Dungeon.isChallenged(Challenges.NO_FOOD)?6:4) );
 			}
+		}
+		if(Dungeon.hero.hasTalent(Talent.FAST_EAT)){
+			int regen=Math.round(energy/150*(hero.HT/10+3));
+			hero.HP = Math.min(hero.HT, hero.HP +regen);
+
 		}
 		affectHunger( energy, true );
 	}

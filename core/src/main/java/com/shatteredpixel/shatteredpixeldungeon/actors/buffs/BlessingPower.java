@@ -85,8 +85,11 @@ public class BlessingPower extends Buff implements ActionIndicator.Action {
             LockedFloor lock = target.buff(LockedFloor.class);
             if (target.buff(Blessing.class)==null && (lock == null || lock.regenOn())) {
                 float missing = (chargeCap - charge);
-                float turnsToCharge = (35 - missing);
-                float chargeToGain = ((1f-Dungeon.hero.pointsInTalent(Talent.ANCESTOR_BLESSING)*0.1f) / turnsToCharge);
+                float turnsToCharge = (45 - missing);
+                float chargeToGain = (1f/ turnsToCharge);
+                if(Dungeon.hero.hasTalent(Talent.ANCESTOR_BLESSING)){
+                    chargeToGain+=chargeToGain*(0.02+Dungeon.hero.pointsInTalent(Talent.ANCESTOR_BLESSING)*0.08);
+                }
                 partialCharge += chargeToGain;
             }
             if (partialCharge >= 1) {
@@ -204,7 +207,7 @@ public class BlessingPower extends Buff implements ActionIndicator.Action {
             blessing.attachTo(Dungeon.hero);
         }
         Sample.INSTANCE.play(Assets.Sounds.MISS, 1f, 0.8f);
-        target.sprite.emitter().burst(Speck.factory(Speck.JET), 5);
+        Dungeon.hero.sprite.emitter().burst(Speck.factory(Speck.JET), 5);
         BuffIndicator.refreshHero();
         ActionIndicator.refresh();
     }
@@ -250,11 +253,16 @@ public class BlessingPower extends Buff implements ActionIndicator.Action {
             return 6;
         }
         public int extraLevel(){
-            if(holyWeapon.buffedLvl()<4){
-                return 1+Dungeon.hero.pointsInTalent(Talent.BESTOW_RESONANCE);
+            if(holyWeapon!=null){
+                if(holyWeapon.buffedLvl()<4){
+                    return 1+Dungeon.hero.pointsInTalent(Talent.BESTOW_RESONANCE);
+                }else {
+                    return holyWeapon.buffedLvl()/4+Dungeon.hero.pointsInTalent(Talent.BESTOW_RESONANCE) ;
+                }
             }else {
-                return holyWeapon.buffedLvl()/4+Dungeon.hero.pointsInTalent(Talent.BESTOW_RESONANCE) ;
+                return 0;
             }
+
         }
         @Override
         public boolean act(){
