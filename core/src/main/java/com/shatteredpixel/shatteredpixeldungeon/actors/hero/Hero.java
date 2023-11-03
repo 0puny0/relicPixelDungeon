@@ -64,6 +64,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbili
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.NaturesPower;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Endure;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Monk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Snake;
 import com.shatteredpixel.shatteredpixeldungeon.custom.testmode.ImmortalShieldAffecter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
@@ -464,7 +465,7 @@ public class Hero extends Char {
 		boolean hit = attack( enemy );
 		Invisibility.dispel();
 		belongings.thrownWeapon = null;
-		if (hit && subClass == HeroSubClass.GLADIATOR &&buff(Combo.VolleyTracker.class)==null){
+		if (hit && subClass == HeroSubClass.GLADIATOR ){
 			Buff.affect( this, Combo.class ).hit( enemy );
 		}
 		return hit;
@@ -510,7 +511,12 @@ public class Hero extends Char {
 	@Override
 	public int defenseSkill( Char enemy ) {
 
-
+		if (buff(Combo.ParryTracker.class) != null){
+			if (canAttack(enemy) && !isCharmedBy(enemy)){
+				Buff.affect(this, Combo.RiposteTracker.class).enemy = enemy;
+			}
+			return INFINITE_EVASION;
+		}
 		SwordShield.Block block=buff(SwordShield.Block.class);
 		if (block != null&&canAttack(enemy)){
 			Buff.affect(this, SwordShield.RiposteTracker.class).enemy = enemy;
@@ -533,6 +539,18 @@ public class Hero extends Char {
 
 		return Math.round(evasion);
 	}
+
+	@Override
+	public String defenseVerb() {
+		Combo.ParryTracker parry = buff(Combo.ParryTracker.class);
+		if (parry != null){
+			parry.parry();
+			return Messages.get(Monk.class, "parried");
+		}
+
+		return super.defenseVerb();
+	}
+
 	@Override
 	public int drRoll() {
 		int dr = 0;

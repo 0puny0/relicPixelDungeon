@@ -65,11 +65,6 @@ public abstract class Plant implements Bundlable {
 			((Hero) ch).interrupt();
 		}
 
-		if (Dungeon.level.heroFOV[pos] && Dungeon.hero.hasTalent(Talent.NATURES_AID)){
-			// 3/5 turns based on talent points spent
-			Buff.affect(Dungeon.hero, Barkskin.class).set(2, 1 + 2*(Dungeon.hero.pointsInTalent(Talent.NATURES_AID)));
-		}
-
 		if(ch instanceof Hero&&((Hero) ch).belongings.weapon()!=null &&((Hero) ch).belongings.weapon() instanceof ApothecaryKnife){
 			Dungeon.level.uproot( pos );
 			if (Dungeon.level.heroFOV[pos]) {

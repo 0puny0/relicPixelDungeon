@@ -118,7 +118,6 @@ public class WandOfBlastWave extends DamageWand {
 		}
 
 		int dist = Math.min(trajectory.dist, power);
-
 		boolean collided = dist == trajectory.dist;
 
 		if (dist <= 0
@@ -146,11 +145,9 @@ public class WandOfBlastWave extends DamageWand {
 		final int newPos = trajectory.path.get(dist);
 
 		if (newPos == ch.pos) return;
-
-		final int finalDist = dist;
 		final boolean finalCollided = collided && collideDmg;
 		final int initialpos = ch.pos;
-
+		final int collidePower=power-dist;
 		Actor.addDelayed(new Pushing(ch, ch.pos, newPos, new Callback() {
 			public void call() {
 				if (initialpos != ch.pos || Actor.findChar(newPos) != null) {
@@ -161,9 +158,13 @@ public class WandOfBlastWave extends DamageWand {
 				int oldPos = ch.pos;
 				ch.pos = newPos;
 				if (finalCollided && ch.isAlive()) {
-					ch.damage(Random.NormalIntRange(finalDist, 2*finalDist), this);
+					int impact=collidePower;
+					if(ch instanceof Hero&&cause ==WandOfBlastWave.class){
+						impact/=2;
+					}
+					ch.damage(Random.NormalIntRange(2*impact, 3*impact), this);
 					if (ch.isAlive()) {
-						Paralysis.prolong(ch, Paralysis.class, 1 + finalDist/2f);
+						Paralysis.prolong(ch, Paralysis.class, 1 +impact/2f);
 					} else if (ch == Dungeon.hero){
 						if (cause == WandOfBlastWave.class || cause == AquaBlast.class){
 							Badges.validateDeathFromFriendlyMagic();

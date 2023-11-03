@@ -345,7 +345,7 @@ public class PixelScene extends Scene {
 			}
 		});
 	}
-	
+
 	protected static class Fader extends ColorBlock {
 		
 		private static float FADE_TIME = 1f;

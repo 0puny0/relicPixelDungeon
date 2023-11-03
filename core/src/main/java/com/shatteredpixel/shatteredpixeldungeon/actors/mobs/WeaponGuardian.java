@@ -385,7 +385,7 @@ public abstract class WeaponGuardian extends Mob{
             }
 
             boolean terrainAffected = false;
-            for (int n : PathFinder.NEIGHBOURS25) {
+            for (int n : PathFinder.NEIGHBOURS9) {
                 int c = pos + n;
                 if (c >= 0 && c < Dungeon.level.length()) {
                     if (Dungeon.level.heroFOV[c]) {

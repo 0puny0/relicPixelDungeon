@@ -289,5 +289,11 @@ public class BrokenSeal extends Item {
 		public void tintIcon(Image icon) {
 			icon.hardlight(1.5f, 0.8f, 0.3f);
 		}
+
+		@Override
+		public void fx(boolean on) {
+			if (on) target.sprite.add( CharSprite.State.SUPERARMOR );
+			else if (target.invisible == 0) target.sprite.remove( CharSprite.State.SUPERARMOR );
+		}
 	}
 }

@@ -51,6 +51,7 @@ import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.noosa.tweeners.AlphaTweener;
 import com.watabou.noosa.tweeners.PosTweener;
+import com.watabou.noosa.tweeners.ScaleTweener;
 import com.watabou.noosa.tweeners.Tweener;
 import com.watabou.utils.Callback;
 import com.watabou.utils.PointF;
@@ -82,7 +83,8 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 	protected float shadowOffset    = 0.25f;
 
 	public enum State {
-		BURNING, LEVITATING, INVISIBLE, PARALYSED, FROZEN, ILLUMINATED, CHILLED, DARKENED, MARKED, HEALING, SHIELDED, HEARTS
+		BURNING, LEVITATING, INVISIBLE, PARALYSED, FROZEN, ILLUMINATED,
+		CHILLED, DARKENED, MARKED, HEALING, SHIELDED, HEARTS,SUPERARMOR,
 	}
 	private int stunStates = 0;
 	
@@ -109,6 +111,7 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 	protected TorchHalo light;
 	protected ShieldHalo shield;
 	protected AlphaTweener invisible;
+	protected ScaleTweener superArmor;
 	protected Flare aura;
 	
 	protected EmoIcon emo;
@@ -286,10 +289,10 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 
 	public void jump( int from, int to, Callback callback ) {
 		float distance = Math.max( 1f, Dungeon.level.trueDistance( from, to ));
-		jump( from, to, callback, distance * 2, distance * 0.1f );
+		jump( from, to, distance * 2, distance * 0.1f, callback );
 	}
 
-	public void jump( int from, int to, Callback callback, float height, float duration ) {
+	public void jump( int from, int to, float height, float duration,  Callback callback ) {
 		jumpCallback = callback;
 
 		jumpTweener = new JumpTweener( this, worldToCamera( to ), height, duration );
@@ -408,6 +411,17 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 				hearts = emitter();
 				hearts.pour(Speck.factory(Speck.HEART), 0.5f);
 				break;
+			case SUPERARMOR:
+				if (superArmor != null) {
+					superArmor.killAndErase();
+				}
+				superArmor = new ScaleTweener( this, new PointF(1.15f, 1.15f), 0.4f);
+				if (parent != null){
+					parent.add(superArmor);
+				} else
+					scale.set(1.15f);
+				break;
+
 		}
 	}
 	
@@ -480,6 +494,13 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 					hearts.on = false;
 					hearts = null;
 				}
+				break;
+			case SUPERARMOR:
+				if (superArmor != null) {
+					superArmor.killAndErase();
+					superArmor = null;
+				}
+				scale.set( new PointF(1,1) );
 				break;
 		}
 	}

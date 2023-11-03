@@ -48,7 +48,7 @@ public abstract class ShieldBuff extends Buff {
 		super.detach();
 	}
 	
-	public int shielding(){
+	public  int shielding(){
 		return shielding;
 	}
 	
