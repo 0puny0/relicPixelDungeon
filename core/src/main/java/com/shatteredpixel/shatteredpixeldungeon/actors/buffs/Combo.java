@@ -28,12 +28,11 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DwarfKing;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
-import com.shatteredpixel.shatteredpixeldungeon.items.Dewdrop;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Door;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
@@ -46,6 +45,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.ActionIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.AttackIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.HeroIcon;
+import com.shatteredpixel.shatteredpixeldungeon.utils.BArray;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndCombo;
 import com.watabou.noosa.BitmapText;
@@ -55,6 +55,7 @@ import com.watabou.noosa.Visual;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
+import com.watabou.utils.PathFinder;
 
 public class Combo extends Buff implements ActionIndicator.Action {
 
@@ -165,14 +166,14 @@ public class Combo extends Buff implements ActionIndicator.Action {
 		return Messages.get(this, "desc", count, dispTurns(comboTime));
 	}
 
-	private boolean slapUsed = false;
+	private boolean crushUsed = false;
 	private boolean parryUsed = false;
 	private boolean cleaveUsed = false;
 	private boolean furyUsed = false;
 	private boolean spurtUsed = false;
 
 
-	private static final String SLAP_USED	 = "slap_used";
+	private static final String CRUSH_USED = "slap_used";
 	private static final String PARRY_USED   = "parry_used";
 	private static final String CLEAVE_USED   = "cleave_used";
 	private static final String FURY_USED   = "fury_used";
@@ -191,7 +192,7 @@ public class Combo extends Buff implements ActionIndicator.Action {
 		bundle.put(ISFINISH, isFinish);
 		bundle.put(COULDUSETIME, couldUseTime);
 
-		bundle.put(SLAP_USED, slapUsed);
+		bundle.put(CRUSH_USED, crushUsed);
 		bundle.put(PARRY_USED, parryUsed);
 		bundle.put(CLEAVE_USED, cleaveUsed);
 		bundle.put(FURY_USED, furyUsed);
@@ -206,7 +207,7 @@ public class Combo extends Buff implements ActionIndicator.Action {
 		isFinish = bundle.getBoolean( ISFINISH );
 		couldUseTime = bundle.getInt( COULDUSETIME );
 
-		slapUsed = bundle.getBoolean(SLAP_USED);
+		crushUsed = bundle.getBoolean(CRUSH_USED);
 		parryUsed = bundle.getBoolean(PARRY_USED);
 		cleaveUsed= bundle.getBoolean(CLEAVE_USED);
 		furyUsed = bundle.getBoolean(FURY_USED);
@@ -249,16 +250,16 @@ public class Combo extends Buff implements ActionIndicator.Action {
 	}
 
 	public enum ComboMove {
-		SLAP , PARRY,  CLEAVE,FURY, SPURT,FINISH,CALM;
+		CRUSH, PARRY,  CLEAVE,FURY, SPURT,FINISH,CALM;
 		public String desc(int count,boolean isFinish){
 			String key=isFinish?".finish_desc":".desc";
 			switch (this){
-				case SLAP:
-					return Messages.get(this, name()+key, count/2);
-				case PARRY:
-					return Messages.get(this, name()+key, count*5);
-				case CLEAVE:
+				case CRUSH:
 					return Messages.get(this, name()+key, count*15);
+				case PARRY:
+					return Messages.get(this, name()+key, count*20);
+				case CLEAVE:
+					return Messages.get(this, name()+key, count*25);
 				case FURY:
 					return Messages.get(this, name()+key, count);
 				case SPURT:
@@ -280,7 +281,7 @@ public class Combo extends Buff implements ActionIndicator.Action {
 		return count;
 	}
 	public boolean canUseMove(ComboMove move){
-		if (move == ComboMove.SLAP && slapUsed)   return false;
+		if (move == ComboMove.CRUSH && crushUsed)   return false;
 		if (move == ComboMove.PARRY && parryUsed)  return false;
 		if (move == ComboMove.CLEAVE && cleaveUsed)  return false;
 		if (move == ComboMove.FURY && furyUsed)  return false;
@@ -300,7 +301,7 @@ public class Combo extends Buff implements ActionIndicator.Action {
 			parryUsed = true;
 			comboTime = 5f;
 			Invisibility.dispel();
-			Buff.affect(target, ParryTracker.class, Actor.TICK);
+			Buff.affect(target, ParryTracker.class, Actor.TICK).SetFinish(isFinish);
 			((Hero)target).spendAndNext(TICK);
 			Dungeon.hero.busy();
 		} else if(move == ComboMove.FINISH){
@@ -324,7 +325,7 @@ public class Combo extends Buff implements ActionIndicator.Action {
 		}
 	}
 	public void resetCombo(){
-		slapUsed = false;
+		crushUsed = false;
 		parryUsed = false;
 		cleaveUsed = false;
 		furyUsed = false;
@@ -335,11 +336,19 @@ public class Combo extends Buff implements ActionIndicator.Action {
 	public static class ParryTracker extends FlavourBuff{
 		{ actPriority = HERO_PRIO+1;}
 
-		public  boolean isFinish;
+		boolean isFinish;
+		public void SetFinish( boolean finish){
+			isFinish=finish;
+		}
 		public void parry(){
 			if(!isFinish){
 				detach();
 			}
+		}
+		@Override
+		public void detach() {
+			if (isFinish) target.buff(Combo.class).detach();
+			super.detach();
 		}
 	}
 	public static class RiposteTracker extends Buff{
@@ -378,62 +387,55 @@ public class Combo extends Buff implements ActionIndicator.Action {
 
 		//variance in damage dealt
 		switch (moveBeingUsed) {
-			case SLAP:
-				dmgMulti = 0;
+			case CRUSH:
+				dmgMulti =isFinish?count*0.15f:0.6f;
+				dmgBonus+=enemy.drRoll();
 				accMulti=Char.INFINITE_ACCURACY;
 				break;
 			case PARRY:
-				dmgMulti = isFinish?(1+0.05f*count):1f;
+				dmgMulti = isFinish?count*0.2f:1f;
 				if (isFinish)accMulti=Char.INFINITE_ACCURACY;
 				break;
 			case CLEAVE:
-				dmgMulti = isFinish?0.15f*count:1f;
+				dmgMulti = isFinish?0.25f*count:1f;
 				accMulti=Char.INFINITE_ACCURACY;
 				break;
 			case FURY:
-				dmgMulti = 0.675f;
+				dmgMulti = 0.75f;
 				accMulti=0.85f;
 				break;
 			case SPURT:
 
 				break;
 		}
-		int oldPos= enemy.pos;
 		if (hero.attack(enemy, dmgMulti, dmgBonus,accMulti)){
 			//special on-hit effects
 			switch (moveBeingUsed) {
-				case SLAP:
-					//trace a ballistica to our target (which will also extend past them
-					Ballistica trajectory = new Ballistica(target.pos, enemy.pos, Ballistica.STOP_TARGET);
-					//trim it to just be the part that goes past them
-					trajectory = new Ballistica(trajectory.collisionPos, trajectory.path.get(trajectory.path.size() - 1), Ballistica.PROJECTILE);
-					//knock them back along that ballistica, ensuring they don't fall into a pit
-					int dist = 2;
-					if (isFinish) {
-						dist=count/2;
-						for (Char ch : Actor.chars()){
-							if (ch != enemy
-									&& ch.alignment == Char.Alignment.ENEMY
-									&& Dungeon.level.adjacent(ch.pos, enemy.pos)){
-								//trace a ballistica to our target (which will also extend past them
-								trajectory = new Ballistica(hero.pos, ch.pos, Ballistica.STOP_TARGET);
-								//trim it to just be the part that goes past them
-								trajectory = new Ballistica(trajectory.collisionPos, trajectory.path.get(trajectory.path.size() - 1), Ballistica.PROJECTILE);
-								//knock them back along that ballistica
-								WandOfBlastWave.throwChar(ch, trajectory, dist, true, true, hero.getClass());
+				case CRUSH:
+						WandOfBlastWave.BlastWave.blast(enemy.pos);
+						PathFinder.buildDistanceMap(target.pos, BArray.not(Dungeon.level.solid, null), isFinish?3:1);
+						for (Char ch : Actor.chars()) {
+							if (ch != enemy && ch.alignment == Char.Alignment.ENEMY
+									&& PathFinder.distance[ch.pos] < Integer.MAX_VALUE) {
+								int aoeHit = Math.round(target.damageRoll() * 0.15f * count);
+								if (ch.buff(Vulnerable.class) != null) aoeHit *= 1.33f;
+								if (ch instanceof DwarfKing){
+									//change damage type for DK so that crush AOE doesn't count for DK's challenge badge
+									ch.damage(aoeHit, this);
+								} else {
+									ch.damage(aoeHit, target);
+								}
+								ch.sprite.bloodBurstA(target.sprite.center(), aoeHit);
+								ch.sprite.flash();
+
+								if (!ch.isAlive()) {
+									if (hero.hasTalent(Talent.LETHAL_DEFENSE) && hero.buff(BrokenSeal.WarriorShield.class) != null) {
+										BrokenSeal.WarriorShield shield = hero.buff(BrokenSeal.WarriorShield.class);
+										shield.supercharge(Math.round(shield.maxShield() * hero.pointsInTalent(Talent.LETHAL_DEFENSE) / 3f));
+									}
+								}
 							}
 						}
-
-					} else if (!enemy.flying) {
-						while (dist > trajectory.dist ||
-								(dist > 0 && Dungeon.level.pit[trajectory.path.get(dist)])) {
-							dist--;
-						}
-					}
-					if (enemy.pos == oldPos) {
-						WandOfBlastWave.throwChar(enemy, trajectory, dist, true, true, hero.getClass());
-					}
-					break;
 				case FURY:
 					if (!isFinish)hit();
 					break;
@@ -444,79 +446,77 @@ public class Combo extends Buff implements ActionIndicator.Action {
 		}
 		Invisibility.dispel();
 		//Post-attack behaviour
-		if (moveBeingUsed==ComboMove.FURY){
-			if(isFinish) {
-				count--;
-				if (count > 0 && enemy.isAlive() && hero.canAttack(enemy) &&
-						(wasAlly || enemy.alignment != target.alignment)){
-					target.sprite.attack(enemy.pos, new Callback() {
-						@Override
-						public void call() {
-							doAttack(enemy);
-						}
-					});
-				} else {
-					detach();
-					Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
-					ActionIndicator.clearAction(Combo.this);
-					hero.spendAndNext(hero.attackDelay());
-				}
-			}else {
-				if (enemy.isAlive() && hero.canAttack(enemy)
-						&& (wasAlly || enemy.alignment != target.alignment)) {
-					target.sprite.attack(enemy.pos, new Callback() {
-						@Override
-						public void call() {
-							if (hero.attack(enemy, 0.75f, 0, 0.85f)){
-								hit();
+		if(isFinish){
+			switch(moveBeingUsed) {
+				case CLEAVE:
+					if (!enemy.isAlive() || (!wasAlly && enemy.alignment == target.alignment)) {
+						Combo.this.resetCombo();
+						count = count / 2 - 1;
+						hit();
+						couldUseTime = (count + 1) / 2;
+						hero.spendAndNext(hero.attackDelay());
+					}
+					break;
+				case PARRY:
+					break;
+				case FURY:
+					count--;
+					if (count > 0 && enemy.isAlive() && hero.canAttack(enemy) &&
+							(wasAlly || enemy.alignment != target.alignment)){
+						target.sprite.attack(enemy.pos, new Callback() {
+							@Override
+							public void call() {
+								doAttack(enemy);
 							}
-							hero.spendAndNext(hero.attackDelay());
-						}
-					});
-				}else {
-					hero.spendAndNext(hero.attackDelay());
-				}
-				furyUsed=true;
-				couldUseTime--;
-				if (couldUseTime<=0)ActionIndicator.clearAction(Combo.this);
-			}
-		}else {
-			if(isFinish){
-				if(moveBeingUsed==ComboMove.CLEAVE
-						&&!enemy.isAlive() || (!wasAlly && enemy.alignment == target.alignment)){
-					Combo.this.resetCombo();
-					count=count/2-1;
-					hit();
-					couldUseTime=(count+1)/2;
-					hero.spendAndNext(hero.attackDelay());
-				}else {
+						});
+					} else {
 						detach();
+						Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
 						ActionIndicator.clearAction(Combo.this);
 						hero.spendAndNext(hero.attackDelay());
-				}
-
-			}else {
-				switch(moveBeingUsed){
-					case SLAP:
-						slapUsed = true;
-						hero.spendAndNext(hero.attackDelay());
-						break;
-					case CLEAVE:
-						cleaveUsed=true;
-						if(!enemy.isAlive() || (!wasAlly && enemy.alignment == target.alignment)){
-							hit();hit();
-						}
-						hero.spendAndNext(hero.attackDelay());
-						break;
-					case SPURT:
-						spurtUsed =true;
-						hero.spendAndNext(hero.attackDelay());
-						break;
-
-				}
-				couldUseTime--;
-				if (couldUseTime<=0)ActionIndicator.clearAction(Combo.this);
+					}
+					break;
+				default:
+					detach();
+					ActionIndicator.clearAction(Combo.this);
+					hero.spendAndNext(hero.attackDelay());
+					break;
 			}
+		}else {
+			switch(moveBeingUsed){
+				case CRUSH:
+					crushUsed = true;
+					hero.spendAndNext(hero.attackDelay());
+					break;
+				case CLEAVE:
+					cleaveUsed=true;
+					if(!enemy.isAlive() || (!wasAlly && enemy.alignment == target.alignment)){
+						hit();hit();
+					}
+					hero.spendAndNext(hero.attackDelay());
+					break;
+				case FURY:
+					furyUsed=true;
+					if (enemy.isAlive() && hero.canAttack(enemy)
+							&& (wasAlly || enemy.alignment != target.alignment)) {
+						target.sprite.attack(enemy.pos, new Callback() {
+							@Override
+							public void call() {
+								if (hero.attack(enemy, 0.75f, 0, 0.85f)){
+									hit();
+								}
+								hero.spendAndNext(hero.attackDelay());
+							}
+						});
+					}else {
+						hero.spendAndNext(hero.attackDelay());
+					}
+					break;
+				default:
+					break;
+			}
+			couldUseTime--;
+			if (couldUseTime<=0)ActionIndicator.clearAction(Combo.this);
 		}
 		if (!enemy.isAlive() || (!wasAlly && enemy.alignment == target.alignment)) {
 			if (hero.hasTalent(Talent.LETHAL_DEFENSE) && hero.buff(BrokenSeal.WarriorShield.class) != null){

@@ -107,7 +107,7 @@ public class MeleeWeapon extends Weapon {
 			onBreakThrow(hero);
 		}
 	}
-	int LevelAppreciation(){
+	public int LevelAppreciation(){
 		return (int)(Math.sqrt(8 * buffedLvl() + 1) - 1)/2;
 	}
 	void  onSwitchWeapon(Hero

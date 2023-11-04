@@ -32,7 +32,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty;
 import com.shatteredpixel.shatteredpixeldungeon.items.journal.Guidebook;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfChallenge;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.KnifeFork;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.initial.KnifeFork;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -154,7 +154,7 @@ public class Hunger extends Buff implements Hero.Doom {
 			}
 		}
 		if(Dungeon.hero.hasTalent(Talent.FAST_EAT)){
-			int regen=Math.round(energy/150*(hero.HT/10+3));
+			int regen=Math.round(energy/150*(hero.HT/12+2));
 			hero.HP = Math.min(hero.HT, hero.HP +regen);
 
 		}
