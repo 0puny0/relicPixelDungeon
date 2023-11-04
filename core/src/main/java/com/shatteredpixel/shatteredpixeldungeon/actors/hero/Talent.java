@@ -359,7 +359,6 @@ public enum Talent {
 			cloak.addChargeCap();
 		}
 		if (talent == ARMORMASTERS_INTUITION && hero.pointsInTalent(ARMORMASTERS_INTUITION) == 2){
-			if (hero.belongings.weapon() != null) hero.belongings.weapon().identify();
 			if (hero.belongings.armor() != null)  hero.belongings.armor.identify();
 		}
 		if (talent == THIEFS_INTUITION && hero.pointsInTalent(THIEFS_INTUITION) == 2){
@@ -480,6 +479,9 @@ public enum Talent {
 		// 2x/instant for Warrior (see onItemEquipped)
 		if ( item instanceof Armor){
 			factor *= 1f + hero.pointsInTalent(ARMORMASTERS_INTUITION);
+		}
+		if (item instanceof MeleeWeapon){
+			factor *= 1f + 0.75f*hero.pointsInTalent(ARMORMASTERS_INTUITION);
 		}
 		// 3x/instant for mage (see Wand.wandUsed())
 		if (item instanceof Wand){

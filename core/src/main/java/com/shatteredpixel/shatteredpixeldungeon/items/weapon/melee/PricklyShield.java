@@ -40,9 +40,6 @@ public class PricklyShield extends MeleeWeapon{
     }
     public void Reflect(Char owner,Char enemy){
         if(Dungeon.level.distance(owner.pos,enemy.pos)<=1){
-            if (owner instanceof Hero&& ((Hero)owner).subClass == HeroSubClass.GLADIATOR ){
-                Buff.affect( owner, Combo.class ).hit( enemy );
-            }
             int damage=Random.NormalIntRange( 1+1*buffedLvl(), 2+2*buffedLvl() );
             enemy.damage(damage,PricklyShield.class);
             if (!enemy.isAlive() && Dungeon.level.heroFOV[enemy.pos]) {

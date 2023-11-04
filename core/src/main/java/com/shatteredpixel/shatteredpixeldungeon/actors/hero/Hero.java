@@ -32,6 +32,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.SacrificialFire;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Adrenaline;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AdrenalineSurge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Aim;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
@@ -466,7 +467,7 @@ public class Hero extends Char {
 		Invisibility.dispel();
 		belongings.thrownWeapon = null;
 		if (hit && subClass == HeroSubClass.GLADIATOR ){
-			Buff.affect( this, Combo.class ).hit( enemy );
+			Buff.affect( this, Combo.class ).hit( );
 		}
 		return hit;
 	}
@@ -669,17 +670,17 @@ public class Hero extends Char {
 			buff(Talent.LethalMomentumTracker.class).detach();
 			return 0;
 		}
-
+		float delay=1f;
 		if (belongings.weapon() != null) {
-			
-			return belongings.weapon().delayFactor( this );
-			
+			delay= belongings.weapon().delayFactor( this );
 		} else {
 			//Normally putting furor speed on unarmed attacks would be unnecessary
 			//But there's going to be that one guy who gets a furor+force ring combo
 			//This is for that one guy, you shall get your fists of fury!
-			return 1f/RingOfFuror.attackSpeedMultiplier(this);
+			delay/=RingOfFuror.attackSpeedMultiplier(this);
 		}
+		if (buff(Adrenaline.class) != null)delay /= 1.5f;
+		return delay;
 	}
 
 	@Override
@@ -1353,7 +1354,7 @@ public class Hero extends Char {
 		int effectiveDamage = preHP - postHP;
 
 		if (effectiveDamage <= 0) return;
-		if(isAlive()&&hasTalent(Talent.INDOMITABLE_SPIRIT)){
+		if(isAlive()&&hasTalent(Talent.INDOMITABLE_SPIRIT)&&!(src instanceof Hunger)){
 			Buff.affect(this, Barrier.class).incShield(Math.round(effectiveDamage*0.2f*pointsInTalent(Talent.INDOMITABLE_SPIRIT)));
 		}
 		//flash red when hit for serious damage.
@@ -1956,12 +1957,12 @@ public class Hero extends Char {
 		spend( attackDelay() );
 
 		if (hit && subClass == HeroSubClass.GLADIATOR && wasEnemy){
-			Buff.affect( this, Combo.class ).hit( enemy );
+			Buff.affect( this, Combo.class ).hit();
 		}
 		if(belongings.weapon()instanceof Nunchaku){
 			boolean hit2=attack(enemy);
 			if (hit2 && subClass == HeroSubClass.GLADIATOR && wasEnemy){
-				Buff.affect( this, Combo.class ).hit( enemy );
+				Buff.affect( this, Combo.class ).hit();
 			}
 		}
 
