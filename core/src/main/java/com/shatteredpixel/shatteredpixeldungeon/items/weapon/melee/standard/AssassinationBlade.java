@@ -13,7 +13,7 @@ public class AssassinationBlade extends MeleeWeapon {
         image = ItemSpriteSheet.ASSASSINATION_BLADE;
         hitSound = Assets.Sounds.HIT_STAB;
         hitSoundPitch = 1f;
-        DMG = 0.75f;
+        DMG =Attribute.lower;
     }
     @Override
     public int damageRoll(Char owner) {
@@ -22,7 +22,7 @@ public class AssassinationBlade extends MeleeWeapon {
             Char enemy = hero.enemy();
             if (enemy instanceof Mob && ((Mob) enemy).surprisedBy(hero)) {
                 int diff = max() - min();
-                int damage = Random.NormalIntRange(min()+ Math.round(diff*0.55f),
+                int damage = Random.NormalIntRange(min()+ Math.round(diff*0.75f),
                         max());
                 int exStr = hero.STR() - STRReq();
                 if (exStr > 0) {

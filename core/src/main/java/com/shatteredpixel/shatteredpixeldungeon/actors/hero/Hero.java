@@ -126,7 +126,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.special.Nunch
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.special.PricklyShield;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.initial.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.standard.Flail;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.special.Flail;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.initial.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.initial.SwordShield;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;

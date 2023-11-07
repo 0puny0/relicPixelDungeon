@@ -23,8 +23,8 @@ public class RuneSword extends MeleeWeapon {
         image = ItemSpriteSheet.RUNE_SWORD;
         hitSound = Assets.Sounds.HIT_SLASH;
         hitSoundPitch=1f;
-        DMG=0.75f;
-        ACC=0.75f;
+        DMG=Attribute.lower;
+        ACC=Attribute.lower;
         usesTargeting = true;
         hasSkill=true;
         defaultAction=AC_WEAPONSKILL;

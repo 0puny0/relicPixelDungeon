@@ -105,6 +105,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Blazin
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Grim;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Kinetic;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Shocking;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.special.CeremonialDagger;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.special.PiercingBlade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.initial.SpiritBow;
@@ -346,7 +347,7 @@ public abstract class Char extends Actor {
 			if (this instanceof Hero){
 				Hero h = (Hero)this;
 				if (h.belongings.weapon() instanceof SpiritBow.SpiritArrow&&
-						Dungeon.hero.belongings.getItem(SpiritBow.class).form== Weapon.Form.FORM1){
+						Dungeon.hero.belongings.getItem(SpiritBow.class).form== MeleeWeapon.Form.FORM1){
 					dr =0 ;
 				}
 				if(h.belongings.weapon() instanceof PiercingBlade){

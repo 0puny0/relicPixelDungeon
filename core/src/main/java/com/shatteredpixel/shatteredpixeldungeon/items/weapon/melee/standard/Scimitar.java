@@ -39,26 +39,13 @@ public class Scimitar extends MeleeWeapon {
 		image = ItemSpriteSheet.SCIMITAR;
 		hitSound = Assets.Sounds.HIT_SLASH;
 		hitSoundPitch=1.1f;
-        DMG=0.75f;
-		DLY=0.75f;
-		ACC=1.5f;
+        DMG=Attribute.lower;
+		ASPD =Attribute.higher;
+		ACC=Attribute.higher;
     }
 	int enemiesSlain=0;
 	public void modeSwitch() {
-		switch (form){
-			case FORM0:
-				DLY=0.75f;
-				ACC=1.5f;
-				break;
-			case FORM1:
-				DLY=1f;
-				ACC=1.5f;
-				break;
-			case FORM2:
-				DLY=1f;
-				ACC=1f;
-				break;
-		}
+
 	}
 
 	@Override

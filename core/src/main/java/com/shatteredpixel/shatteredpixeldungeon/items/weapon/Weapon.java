@@ -53,6 +53,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Projec
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Shocking;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Unstable;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Vampiric;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -66,18 +67,10 @@ import java.util.Arrays;
 
 abstract public class Weapon extends KindOfWeapon {
 
-	public float    ACC = 1f;	// Accuracy modifier
-	public float	DLY	= 1f;	// Speed modifier
 	public int      RCH = 1;    // Reach modifier (only applies to melee hits)
-	public float 	DMG =1f;	//伤害系数(only applies to melee hits)
 	public int tier=1;
-	public enum Form {
-		FORM1,
-		FORM2,
-		FORM0;
-	}
 
-	public Form form = Form.FORM0;
+
 	
 	private static final int USES_TO_ID = 20;
 	private float usesLeftToID = USES_TO_ID;
@@ -85,9 +78,6 @@ abstract public class Weapon extends KindOfWeapon {
 	
 	public Enchantment enchantment;
 	public boolean masteryPotionBonus = false;
-	public void switchForm(Form toForm){
-		form=toForm;
-	}
 	@Override
 	public int proc( Char attacker, Char defender, int damage ) {
 		
@@ -122,7 +112,6 @@ abstract public class Weapon extends KindOfWeapon {
 	private static final String ENCHANTMENT	    = "enchantment";
 	private static final String CURSE_INFUSION_BONUS = "curse_infusion_bonus";
 	private static final String MASTERY_POTION_BONUS = "mastery_potion_bonus";
-	private static final String FORM = "form";
 
 	@Override
 	public void storeInBundle( Bundle bundle ) {
@@ -132,7 +121,6 @@ abstract public class Weapon extends KindOfWeapon {
 		bundle.put( ENCHANTMENT, enchantment );
 		bundle.put( CURSE_INFUSION_BONUS, curseInfusionBonus );
 		bundle.put( MASTERY_POTION_BONUS, masteryPotionBonus );
-		bundle.put(FORM, form);
 	}
 	
 	@Override
@@ -143,8 +131,6 @@ abstract public class Weapon extends KindOfWeapon {
 		enchantment = (Enchantment)bundle.get( ENCHANTMENT );
 		curseInfusionBonus = bundle.getBoolean( CURSE_INFUSION_BONUS );
 		masteryPotionBonus = bundle.getBoolean( MASTERY_POTION_BONUS );
-
-		form = bundle.getEnum(FORM, Form.class);
 	}
 	
 	@Override
@@ -159,7 +145,7 @@ abstract public class Weapon extends KindOfWeapon {
 		
 		int encumbrance = 0;
 
-		float ACC = this.ACC;
+		float ACC = 1f;
 		if( owner instanceof Hero ){
 			encumbrance = STRReq() - ((Hero)owner).STR();
 		}
@@ -178,7 +164,7 @@ abstract public class Weapon extends KindOfWeapon {
 	}
 
 	protected float baseDelay( Char owner ){
-		float delay = this.DLY;
+		float delay = 1f;
 		if (owner instanceof Hero) {
 			int encumbrance = STRReq() - ((Hero)owner).STR();
 			if (encumbrance > 0){

@@ -14,8 +14,8 @@ public class HideSword extends MeleeWeapon {
         image = ItemSpriteSheet.HIDE_SWORD;
         hitSound = Assets.Sounds.HIT_STAB;
         hitSoundPitch=1.1f;
-        DMG=0.75f;
-        ACC=1.5f;
+        DMG=Attribute.lower;
+        ACC=Attribute.higher;
         defaultAction = AC_MARK;
         usesTargeting = true;
     }

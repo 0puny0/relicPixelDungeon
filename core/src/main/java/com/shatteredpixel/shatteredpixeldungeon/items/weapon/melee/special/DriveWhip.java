@@ -19,7 +19,7 @@ public class DriveWhip extends MeleeWeapon {
         image = ItemSpriteSheet.DRIVE_WHIP;
         hitSound = Assets.Sounds.HIT;
         hitSoundPitch=0.9f;
-        DMG=0.75f;
+        DMG=Attribute.lower;
         RCH=3;
         hasSkill=true;
         defaultAction=AC_WEAPONSKILL;

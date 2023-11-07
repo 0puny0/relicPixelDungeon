@@ -19,8 +19,7 @@ public class DemonSword extends MeleeWeapon {
         image = ItemSpriteSheet.DEMON_SWORD;
         hitSound = Assets.Sounds.HIT_SLASH;
         hitSoundPitch=1f;
-        DMG=0.75f;
-
+        DMG=Attribute.lower;
     }
 
     @Override

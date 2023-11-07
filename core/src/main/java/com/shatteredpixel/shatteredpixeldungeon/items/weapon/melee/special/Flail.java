@@ -19,7 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.standard;
+package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.special;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -41,8 +41,8 @@ public class Flail extends MeleeWeapon {
 		image = ItemSpriteSheet.FLAIL;
 		hitSound = Assets.Sounds.HIT_CRUSH;
 		hitSoundPitch=1f;
-        DMG=1.4f;
-		ACC=0.5f;
+        DMG=Attribute.highest;
+		ACC=Attribute.lowest;
 		hasSkill=true;
 		defaultAction=AC_WEAPONSKILL;
     }

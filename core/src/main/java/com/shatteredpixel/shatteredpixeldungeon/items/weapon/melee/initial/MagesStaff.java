@@ -73,7 +73,7 @@ public class MagesStaff extends MeleeWeapon {
 		image = ItemSpriteSheet.MAGES_STAFF;
 		hitSound = Assets.Sounds.HIT;
 		hitSoundPitch=1.1f;
-        DMG=0.75f;
+        DMG=Attribute.lower;
 		hasSkill=true;
         defaultAction = AC_WEAPONSKILL;
 		usesTargeting = true;
@@ -82,21 +82,7 @@ public class MagesStaff extends MeleeWeapon {
 	}
 	public void modeSwitch() {
 		switch (form){
-			case FORM0:
-				DLY=1f;
-				DMG=0.75f;
-				ACC=1f;
-				break;
-			case FORM1:
-				DLY=1.5f;
-				DMG=1.4f;
-				ACC=1f;
-				break;
-			case FORM2:
-				DLY=0.75f;
-				DMG=0.5f;
-				ACC=1.5f;
-				break;
+
 		}
 	}
 

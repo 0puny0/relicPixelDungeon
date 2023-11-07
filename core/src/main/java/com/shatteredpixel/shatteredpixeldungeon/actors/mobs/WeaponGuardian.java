@@ -53,9 +53,7 @@ public abstract class WeaponGuardian extends Mob{
     }
     public WeaponGuardian() {
         super();
-        weapon =(MeleeWeapon) Generator.random(Generator.wepRarity[2]);
-        weapon.tier=3;
-        weapon.removeCurse(true);
+        weapon = Generator.randomMelee();
         if (weapon.level() == 0 && Random.Int(2) == 0){
             weapon.upgrade();
         }

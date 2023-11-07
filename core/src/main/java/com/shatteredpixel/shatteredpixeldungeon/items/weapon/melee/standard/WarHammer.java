@@ -25,13 +25,24 @@ import static com.shatteredpixel.shatteredpixeldungeon.actors.Char.INFINITE_ACCU
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Aim;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vulnerable;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DwarfKing;
+import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfForce;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.TenguDartTrap;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.utils.BArray;
+import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
+
+import java.util.ArrayList;
 
 public class WarHammer extends MeleeWeapon {
 
@@ -39,32 +50,28 @@ public class WarHammer extends MeleeWeapon {
 		image = ItemSpriteSheet.WAR_HAMMER;
 		hitSound = Assets.Sounds.HIT_CRUSH;
 		hitSoundPitch=0.8f;
-        DMG=1.4f;
-		ACC=0.75f;
-		DLY=1.5f;
+        DMG=Attribute.highest;
+		ASPD =Attribute.lowest;
 	}
 
+
 	@Override
-	public int damageRoll(Char owner) {
-		if(owner instanceof Hero&&owner.buff(Aim.class)!=null){
-			int diff = max() - min();
-			int damage = Random.NormalIntRange(min()+ Math.round(diff*0.5f) , max());
-			int exStr = ((Hero)owner).STR() - STRReq();
-			if (exStr > 0) {
-				damage +=   (int)(exStr * RingOfForce.extraStrengthBonus((Hero)owner ));
+	public int proc(Char attacker, Char defender, int damage) {
+		if(attacker.buff(Aim.class)!=null) {
+			ArrayList<Char> targets = new ArrayList<>();
+			for (int i : PathFinder.NEIGHBOURS8){
+				if (Actor.findChar(defender.pos + i) != null) targets.add(Actor.findChar(defender.pos + i));
 			}
-			return damage;
-		}else {
-			return super.damageRoll(owner);
+			WandOfBlastWave.BlastWave.blast(defender.pos);
+			for (Char ch : targets) {
+				if ( ch.alignment == Char.Alignment.ENEMY) {
+					int aoeHit = damage/2;
+					if (ch.buff(Vulnerable.class) != null) aoeHit *= 1.33f;
+					ch.sprite.bloodBurstA(defender.sprite.center(), aoeHit);
+					ch.sprite.flash();
+				}
+			}
 		}
+		return super.proc(attacker, defender, damage);
 	}
-	@Override
-	public float accuracyFactor(Char owner, Char target) {
-		float accuracy=super.accuracyFactor(owner, target);
-		if(owner.buff(Aim.class)!=null){
-			accuracy=INFINITE_ACCURACY;
-		}
-		return accuracy;
-	}
-
 }

@@ -158,28 +158,28 @@ public class ShopRoom extends SpecialRoom {
 		MeleeWeapon w;
 		switch (Dungeon.depth) {
 		case 6: default:
-			w = (MeleeWeapon) Generator.random(Generator.wepRarity[1]);
+			w = (MeleeWeapon) Generator.random(Generator.Category.WEP_STAN);
 			w.tier=2;
 			itemsToSpawn.add( Generator.random(Generator.misTiers[1]).quantity(2).identify(false) );
 			itemsToSpawn.add( new LeatherArmor().identify(false) );
 			break;
 
 		case 11:
-			w = (MeleeWeapon) Generator.random(Generator.wepRarity[1]);
+			w = (MeleeWeapon) Generator.random(Generator.Category.WEP_STAN);
 			w.tier=3;
 			itemsToSpawn.add( Generator.random(Generator.misTiers[2]).quantity(2).identify(false) );
 			itemsToSpawn.add( new MailArmor().identify(false) );
 			break;
 
 		case 16:
-			w = (MeleeWeapon) Generator.random(Generator.wepRarity[1]);
+			w = (MeleeWeapon) Generator.random(Generator.Category.WEP_STAN);
 			w.tier=4;
 			itemsToSpawn.add( Generator.random(Generator.misTiers[3]).quantity(2).identify(false) );
 			itemsToSpawn.add( new ScaleArmor().identify(false) );
 			break;
 
 		case 20: case 21:
-			w = (MeleeWeapon) Generator.random(Generator.wepRarity[1]);
+			w = (MeleeWeapon) Generator.random(Generator.Category.WEP_STAN);
 			w.tier=5;
 			itemsToSpawn.add( Generator.random(Generator.misTiers[4]).quantity(2).identify(false) );
 			itemsToSpawn.add( new PlateArmor().identify(false) );
@@ -287,15 +287,6 @@ public class ShopRoom extends SpecialRoom {
 				break;
 		}
 		itemsToSpawn.add(stone);
-		if (Random.Float() < 0.1f){
-			MeleeWeapon weapon= (MeleeWeapon) Generator.random(Generator.wepRarity[2]);
-			weapon.tier=3;
-			w.enchant(null);
-			w.removeCurse(true);
-			w.level(0);
-			w.identify(false);
-			itemsToSpawn.add( weapon );
-		}
 		//hard limit is 63 items + 1 shopkeeper, as shops can't be bigger than 8x8=64 internally
 		if (itemsToSpawn.size() > 63) {
 			throw new RuntimeException("Shop attempted to carry more than 63 items!");

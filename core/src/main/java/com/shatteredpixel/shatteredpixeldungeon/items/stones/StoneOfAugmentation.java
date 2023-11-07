@@ -25,11 +25,10 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.standard.Crossbow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.initial.Dagger;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.initial.KnifeFork;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.standard.LongSword;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.special.GoldSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.initial.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.standard.Scimitar;
@@ -53,7 +52,7 @@ public class StoneOfAugmentation extends InventoryStone {
 	@Override
 	protected boolean usableOnItem(Item item) {
 		return (item instanceof Armor||item instanceof MagesStaff ||item instanceof KnifeFork||item instanceof SpiritBow||item instanceof Dagger
-				||item instanceof LongSword||item instanceof Scimitar||item instanceof Crossbow);
+				||item instanceof GoldSword ||item instanceof Scimitar||item instanceof Crossbow);
 	}
 
 	@Override
@@ -62,7 +61,7 @@ public class StoneOfAugmentation extends InventoryStone {
 		
 	}
 	
-	public void apply( Weapon weapon, Weapon.Form form) {
+	public void apply( MeleeWeapon weapon, MeleeWeapon.Form form) {
 		weapon.switchForm(form);
 		useAnimation();
 		curUser.sprite.emitter().start( Speck.factory( Speck.UP ), 0.2f, 3 );
@@ -107,13 +106,13 @@ public class StoneOfAugmentation extends InventoryStone {
 			float pos = tfMesage.top() + tfMesage.height();
 			
 			if (toAugment instanceof MeleeWeapon){
-				for (final Weapon.Form aug : Weapon.Form.values()){
+				for (final MeleeWeapon.Form aug : MeleeWeapon.Form.values()){
 					if (((MeleeWeapon) toAugment).form != aug){
 						RedButton btnSpeed = new RedButton( Messages.get((MeleeWeapon) toAugment, aug.name()) ) {
 							@Override
 							protected void onClick() {
 								hide();
-								StoneOfAugmentation.this.apply( (Weapon)toAugment, aug );
+								StoneOfAugmentation.this.apply( (MeleeWeapon) toAugment, aug );
 							}
 						};
 						btnSpeed.setRect( MARGIN, pos + MARGIN, BUTTON_WIDTH, BUTTON_HEIGHT );

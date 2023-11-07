@@ -30,8 +30,8 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.EquipableItem;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.standard.LongSword;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.special.GoldSword;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -113,9 +113,9 @@ public class Shopkeeper extends NPC {
 	//shopkeepers are greedy!
 	public static int sellPrice(Item item){
 		int price=item.value() * 5 * (Dungeon.depth / 5 + 1);
-		Weapon weapon=(Weapon) (Dungeon.hero.belongings.weapon());
-		if(weapon instanceof LongSword&&weapon.form== Weapon.Form.FORM0){
-			price=price*((LongSword) weapon).discount()/100;
+		MeleeWeapon weapon=(MeleeWeapon) (Dungeon.hero.belongings.weapon());
+		if(weapon instanceof GoldSword &&weapon.form== MeleeWeapon.Form.FORM0){
+			price=price*((GoldSword) weapon).discount()/100;
 		}
 		return price;
 	}

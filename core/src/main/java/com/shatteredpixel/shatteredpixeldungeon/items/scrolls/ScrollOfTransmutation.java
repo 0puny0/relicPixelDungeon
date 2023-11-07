@@ -174,7 +174,14 @@ public class ScrollOfTransmutation extends InventoryScroll {
 		Weapon n;
 		Generator.Category c;
 		if (w instanceof MeleeWeapon) {
-			c = Generator.wepRarity[Random.chances(new float[]{1, 10,0})];
+			float chance=Random.Float();
+			if(chance<0.05f){
+				c = Generator.Category.WEP_INI;
+			}else if(chance<0.15f){
+				c=Generator.speMeleeTier[w.tier];
+			}else {
+				c = Generator.Category.WEP_STAN;
+			}
 		} else {
 			c = Generator.misTiers[((MissileWeapon)w).tier - 1];
 		}
@@ -202,8 +209,6 @@ public class ScrollOfTransmutation extends InventoryScroll {
 		}
 		n.levelKnown = w.levelKnown;
 		n.cursedKnown = w.cursedKnown;
-		n.form = w.form;
-		
 		return n;
 		
 	}

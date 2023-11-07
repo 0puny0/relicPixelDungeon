@@ -37,6 +37,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.VelvetPouch;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.standard.Crossbow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
@@ -151,7 +152,7 @@ public class Dart extends MissileWeapon {
 	@Override
 	public int throwPos(Hero user, int dst) {
 		updateCrossbow();
-		if(bow!=null&&bow.form==Form.FORM1){
+		if(bow!=null&&bow.form== MeleeWeapon.Form.FORM1){
 			return new Ballistica( user.pos, dst, Ballistica.PENETRATE_BOLT ).collisionPos;
 		}
 		return super.throwPos(user, dst);
@@ -161,7 +162,7 @@ public class Dart extends MissileWeapon {
 	@Override
 	protected void onThrow(int cell) {
 		updateCrossbow();
-		if(bow!=null&&bow.form==Form.FORM1){
+		if(bow!=null&&bow.form==MeleeWeapon.Form.FORM1){
 			final Ballistica shot = new Ballistica( curUser.pos, cell, Ballistica.PENETRATE_BOLT);
 			//寻找路劲上的敌人
 			ArrayList<Char> chars = new ArrayList<>();
@@ -198,7 +199,7 @@ public class Dart extends MissileWeapon {
 					Buff.affect(curUser, Talent.SeerShotCooldown.class, 20f);
 				}
 			}
-		}else if(bow!=null&&bow.form==Form.FORM2){
+		}else if(bow!=null&&bow.form==MeleeWeapon.Form.FORM2){
 			if (Dungeon.level.pit[cell]){
 				super.onThrow(cell);
 				return;

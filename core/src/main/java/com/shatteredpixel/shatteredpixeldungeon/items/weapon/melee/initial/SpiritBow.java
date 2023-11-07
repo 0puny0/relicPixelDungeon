@@ -72,8 +72,8 @@ public class SpiritBow extends MeleeWeapon {
 	{image = ItemSpriteSheet.SPIRIT_BOW;
 		hitSound = Assets.Sounds.HIT;
 		hitSoundPitch=1f;
-        DMG=0.75f;
-		ACC=0.75f;
+        DMG=Attribute.lower;
+		ACC=Attribute.lower;
 		hasSkill=true;
         defaultAction = AC_WEAPONSKILL;
 		usesTargeting = true;

@@ -9,29 +9,24 @@ import com.watabou.utils.Bundle;
 
 public class CursedSword extends MeleeWeapon {
     {
-        image = ItemSpriteSheet.CURSED_SWORD_;
+        image = ItemSpriteSheet.CURSED_SWORD;
         hitSound = Assets.Sounds.HIT_SLASH;
         hitSoundPitch = 1f;
-        DMG = 1.4f;
+        DMG = Attribute.lower;
         isBonus=true;
     }
     public boolean isBonus;
     public String nowDesc="desc";
-    protected int elseImage = ItemSpriteSheet.CURSED_SWORD;
-    protected float elseDMG = 0.75f;
+    protected int elseImage = ItemSpriteSheet.CURSED_SWORD_;
+    protected Attribute elseDMG = Attribute.highest;
     protected String elseDesc="typical_desc";
-    @Override
-    public void initialize() {
-        getCurse(true);
-        super.initialize();
-    }
 
     @Override
     public Weapon enchant( Enchantment ench) {
-        if(!isBonus&&ench!=null&&ench.curse()){
+        if(!hasCurseEnchant()&&ench!=null&&ench.curse()){
             modeSwitch();
         }
-        if (isBonus&&(ench == null || !ench.curse())){
+        if (hasCurseEnchant()&&(ench == null || !ench.curse())){
             modeSwitch();
         }
         return super.enchant( ench);
@@ -47,7 +42,7 @@ public class CursedSword extends MeleeWeapon {
 
     public void modeSwitch() {
         int Image0 = image;
-        float DMG0 = DMG;
+        Attribute DMG0 = DMG;
         String Desc0=nowDesc;
         image = elseImage;
         DMG = elseDMG;
@@ -55,7 +50,6 @@ public class CursedSword extends MeleeWeapon {
         elseImage = Image0;
         elseDMG = DMG0;
         elseDesc=Desc0;
-        isBonus=!isBonus;
     }
     public String desc() {
             return Messages.get(this,nowDesc);
@@ -63,7 +57,7 @@ public class CursedSword extends MeleeWeapon {
     @Override
     public void restoreFromBundle( Bundle bundle ) {
         super.restoreFromBundle( bundle );
-        if(hasCurseEnchant()!=isBonus){
+        if(hasCurseEnchant()){
             modeSwitch();
         }
     }

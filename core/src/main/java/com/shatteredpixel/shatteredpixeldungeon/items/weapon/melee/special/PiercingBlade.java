@@ -7,8 +7,6 @@ public class PiercingBlade extends MeleeWeapon {
         image = ItemSpriteSheet.PIERCING_BLADE;
         hitSound = Assets.Sounds.HIT_STAB;
         hitSoundPitch=1.1f;
-        DMG=0.75f;
-        ACC=1f;
-
+        DMG=Attribute.lower;
     }
 }

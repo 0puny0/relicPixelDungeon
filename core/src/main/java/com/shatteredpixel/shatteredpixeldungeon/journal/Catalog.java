@@ -58,13 +58,13 @@ public enum Catalog {
 	}
 	
 	static {
-		for (Class weapon : Generator.Category.WEP_R0.classes){
+		for (Class weapon : Generator.Category.WEP_INI.classes){
 			WEAPONS.seen.put( weapon, false);
 		}
-		for (Class weapon : Generator.Category.WEP_R1.classes){
+		for (Class weapon : Generator.Category.WEP_STAN.classes){
 			WEAPONS.seen.put( weapon, false);
 		}
-		for (Class weapon : Generator.Category.WEP_R2.classes){
+		for (Class weapon : Generator.Category.WEP_SPE_T5.classes){
 			WEAPONS.seen.put( weapon, false);
 		}
 

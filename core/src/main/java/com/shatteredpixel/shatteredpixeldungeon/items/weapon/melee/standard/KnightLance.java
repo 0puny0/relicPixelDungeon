@@ -17,7 +17,7 @@ public class KnightLance extends MeleeWeapon {
         image = ItemSpriteSheet.KNIGHT_LANCE;
         hitSound = Assets.Sounds.HIT_STAB;
         hitSoundPitch=0.8f;
-        DMG=0.75f;
+        DMG=Attribute.lower;
         RCH=2;
 
     }

@@ -11,10 +11,10 @@ public class TekkoKagi extends MeleeWeapon {
     {
         image = ItemSpriteSheet.TEKKO_KAGI;
         hitSound = Assets.Sounds.HIT_SLASH;
-        hitSoundPitch=1.3f;
-        DMG=0.5f;
-        DLY=0.5f;
-        ACC=0.75f;
+        hitSoundPitch=1.2f;
+        DMG=Attribute.lowest;
+        ASPD =Attribute.highest;
+        ACC=Attribute.lower;
     }
 
     @Override

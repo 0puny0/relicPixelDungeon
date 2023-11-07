@@ -101,7 +101,7 @@ public class Skeleton extends Mob {
 	@Override
 	public Item createLoot() {
 		Dungeon.LimitedDrops.SKELE_WEP.count++;
-		Generator.Category c = Generator.Category.WEP_R1;
+		Generator.Category c = Generator.Category.WEP_STAN;
 		MeleeWeapon w = (MeleeWeapon) Reflection.newInstance(c.classes[Random.chances(c.probs)]);
 		w.random();
 		return w;

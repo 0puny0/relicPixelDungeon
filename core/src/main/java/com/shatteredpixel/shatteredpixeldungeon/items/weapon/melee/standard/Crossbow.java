@@ -32,7 +32,7 @@ public class Crossbow extends MeleeWeapon {
 		image = ItemSpriteSheet.CROSSBOW;
 		hitSound = Assets.Sounds.HIT_CRUSH;
 		hitSoundPitch=1.1f;
-        DMG=0.75f;
+        DMG=Attribute.lower;
 	}
 
 	public int getDartMax(){

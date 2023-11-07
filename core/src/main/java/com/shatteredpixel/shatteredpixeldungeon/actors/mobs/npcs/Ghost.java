@@ -312,9 +312,7 @@ public class Ghost extends NPC {
 					case 5: armor = new PlateArmor();  break;
 				}
 				//40：40：20
-				Generator.Category c = Generator.wepRarity[1];
-				MeleeWeapon w = (MeleeWeapon)Reflection.newInstance(c.classes[Random.chances(c.probs)]);
-				w.initialize();
+				MeleeWeapon w = Generator.randomMelee();
 				int wepTier= Random.chances(new float[]{0, 0, 10, 6, 3, 1});
 				w.tier=wepTier;
 				weapon = w;

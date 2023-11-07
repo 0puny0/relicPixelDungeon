@@ -33,7 +33,8 @@ public class ControlGlove extends MeleeWeapon {
         image = ItemSpriteSheet.CONTROL_GLOVE;
         hitSound = Assets.Sounds.HIT;
         hitSoundPitch=1f;
-        DMG=0.5f;
+        DMG=Attribute.lowest;
+        ASPD=Attribute.highest;
         hasSkill=true;
         defaultAction=AC_WEAPONSKILL;
     }

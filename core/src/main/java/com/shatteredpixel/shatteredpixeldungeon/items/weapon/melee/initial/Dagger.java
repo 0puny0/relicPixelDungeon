@@ -40,7 +40,7 @@ public class Dagger extends MeleeWeapon {
 	{	image = ItemSpriteSheet.DAGGER;
 		hitSound = Assets.Sounds.HIT_STAB;
 		hitSoundPitch=1.1f;
-        DMG=0.75f;
+        DMG=Attribute.lower;
 	}
 	@Override
 	public int damageRoll(Char owner) {
@@ -86,15 +86,7 @@ public class Dagger extends MeleeWeapon {
 	}
 	public void modeSwitch() {
 		switch (form){
-			case FORM0:
-				DMG=0.75f;
-				break;
-			case FORM1:
-				DMG=0.75f;
-				break;
-			case FORM2:
-				DMG=0.5f;
-				break;
+
 		}
 	}
 	@Override

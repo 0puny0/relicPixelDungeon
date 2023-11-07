@@ -251,7 +251,7 @@ public enum Talent {
 			return BuffIndicator.TIME;
 		}
 		public void tintIcon(Image icon) { icon.hardlight(0.6f, 0.3f, 0f); }
-		public float iconFadePercent() { return Math.max(0, visualcooldown() / (100-Dungeon.hero.pointsInTalent(NECESSITY)*25)); }
+		public float iconFadePercent() { return Math.max(0, visualcooldown() / (225-Dungeon.hero.pointsInTalent(NECESSITY)*75)); }
 	}
 	public static class FeintedTracker extends Buff{
 		{  announced=true;
@@ -562,7 +562,7 @@ public enum Talent {
 			Buff.affect(enemy, SuckerPunchTracker.class);
 		}
 		if(hero.hasTalent(Talent.INFECTED_WOUND)&& enemy instanceof Mob && ((Mob) enemy).surprisedBy(hero)){
-			Buff.affect(enemy, Poison.class).set( 2 +hero.pointsInTalent(INFECTED_WOUND)*3);
+			Buff.affect(enemy, Poison.class).set( 3 +hero.pointsInTalent(INFECTED_WOUND)*2);
 		}
 		if (hero.hasTalent(Talent.FOLLOWUP_STRIKE)) {
 			if (hero.belongings.weapon() instanceof MissileWeapon) {

@@ -19,7 +19,7 @@ public class MagicShield extends MeleeWeapon {
         image = ItemSpriteSheet.MAGIC_SHIELD;
         hitSound = Assets.Sounds.HIT_CRUSH;
         hitSoundPitch=1.1f;
-        DMG=0.75f;
+        DMG=Attribute.lower;
         hasSkill=true;
         defaultAction=AC_WEAPONSKILL;
     }

@@ -13,7 +13,7 @@ public class RedtasselledSpear extends MeleeWeapon {
         image = ItemSpriteSheet.REDTASSELLED_SPEAR;
         hitSound = Assets.Sounds.HIT_STAB;
         hitSoundPitch=0.9f;
-        DMG=0.75f;
+        DMG=Attribute.lower;
         RCH=2;
     }
     @Override

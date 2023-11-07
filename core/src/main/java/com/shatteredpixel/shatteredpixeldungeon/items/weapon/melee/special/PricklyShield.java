@@ -17,8 +17,7 @@ public class PricklyShield extends MeleeWeapon {
         image = ItemSpriteSheet.PRICKLY_SHIELD;
         hitSound = Assets.Sounds.HIT_CRUSH;
         hitSoundPitch=1f;
-        DMG=0.75f;
-        DLY=1.5f;
+        ASPD =Attribute.lower;
 
     }
 

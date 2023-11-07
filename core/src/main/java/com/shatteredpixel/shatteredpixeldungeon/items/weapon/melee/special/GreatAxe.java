@@ -34,7 +34,7 @@ public class GreatAxe extends MeleeWeapon {
 		image = ItemSpriteSheet.GREAT_AXE;
 		hitSound = Assets.Sounds.HIT_SLASH;
 		hitSoundPitch=0.85f;
-        DMG=1.4f;
+        DMG=Attribute.highest;
         defaultAction = AC_EQUIP;
 	}
 

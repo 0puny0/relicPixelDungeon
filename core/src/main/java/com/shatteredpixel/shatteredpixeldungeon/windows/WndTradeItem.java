@@ -32,7 +32,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.KindOfWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArmband;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.standard.LongSword;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.special.GoldSword;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -59,8 +60,8 @@ public class WndTradeItem extends WndInfoItem {
 		float pos = height;
 		int value=item.value();
 		KindOfWeapon w=Dungeon.hero.belongings.weapon();
-		if(w instanceof LongSword&&((LongSword) w).form== Weapon.Form.FORM2){
-			value=Math.round(value* ((LongSword) w).valueMulti());
+		if(w instanceof GoldSword &&((GoldSword) w).form== MeleeWeapon.Form.FORM2){
+			value=Math.round(value* ((GoldSword) w).valueMulti());
 		}
 		if (item.quantity() == 1) {
 
@@ -196,8 +197,8 @@ public class WndTradeItem extends WndInfoItem {
 		hero.spend(-hero.cooldown());
 		int value=item.value();
 		KindOfWeapon w=Dungeon.hero.belongings.weapon();
-		if(w instanceof LongSword&&((LongSword) w).form== Weapon.Form.FORM2){
-			value=Math.round(value* ((LongSword) w).valueMulti());
+		if(w instanceof GoldSword &&((GoldSword) w).form== MeleeWeapon.Form.FORM2){
+			value=Math.round(value* ((GoldSword) w).valueMulti());
 		}
 		new Gold( value ).doPickUp( hero );
 	}
@@ -216,8 +217,8 @@ public class WndTradeItem extends WndInfoItem {
 			hero.spend(-hero.cooldown());
 			int value=item.value();
 			KindOfWeapon w=Dungeon.hero.belongings.weapon();
-			if(w instanceof LongSword&&((LongSword) w).form== Weapon.Form.FORM2){
-				value=Math.round(value* ((LongSword) w).valueMulti());
+			if(w instanceof GoldSword &&((GoldSword) w).form== MeleeWeapon.Form.FORM2){
+				value=Math.round(value* ((GoldSword) w).valueMulti());
 			}
 			new Gold( value ).doPickUp( hero );
 		}

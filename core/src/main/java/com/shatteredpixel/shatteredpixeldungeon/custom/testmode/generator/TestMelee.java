@@ -187,9 +187,9 @@ public class TestMelee extends TestGenerator {
     }
     private void checkWeapons(){
         if(weapons==null){
-            Class<? extends Weapon>[] weaponsA=(Class<? extends Weapon>[]) Generator.Category.WEP_R0.classes.clone();
-            Class<? extends Weapon>[] weaponsB=(Class<? extends Weapon>[]) Generator.Category.WEP_R1.classes.clone();
-            Class<? extends Weapon>[] weaponsC=(Class<? extends Weapon>[]) Generator.Category.WEP_R2.classes.clone();
+            Class<? extends Weapon>[] weaponsA=(Class<? extends Weapon>[]) Generator.Category.WEP_INI.classes.clone();
+            Class<? extends Weapon>[] weaponsB=(Class<? extends Weapon>[]) Generator.Category.WEP_STAN.classes.clone();
+            Class<? extends Weapon>[] weaponsC=(Class<? extends Weapon>[]) Generator.Category.WEP_SPE_T5.classes.clone();
             weapons = Arrays.copyOf(weaponsA, weaponsA.length+weaponsB.length+weaponsC.length);
             System.arraycopy(weaponsB, 0, weapons, weaponsA.length, weaponsB.length);
             System.arraycopy(weaponsC, 0, weapons, weaponsA.length+weaponsB.length, weaponsC.length);

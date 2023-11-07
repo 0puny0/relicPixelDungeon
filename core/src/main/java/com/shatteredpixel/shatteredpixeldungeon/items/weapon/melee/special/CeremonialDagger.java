@@ -28,7 +28,7 @@ public class CeremonialDagger extends MeleeWeapon {
         image = ItemSpriteSheet.CEREMONIAL_DAGGER;
         hitSound = Assets.Sounds.HIT_STAB;
         hitSoundPitch=1.1f;
-        DMG=0.75f;
+        DMG=Attribute.lower;
         hasSkill=true;
         defaultAction=AC_WEAPONSKILL;
     }
@@ -48,7 +48,7 @@ public class CeremonialDagger extends MeleeWeapon {
                 GLog.i(Messages.get(this,"full"));
                 return;
             }
-            int needHp= 4+(hero.HT/8+Dungeon.depth+hero.lvl)/(3+buffedLvl());
+            int needHp= 4+(5*hero.lvl)/(3+buffedLvl());
             if(hero.HP>needHp){
                 hero.damage(needHp,this);
                 onSUMMON(hero);

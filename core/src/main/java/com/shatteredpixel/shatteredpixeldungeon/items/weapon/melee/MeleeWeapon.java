@@ -50,9 +50,67 @@ import com.watabou.utils.Random;
 import java.util.ArrayList;
 
 public class MeleeWeapon extends Weapon {
-	{
-
+	public enum Attribute{
+		lowest,
+		lower,
+		common,
+		higher,
+		highest
 	}
+	public Attribute ACC=Attribute.common;
+	public Attribute DMG=Attribute.common;
+	public Attribute ASPD =Attribute.common;
+	public static float getACC(Attribute acc){
+		switch (acc){
+			case lowest:
+				return 0.6f;
+			case lower:
+				return 0.85f;
+			case common:default:
+				return 1f;
+			case higher:
+				return 1.2f;
+			case highest:
+				return 1.7f;
+		}
+	}
+	public static float getDMG(Attribute dmg){
+		switch (dmg){
+			case lowest:
+				return 0.5f;
+			case lower:
+				return 0.8f;
+			case common:default:
+				return 1f;
+			case higher:
+				return 1.15f;
+			case highest:
+				return 1.35f;
+		}
+	}
+	public static float getDLY(Attribute aspd){
+		switch (aspd){
+			case lowest:
+				return 1.5f;
+			case lower:
+				return 1.34f;
+			case common:default:
+				return 1f;
+			case higher:
+				return 0.75f;
+			case highest:
+				return 0.5f;
+		}
+	}
+	public enum Form {
+		FORM1,
+		FORM2,
+		FORM0;
+	}
+	public void switchForm(Form toForm){
+		form=toForm;
+	}
+	public Form form = Form.FORM0;
 	public  boolean hasSkill=false;
 	public static final String AC_BREAKTHROW		="BREAKTHROW";
 	public static final String AC_WEAPONSKILL		="WEAPONSKILL";
@@ -217,7 +275,7 @@ public class MeleeWeapon extends Weapon {
 
 	@Override
 	public int min(int lvl) {
-		if(DMG==0.5){
+		if(DMG==Attribute.lowest){
 			return (int)( (tier+lvl)*(1+0.1f*tier));
 		}
 		return tier+lvl;
@@ -225,13 +283,7 @@ public class MeleeWeapon extends Weapon {
 
 	@Override
 	public int max(int lvl) {
-		if(DMG>1){
-			return  (int) Math.floor((tier+1)*(6+lvl)*DMG);
-		}else if(DMG<1){
-			return  (int) Math.ceil((tier+1)*(6+lvl)*DMG);
-		} else {
-			return  (int) Math.round((tier+1)*(6+lvl)*DMG);
-		}
+		return  (int) Math.round((tier+1)*(6+lvl)*getDMG(DMG));
 	}
 
 	@Override
@@ -330,45 +382,31 @@ public class MeleeWeapon extends Weapon {
 		if (owner instanceof Hero) {
 			int exStr = ((Hero)owner).STR() - STRReq();
 			if (exStr > 0) {
-				damage += DLY<=0.5f?(int)(exStr*RingOfForce.halfExStrBonus(owner)):(int)(exStr * RingOfForce.extraStrengthBonus(owner ));
+				damage += ASPD ==Attribute.lowest?(int)(exStr*RingOfForce.halfExStrBonus(owner)):(int)(exStr * RingOfForce.extraStrengthBonus(owner ));
 			}
 		}
 		return damage;
 	}
+	public String getAttrInfo(Attribute attr){
+		switch (attr){
+			case lowest:
+				return Messages.get(MeleeWeapon.class,"lowest");
+			case lower:
+				return Messages.get(MeleeWeapon.class,"lower");
+			case common:default:
+				return Messages.get(MeleeWeapon.class,"common");
+			case higher:
+				return Messages.get(MeleeWeapon.class,"highest");
+			case highest:
+				return Messages.get(MeleeWeapon.class,"highest");
+		}
+	}
 	public String attribute(boolean isManual){
 		String atrribute="";
-		String dmg,acc,aspd,rch=String.valueOf(RCH);
-		if(DMG>=1.4f){
-			dmg=Messages.get(MeleeWeapon.class,"highest");
-		}else if (DMG==0.75f){
-			dmg=Messages.get(MeleeWeapon.class,"lower");
-		}else if (DMG<=0.5f){
-			dmg=Messages.get(MeleeWeapon.class,"lowest");
-		}else {
-			dmg=Messages.get(MeleeWeapon.class,"common");
-		}
-		if (ACC>=1.5f){
-			acc=Messages.get(MeleeWeapon.class,"highest");
-		}else if (ACC==0.75f){
-			acc=Messages.get(MeleeWeapon.class,"lower");
-		}else if (ACC<=0.5f){
-			acc=Messages.get(MeleeWeapon.class,"lowest");
-		}else {
-			acc=Messages.get(MeleeWeapon.class,"common");
-		}
-		if(DLY>=1.5f){
-			aspd=Messages.get(MeleeWeapon.class,"lowest");
-		}else if (DLY==0.75f){
-			aspd=Messages.get(MeleeWeapon.class,"higher");
-		}else if (DLY<=0.5f){
-			aspd=Messages.get(MeleeWeapon.class,"highest");
-		}else {
-			aspd=Messages.get(MeleeWeapon.class,"common");
-		}
 		if(isManual){
-			atrribute+=Messages.get(MeleeWeapon.class,"manual_attr",dmg,acc,aspd,rch) ;
+			atrribute+=Messages.get(MeleeWeapon.class,"manual_attr",getAttrInfo(DMG),getAttrInfo(ASPD),getAttrInfo(ACC),RCH) ;
 		}else {
-			atrribute+=Messages.get(MeleeWeapon.class,"attr",dmg,acc,aspd,rch) ;
+			atrribute+=Messages.get(MeleeWeapon.class,"attr",getAttrInfo(DMG),getAttrInfo(ASPD),getAttrInfo(ACC),RCH) ;
 		}
 		return atrribute;
 	}
@@ -393,7 +431,7 @@ public class MeleeWeapon extends Weapon {
 			if (diffStr<0) {
 				info +=Messages.get(Weapon.class, "too_heavy");
 			} else if (diffStr>0){
-				info += Messages.get(MeleeWeapon.class, "excess_str", DLY<=0.5f?(int)(diffStr*RingOfForce.halfExStrBonus(Dungeon.hero)):
+				info += Messages.get(MeleeWeapon.class, "excess_str", ASPD ==Attribute.lowest?(int)(diffStr*RingOfForce.halfExStrBonus(Dungeon.hero)):
 						(int)(diffStr * RingOfForce.extraStrengthBonus(Dungeon.hero )));
 			}else if(diffStr==0){
 				info +=Messages.get(MeleeWeapon.class, "just_right");

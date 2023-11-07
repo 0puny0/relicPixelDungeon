@@ -15,14 +15,12 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.utils.Bundle;
 
-import java.util.ArrayList;
-
 public class RottenLance extends MeleeWeapon {
     {
         image = ItemSpriteSheet.ROTTEN_LANCE;
         hitSound = Assets.Sounds.HIT_STAB;
         hitSoundPitch=1f;
-        DMG=0.75f;
+        DMG=Attribute.lower;
         RCH=2;
         hasSkill=true;
         defaultAction=AC_WEAPONSKILL;
@@ -81,11 +79,11 @@ public class RottenLance extends MeleeWeapon {
     }
     public void modeSwitch() {
         if(isRoot){
-            DLY=1.5f;
-            DMG=1.4f;
+            ASPD =Attribute.lowest;
+            DMG=Attribute.highest;
         }else {
-            DLY=1f;
-            DMG=0.75f;
+            ASPD =Attribute.common;
+            DMG=Attribute.lower;
         }
     }
     @Override

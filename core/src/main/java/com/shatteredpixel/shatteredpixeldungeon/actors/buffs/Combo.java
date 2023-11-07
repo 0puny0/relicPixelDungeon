@@ -267,7 +267,7 @@ public class Combo extends Buff implements ActionIndicator.Action {
 				case FINISH:
 					return Messages.get(this, name()+key);
 				case CALM:
-					return Messages.get(this, name()+key,count);
+					return Messages.get(this, name()+key,count*2);
 				default:
 					return Messages.get(this, name()+key);
 			}
@@ -312,7 +312,7 @@ public class Combo extends Buff implements ActionIndicator.Action {
 			}
 			GameScene.show(new WndCombo(this));
 		}else if (move==ComboMove.CALM){
-			int heal =Math.round(count*0.01f* (target.HT-target.HP));
+			int heal =Math.round(count*0.02f* (target.HT-target.HP));
 			PotionOfHealing.cure(target);
 			Buff.affect(target, Healing.class).setHeal(heal, 0, 1);
 			Dungeon.hero.sprite.operate(Dungeon.hero.pos);
@@ -413,7 +413,7 @@ public class Combo extends Buff implements ActionIndicator.Action {
 			switch (moveBeingUsed) {
 				case CRUSH:
 						WandOfBlastWave.BlastWave.blast(enemy.pos);
-						PathFinder.buildDistanceMap(target.pos, BArray.not(Dungeon.level.solid, null), isFinish?3:1);
+						PathFinder.buildDistanceMap(enemy.pos, BArray.not(Dungeon.level.solid, null), isFinish?3:1);
 						for (Char ch : Actor.chars()) {
 							if (ch != enemy && ch.alignment == Char.Alignment.ENEMY
 									&& PathFinder.distance[ch.pos] < Integer.MAX_VALUE) {
@@ -425,7 +425,7 @@ public class Combo extends Buff implements ActionIndicator.Action {
 								} else {
 									ch.damage(aoeHit, target);
 								}
-								ch.sprite.bloodBurstA(target.sprite.center(), aoeHit);
+								ch.sprite.bloodBurstA(enemy.sprite.center(), aoeHit);
 								ch.sprite.flash();
 
 								if (!ch.isAlive()) {

@@ -49,7 +49,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAugmentation
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfBlast;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfBlink;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfFlock;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.standard.LongSword;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.special.GoldSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Blindweed;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Earthroot;
@@ -105,7 +105,7 @@ public class LazyTest extends TestGenerator {
             plateArmor.level(15);
             plateArmor.identify().collect();
 
-            LongSword sword = new LongSword();
+            GoldSword sword = new GoldSword();
             sword.level(15);
             sword.tier=5;
             sword.identify().collect();

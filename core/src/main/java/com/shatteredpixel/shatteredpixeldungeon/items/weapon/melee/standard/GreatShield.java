@@ -36,7 +36,7 @@ public class GreatShield extends MeleeWeapon {
 		image = ItemSpriteSheet.GREAT_SHIELD;
 		hitSound = Assets.Sounds.HIT_CRUSH;
 		hitSoundPitch=0.9f;
-		DMG=0.5f;
+		DMG=Attribute.lowest;
     }
 
 	@Override
