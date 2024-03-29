@@ -6,8 +6,10 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.AlchemistsToolkit;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CapeOfThorns;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CeremonialDagger;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ControlGlove;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.EtherealChains;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty;
@@ -103,7 +105,9 @@ public class TestArtifact extends TestGenerator {
             case 9: return SandalsOfNature.class;
             case 10: return TalismanOfForesight.class;
             case 11: return TimekeepersHourglass.class;
-            case 12: default: return UnstableSpellbook.class;
+            case 12:  return UnstableSpellbook.class;
+            case 13:  return CeremonialDagger.class;
+            case 14: default: return ControlGlove.class;
         }
     }
 
@@ -118,7 +122,7 @@ public class TestArtifact extends TestGenerator {
     private static ArrayList<Class<? extends Artifact>> artifactList = new ArrayList<Class<? extends Artifact>>();
     private void buildArtifactArray(){
         if(!artifactList.isEmpty()) return;
-        for(int i=0;i<13;++i){
+        for(int i=0;i<15;++i){
             artifactList.add(idToArtifact(i));
         }
     }

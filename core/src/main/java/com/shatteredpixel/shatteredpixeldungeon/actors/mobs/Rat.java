@@ -27,8 +27,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.Ratmogrify;
-import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.items.food.Berry;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.MysteryMeat;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.RatSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -39,10 +37,14 @@ public class Rat extends Mob {
 
 	{
 		spriteClass = RatSprite.class;
-		
-		HP = HT = 9;
-		defenseSkill = 3;
-		
+
+		HP=HT=10;
+		minDMG=1;
+		maxDMG=4;
+		minDR=0;
+		maxDR=1;
+		defenseSkill =2;
+		attackSkill = 8;
 		maxLvl = 5;
 	}
 
@@ -55,20 +57,6 @@ public class Rat extends Mob {
 		return super.act();
 	}
 
-	@Override
-	public int damageRoll() {
-		return Random.NormalIntRange( 1, 4 );
-	}
-	
-	@Override
-	public int attackSkill( Char target ) {
-		return 8;
-	}
-	
-	@Override
-	public int drRoll() {
-		return Random.NormalIntRange(0, 1);
-	}
 
 	@Override
 	public void rollToDropLoot() {

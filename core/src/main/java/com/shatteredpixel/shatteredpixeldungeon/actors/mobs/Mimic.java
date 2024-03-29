@@ -91,13 +91,16 @@ public class Mimic extends Mob {
 	}
 
 	@Override
-	public void add(Buff buff) {
-		super.add(buff);
-		if (buff.type == Buff.buffType.NEGATIVE && alignment == Alignment.NEUTRAL){
-			alignment = Alignment.ENEMY;
-			stopHiding();
-			if (sprite != null) sprite.idle();
+	public boolean add(Buff buff) {
+		if (super.add(buff)) {
+			if (buff.type == Buff.buffType.NEGATIVE && alignment == Alignment.NEUTRAL) {
+				alignment = Alignment.ENEMY;
+				stopHiding();
+				if (sprite != null) sprite.idle();
+			}
+			return true;
 		}
+		return false;
 	}
 
 	@Override
@@ -191,10 +194,11 @@ public class Mimic extends Mob {
 	@Override
 	public int damageRoll() {
 		if (alignment == Alignment.NEUTRAL){
-			return Random.NormalIntRange( 2 + 2*level, 2 + 2*level);
+			minDMG=2 + 2*level;maxDMG=2 + 2*level;
 		} else {
-			return Random.NormalIntRange( 1 + level, 2 + 2*level);
+			minDMG=1 + level;maxDMG=2 + 2*level;
 		}
+		return super.damageRoll();
 	}
 
 	@Override

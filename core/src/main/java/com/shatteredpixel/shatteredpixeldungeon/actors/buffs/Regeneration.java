@@ -56,13 +56,15 @@ public class Regeneration extends Buff {
 			if (target.HP < regencap() && !((Hero)target).toHungry()) {
 				LockedFloor lock = target.buff(LockedFloor.class);
 				if (lock == null || lock.regenOn()) {
-					partialRegen+=target.HT/200f;
-					if(partialRegen> 1){
-						target.HP+=(int)partialRegen;
-						partialRegen -= (int)partialRegen;
-					}
-					target.HP += 1;
+					partialRegen+=target.HT/100f;
+					do {
+						target.HP += 1;
+						partialRegen --;
+						if (partialRegen<0)partialRegen=0;
+					}while (partialRegen>1&&target.HP!=regencap());
+
 					if (target.HP == regencap()) {
+						partialRegen=0;
 						((Hero) target).resting = false;
 					}
 				}

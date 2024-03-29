@@ -33,9 +33,9 @@ public class Bat extends Mob {
 
 	{
 		spriteClass = BatSprite.class;
-		
-		HP = HT = 40;
-		defenseSkill = 14;
+
+		HP=HT=30; minDMG=5;maxDMG=18;minDR=1;maxDR=5;defenseSkill =15;attackSkill = 16;
+
 		baseSpeed = 2f;
 		EXP = 7;
 		maxLvl = 15;
@@ -45,21 +45,7 @@ public class Bat extends Mob {
 		loot = new PotionOfHealing();
 		lootChance = 0.1667f; //by default, see lootChance()
 	}
-	
-	@Override
-	public int damageRoll() {
-		return Random.NormalIntRange( 5, 18 );
-	}
-	
-	@Override
-	public int attackSkill( Char target ) {
-		return 16;
-	}
-	
-	@Override
-	public int drRoll() {
-		return Random.NormalIntRange(1, 4);
-	}
+
 	
 	@Override
 	public int attackProc( Char enemy, int damage ) {

@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,7 +31,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Degrade;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Doom;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LifeLink;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
@@ -61,7 +60,6 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.KingSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
-import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.Bundle;
@@ -79,26 +77,14 @@ public class DwarfKing extends Mob {
 
 		HP = HT = Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 450 : 300;
 		EXP = 40;
-		defenseSkill = 22;
+		defenseSkill = 22;;attackSkill=26;
+		minDMG=15;maxDMG=25;
+		minDR=4;maxDR=12;
+
 
 		properties.add(Property.BOSS);
 		properties.add(Property.UNDEAD);
 	}
-	@Override
-	public int damageRoll() {
-		return Random.NormalIntRange( 15, 25 );
-	}
-
-	@Override
-	public int attackSkill( Char target ) {
-		return 26;
-	}
-
-	@Override
-	public int drRoll() {
-		return Random.NormalIntRange(4, 12);
-	}
-
 	private int phase = 1;
 	private int summonsMade = 0;
 
@@ -118,6 +104,7 @@ public class DwarfKing extends Mob {
 	private static final String SUMMON_CD = "summon_cd";
 	private static final String ABILITY_CD = "ability_cd";
 	private static final String LAST_ABILITY = "last_ability";
+
 	@Override
 	public void storeInBundle(Bundle bundle) {
 		super.storeInBundle(bundle);
@@ -145,10 +132,10 @@ public class DwarfKing extends Mob {
 
 	@Override
 	protected boolean act() {
-
 		if (pos == CityBossLevel.throne){
 			throwItems();
 		}
+
 		if (phase == 1) {
 
 			if (summonCooldown <= 0 && summonSubject(Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 2 : 3)){
@@ -191,8 +178,7 @@ public class DwarfKing extends Mob {
 				abilityCooldown--;
 			}
 
-		}
-		else if (phase == 2){
+		} else if (phase == 2){
 
 			if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)){
 				//challenge logic
@@ -287,112 +273,35 @@ public class DwarfKing extends Mob {
 					return true;
 				}
 			}
-		}
-		else if (phase == 3 ){
-//			if(Statistics.DKGhoulNum>=6){
-//				for (Mob m:getSubjects()){
-//					m.die(null);
-//				}
-//				if(buff(Viscosity.DeferedDamage.class)!=null){
-//					buff(Viscosity.DeferedDamage.class).detach();
-//				}
-//				HP=Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? Math.min(HP+60,100) :Math.min(HP+30,50);
-//				yell(  Messages.get(this, "rebirth", Dungeon.hero.name()) );
-//			}
-			if(summonCooldown<=0&&buffs(Summoning.class).size() +
-					Statistics.DKGhoulNum+Statistics.DKGolemNum+Statistics.DKWarlockNum+Statistics.DKMonkNum<6){
-				if (summonSubject(Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 2 : 3)) {
-					summonsMade++;
-					summonCooldown = 1;
-				}
-			}else {
-				summonCooldown--;
-			}
-			if(buff(CrownPower.class)!=null&&Statistics.DKMonkNum>0){
-				if(abilityCooldown<=0){
-					Buff.affect(this,Monk.Focus.class);
-				}else {
-					abilityCooldown--;
-				}
-			}else {
-				if(buff(Monk.Focus.class)!=null){
-					buff(Monk.Focus.class).detach();
-				}
-				abilityCooldown=3;
-			}
-
+		} else if (phase == 3 && buffs(Summoning.class).size() < 4){
+			if (summonSubject(Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 2 : 3)) summonsMade++;
 		}
 
 		return super.act();
 	}
 
 	private boolean summonSubject( int delay ){
-		if(phase==3){
-			if(summonsMade%4==0){
+		if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) {
+			//every 3rd summon is always a monk or warlock, otherwise ghoul
+			//except every 9th summon, which is a golem!
+			if (summonsMade % 3 == 2) {
+				if (summonsMade % 9 == 8){
+					return summonSubject(delay, DKGolem.class);
+				} else {
+					return summonSubject(delay, Random.Int(2) == 0 ? DKMonk.class : DKWarlock.class);
+				}
+			} else {
 				return summonSubject(delay, DKGhoul.class);
 			}
-			float f;
-			while (true){
-				f=Random.Float();
-				if(Dungeon.isChallenged(Challenges.STRONGER_BOSSES)){
-					if(f<0.2f){
-						return summonSubject(delay, DKGhoul.class);
-					}else if (f<0.5f){
-						if(Statistics.DKMonkNum<2){
-							return summonSubject(delay, DKMonk.class);
-						}
-					}else if(f<0.8f){
-						if(Statistics.DKWarlockNum<2){
-							return summonSubject(delay, DKWarlock.class);
-						}
-					}else {
-						if(Statistics.DKGolemNum<2){
-							return summonSubject(delay, DKGolem.class);
-						}
-					}
-				}else {
-					if(f<0.5f||(Statistics.DKGolemNum>=2&&Statistics.DKWarlockNum>=2&&Statistics.DKMonkNum>=2)){
-						return summonSubject(delay, DKGhoul.class);
-					}else if (f<0.7f){
-						if(Statistics.DKMonkNum<2){
-							return summonSubject(delay, DKMonk.class);
-						}
-					}else if(f<0.9f){
-						if(Statistics.DKWarlockNum<2){
-							return summonSubject(delay, DKWarlock.class);
-						}
-					}else {
-						if(Statistics.DKGolemNum<2){
-							return summonSubject(delay, DKGolem.class);
-						}
-					}
-				}
 
-			}
-		}else {
-			if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) {
-				//every 3rd summon is always a monk or warlock, otherwise ghoul
-				//except every 9th summon, which is a golem!
-				if (summonsMade % 3 == 2) {
-					if (summonsMade % 9 == 8){
-						return summonSubject(delay, DKGolem.class);
-					} else {
-						return summonSubject(delay, Random.Int(2) == 0 ? DKMonk.class : DKWarlock.class);
-					}
-				} else {
-					return summonSubject(delay, DKGhoul.class);
-				}
-
+		} else {
+			//every 4th summon is always a monk or warlock, otherwise ghoul
+			if (summonsMade % 4 == 3) {
+				return summonSubject(delay, Random.Int(2) == 0 ? DKMonk.class : DKWarlock.class);
 			} else {
-				//every 4th summon is always a monk or warlock, otherwise ghoul
-				if (summonsMade % 4 == 3) {
-					return summonSubject(delay, Random.Int(2) == 0 ? DKMonk.class : DKWarlock.class);
-				} else {
-					return summonSubject(delay, DKGhoul.class);
-				}
+				return summonSubject(delay, DKGhoul.class);
 			}
 		}
-
 	}
 
 	private boolean summonSubject( int delay, Class<?extends Mob> type ){
@@ -401,7 +310,6 @@ public class DwarfKing extends Mob {
 		if (s.pos == -1) return false;
 		s.summon = type;
 		s.delay = delay;
-
 		s.attachTo(this);
 		return true;
 	}
@@ -441,6 +349,7 @@ public class DwarfKing extends Mob {
 		}
 		return false;
 	}
+
 	private boolean teleportSubject(){
 		if (enemy == null) return false;
 
@@ -463,7 +372,7 @@ public class DwarfKing extends Mob {
 			if (Actor.findChar(targetCell) == null && !Dungeon.level.solid[targetCell]){
 				bestPos = targetCell;
 
-			//Otherwise go to the neighbour cell that's open and is furthest
+				//Otherwise go to the neighbour cell that's open and is furthest
 			} else {
 				bestDist = Dungeon.level.trueDistance(pos, enemy.pos);
 
@@ -515,23 +424,10 @@ public class DwarfKing extends Mob {
 
 	@Override
 	public boolean isInvulnerable(Class effect) {
-		return phase == 2 && effect != KingDamager.class;
-	}
-
-	@Override
-	public int attackProc(Char enemy, int damage) {
-		if(buff(CrownPower.class)!=null&&Random.Float()<0.5*Statistics.DKWarlockNum){
-			Buff.affect(enemy, Degrade.class,1);
-		}
-		return super.attackProc(enemy, damage);
-	}
-
-	@Override
-	public float attackDelay() {
-		if(buff(CrownPower.class)!=null&&Statistics.DKMonkNum>=2){
-			return super.attackDelay()*0.5f;
-		}else {
-			return super.attackDelay();
+		if (effect == KingDamager.class){
+			return false;
+		} else {
+			return phase == 2 || super.isInvulnerable(effect);
 		}
 	}
 
@@ -540,30 +436,33 @@ public class DwarfKing extends Mob {
 		//hero only counts as unarmed if they have no weapon and aren't benefiting from force
 		if (src == Dungeon.hero && (Dungeon.hero.belongings.weapon() != null || Dungeon.hero.buff(RingOfForce.Force.class) != null)){
 			Statistics.qualifiedForBossChallengeBadge = false;
-		//Corrosion, corruption, and regrowth do no direct damage and so have their own custom logic
-		//Transfusion damages DK and so doesn't need custom logic
-		//Lightning has custom logic so that chaining it doesn't DQ for the badge
+			//Corrosion, corruption, and regrowth do no direct damage and so have their own custom logic
+			//Transfusion damages DK and so doesn't need custom logic
+			//Lightning has custom logic so that chaining it doesn't DQ for the badge
 		} else if (src instanceof Wand && !(src instanceof WandOfLightning)){
 			Statistics.qualifiedForBossChallengeBadge = false;
 		}
+
 		if (isInvulnerable(src.getClass())){
 			super.damage(dmg, src);
 			return;
-		} else if (phase == 3 ){
-			if (dmg >= 0&& !(src instanceof Viscosity.DeferedDamage)) {
+		} else if (phase == 3 && !(src instanceof Viscosity.DeferedDamage)){
+			if (dmg >= 0) {
 				Viscosity.DeferedDamage deferred = Buff.affect( this, Viscosity.DeferedDamage.class );
 				deferred.prolong( dmg );
+
 				sprite.showStatus( CharSprite.WARNING, Messages.get(Viscosity.class, "deferred", dmg) );
-				return;
-			}else if(src instanceof Viscosity.DeferedDamage&&Statistics.DKGolemNum>0){
-				dmg-=(int) (dmg*(Statistics.DKGolemNum==1?0.33f:0.66f));
 			}
+			return;
 		}
 		int preHP = HP;
 		super.damage(dmg, src);
 
 		LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
-		if (lock != null && !isImmune(src.getClass())) lock.addTime(dmg/3);
+		if (lock != null && !isImmune(src.getClass())){
+			if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES))   lock.addTime(dmg/5f);
+			else                                                    lock.addTime(dmg/3f);
+		}
 
 		if (phase == 1) {
 			int dmgTaken = preHP - HP;
@@ -590,17 +489,10 @@ public class DwarfKing extends Mob {
 		} else if (phase == 2 && shielding() == 0) {
 			properties.remove(Property.IMMOVABLE);
 			phase = 3;
-			Statistics.envDangerous=true;
-			Buff.affect(this,CrownPower.class);
-			summonSubject(Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 2 : 3, DKGhoul.class);
-			summonSubject(Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 2 : 3, DKMonk.class);
-			summonSubject(Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 2 : 3, DKGolem.class);
-			summonSubject(Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 2 : 3, DKWarlock.class);
-			summonCooldown=Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 2 : 3;
-			summonsMade = 4; //monk/warlock on 3rd summon
+			summonsMade = 1; //monk/warlock on 3rd summon
 			sprite.centerEmitter().start( Speck.factory( Speck.SCREAM ), 0.4f, 2 );
 			Sample.INSTANCE.play( Assets.Sounds.CHALLENGE );
-			yell(  Messages.get(this, "enraged") );
+			yell(  Messages.get(this, "enraged", Dungeon.hero.name()) );
 		} else if (phase == 3 && preHP > 20 && HP < 20){
 			yell( Messages.get(this, "losing") );
 		}
@@ -648,7 +540,7 @@ public class DwarfKing extends Mob {
 		if (beacon != null) {
 			beacon.upgrade();
 		}
-		Statistics.envDangerous=false;
+
 		yell( Messages.get(this, "defeated") );
 	}
 
@@ -663,13 +555,10 @@ public class DwarfKing extends Mob {
 
 	public static class DKGhoul extends Ghoul {
 		{
+			properties.add(Property.BOSS_MINION);
 			state = HUNTING;
 		}
-		@Override
-		public void destroy() {
-			Statistics.DKGhoulNum--;
-			super.destroy();
-		}
+
 		@Override
 		protected boolean act() {
 			partnerID = -2; //no partners
@@ -679,25 +568,17 @@ public class DwarfKing extends Mob {
 
 	public static class DKMonk extends Monk {
 		{
+			properties.add(Property.BOSS_MINION);
 			state = HUNTING;
-		}
-
-		@Override
-		public void destroy() {
-			Statistics.DKMonkNum--;
-			super.destroy();
 		}
 	}
 
 	public static class DKWarlock extends Warlock {
 		{
+			properties.add(Property.BOSS_MINION);
 			state = HUNTING;
 		}
-		@Override
-		public void destroy() {
-			Statistics.DKWarlockNum--;
-			super.destroy();
-		}
+
 		@Override
 		protected void zap() {
 			if (enemy == Dungeon.hero){
@@ -709,11 +590,8 @@ public class DwarfKing extends Mob {
 
 	public static class DKGolem extends Golem {
 		{
+			properties.add(Property.BOSS_MINION);
 			state = HUNTING;
-		}@Override
-		public void destroy() {
-			Statistics.DKGolemNum--;
-			super.destroy();
 		}
 	}
 
@@ -769,21 +647,11 @@ public class DwarfKing extends Mob {
 
 				if (Actor.findChar(pos) == null) {
 					Mob m = Reflection.newInstance(summon);
-					if (summon == DKGolem.class){
-						Statistics.DKGolemNum++;
-					} else if (summon == DKWarlock.class){
-						Statistics.DKWarlockNum++;
-					} else if (summon == DKMonk.class){
-						Statistics.DKMonkNum++;
-					} else if(summon == DKGhoul.class){
-						Statistics.DKGhoulNum++;
-					}
 					m.pos = pos;
 					m.maxLvl = -2;
 					GameScene.add(m);
 					Dungeon.level.occupyCell(m);
 					m.state = m.HUNTING;
-
 					if (((DwarfKing)target).phase == 2){
 						Buff.affect(m, KingDamager.class);
 					}
@@ -811,7 +679,7 @@ public class DwarfKing extends Mob {
 
 		@Override
 		public void fx(boolean on) {
-			if (on && particles == null) {
+			if (on && (particles == null || particles.parent == null)) {
 				particles = CellEmitter.get(pos);
 
 				if (summon == DKGolem.class){
@@ -886,44 +754,5 @@ public class DwarfKing extends Mob {
 			return BuffIndicator.NONE;
 		}
 	}
-	public static class CrownPower extends Buff{
-		{
-			announced = true;
-		}
-		@Override
-		public String desc() {
-			String s= Messages.get(this, "desc");
-//			if(Statistics.DKGhoulNum>0){
-//				s+=Messages.get(this, "ghoul");
-//				s+="\n";
-//			}
-			if(Statistics.DKMonkNum>0){
-				s+=Messages.get(this, "monk");
-				if(Statistics.DKMonkNum==1){
-					s+="。";
-				}else {
-					s+=("，"+Messages.get(this, "elsemonk")+"。");
-				}
-				s+="\n";
-			}
-			if(Statistics.DKWarlockNum>0){
-				s+=Messages.get(this, "warlock",Statistics.DKWarlockNum==1?50:100);
-				s+="\n";
-			}
-			if(Statistics.DKGolemNum>0){
-				s+=Messages.get(this, "golem",Statistics.DKGolemNum==1?33:66);
-				s+="\n";
-			}
-			return s;
-		}
 
-		@Override
-		public int icon() {
-			return BuffIndicator.CROWNPOWER;
-		}
-		@Override
-		public void tintIcon(Image icon) {
-			icon.hardlight(1f, 1f, 1f);
-		}
-	}
 }

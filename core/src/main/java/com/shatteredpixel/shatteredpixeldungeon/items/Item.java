@@ -95,6 +95,9 @@ public class Item implements Bundlable {
 
 	// whether an item can be included in heroes remains
 	public boolean bones = false;
+
+	//目前仅作为珍宝标记判断被宝箱覆盖
+	public boolean treasure=false;
 	
 	public static final Comparator<Item> itemComparator = new Comparator<Item>() {
 		@Override
@@ -500,7 +503,6 @@ public class Item implements Bundlable {
 	}
 	
 	public Item random() {
-		initialize();
 		return this;
 	}
 	
@@ -648,8 +650,6 @@ public class Item implements Bundlable {
 		}
 	};
 	public boolean removeCurse(boolean extraEffect){
-		cursedKnown=true;
-
 		 if (cursed){
 			 cursed=false;
 			 return true;
@@ -664,8 +664,5 @@ public class Item implements Bundlable {
 	}
 	public boolean haveLose(){
 		return false;
-	}
-	public void initialize(){
-
 	}
 }

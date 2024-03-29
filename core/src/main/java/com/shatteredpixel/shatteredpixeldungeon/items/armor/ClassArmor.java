@@ -119,6 +119,9 @@ abstract public class ClassArmor extends Armor {
 					classArmor.affixPearl(armor.pearl);
 				}
 				break;
+			case DUELIST:
+				classArmor = new DuelistArmor();
+				break;
 		}
 		
 		classArmor.level(armor.trueLevel());

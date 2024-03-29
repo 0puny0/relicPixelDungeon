@@ -23,15 +23,39 @@ package com.shatteredpixel.shatteredpixeldungeon.items;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blizzard;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ConfusionGas;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.CorrosiveGas;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Electricity;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Fire;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Freezing;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Inferno;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ParalyticGas;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Regrowth;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.SmokeScreen;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.StenchGas;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.StormCloud;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Web;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Charm;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Frost;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Roots;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ShieldBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Slow;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Tengu;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Blocking;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.initial.RottenLance;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.MagicalFireRoom;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
@@ -213,32 +237,12 @@ public class BrokenSeal extends Item {
 				setShield(maxShield);
 			}
 		}
-		public synchronized void recoverShield(int shield){
-			setShield(Math.min(maxShield(),shielding()+shield));
-		}
-
-		@Override
-		public void setShield(int shield) {
-			super.setShield(shield);
-			if (shielding()>0&&target.buff(ShieldFX.class)==null){
-				Buff.affect(target,ShieldFX.class);
+		public synchronized void recoverShield(float shield){
+			partialShield+=shield;
+			if (partialShield>1){
+				setShield(Math.min(maxShield(),shielding()+(int) partialShield));
+				partialShield%=1;
 			}
-		}
-
-		@Override
-		public void incShield(int amt) {
-			super.incShield(amt);
-			if (shielding()>0&&target.buff(ShieldFX.class)==null){
-				Buff.affect(target,ShieldFX.class);
-			}
-		}
-
-		@Override
-		public void detach() {
-			if(shielding()<=0&&target.buff(ShieldFX.class)!=null){
-				target.buff(ShieldFX.class).detach();
-			}
-			super.detach();
 		}
 
 		public synchronized void setArmor(Armor arm){
@@ -247,9 +251,6 @@ public class BrokenSeal extends Item {
 
 		public synchronized int maxShield() {
 			//metamorphed iron will logic
-			if (((Hero)target).heroClass != HeroClass.WARRIOR && ((Hero) target).hasTalent(Talent.IRON_WILL)){
-				return ((Hero) target).pointsInTalent(Talent.IRON_WILL);
-			}
 			if (armor != null && armor.isEquipped((Hero)target) && armor.checkSeal() != null) {
 				return armor.checkSeal().maxShield(armor.tier, armor.level());
 			} else {
@@ -273,27 +274,8 @@ public class BrokenSeal extends Item {
 				}
 				decShield(shielding());
 			}
-			if(shielding()<=0&&target.buff(ShieldFX.class)!=null){
-				target.buff(ShieldFX.class).detach();
-			}
 			return dmg;
 		}
 	}
-	public static class ShieldFX extends Buff {
-		@Override
-		public int icon() {
-			return BuffIndicator.SUPER_ARMOR;
-		}
 
-		@Override
-		public void tintIcon(Image icon) {
-			icon.hardlight(1.5f, 0.8f, 0.3f);
-		}
-
-		@Override
-		public void fx(boolean on) {
-			if (on) target.sprite.add( CharSprite.State.SUPERARMOR );
-			else if (target.invisible == 0) target.sprite.remove( CharSprite.State.SUPERARMOR );
-		}
-	}
 }

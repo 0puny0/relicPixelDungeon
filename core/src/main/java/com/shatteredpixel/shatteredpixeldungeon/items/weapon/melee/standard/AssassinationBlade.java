@@ -2,8 +2,7 @@ package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.standard;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
-import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfForce;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfForceOut;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.utils.Random;
@@ -20,13 +19,13 @@ public class AssassinationBlade extends MeleeWeapon {
         if (owner instanceof Hero) {
             Hero hero = (Hero)owner;
             Char enemy = hero.enemy();
-            if (enemy instanceof Mob && ((Mob) enemy).surprisedBy(hero)) {
+            if ( enemy.surprisedBy(hero)) {
                 int diff = max() - min();
                 int damage = Random.NormalIntRange(min()+ Math.round(diff*0.75f),
                         max());
                 int exStr = hero.STR() - STRReq();
                 if (exStr > 0) {
-                    damage +=   (int)(exStr * RingOfForce.extraStrengthBonus(hero ));
+                    damage +=   (int)(exStr * RingOfForceOut.extraStrengthBonus(hero ));
                 }
                 return damage;
             }

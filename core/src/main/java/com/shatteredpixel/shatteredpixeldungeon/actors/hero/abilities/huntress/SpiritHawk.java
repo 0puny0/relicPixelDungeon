@@ -152,8 +152,9 @@ public class SpiritHawk extends ArmorAbility {
 			spriteClass = HawkSprite.class;
 
 			HP = HT = 10;
-			defenseSkill = 60;
-
+			defenseSkill = 60;attackSkill=60;
+			minDMG=5;maxDMG=10;
+			minDR=maxDR=0;
 			flying = true;
 			viewDistance = (int)GameMath.gate(6, 6+Dungeon.hero.pointsInTalent(Talent.EAGLE_EYE), 8);
 			baseSpeed = 2f + Dungeon.hero.pointsInTalent(Talent.SWIFT_SPIRIT)/2f;
@@ -161,11 +162,6 @@ public class SpiritHawk extends ArmorAbility {
 
 			immunities.addAll(new BlobImmunity().immunities());
 			immunities.add(AllyBuff.class);
-		}
-
-		@Override
-		public int attackSkill(Char target) {
-			return 60;
 		}
 
 		private int dodgesUsed = 0;
@@ -179,11 +175,6 @@ public class SpiritHawk extends ArmorAbility {
 				return Char.INFINITE_EVASION;
 			}
 			return super.defenseSkill(enemy);
-		}
-
-		@Override
-		public int damageRoll() {
-			return Random.NormalIntRange(5, 10);
 		}
 
 		@Override

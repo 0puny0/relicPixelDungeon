@@ -186,6 +186,7 @@ public class Assets {
 		public static final String MELD     = "sounds/meld.mp3";
 		public static final String BOSS     = "sounds/boss.mp3";
 		public static final String BLAST    = "sounds/blast.mp3";
+		public static final String DROP    = "sounds/drop.mp3";
 		public static final String PLANT    = "sounds/plant.mp3";
 		public static final String RAY      = "sounds/ray.mp3";
 		public static final String BEACON   = "sounds/beacon.mp3";
@@ -220,7 +221,7 @@ public class Assets {
 				DESCEND, EAT, READ, LULLABY, DRINK, SHATTER, ZAP, LIGHTNING, LEVELUP, DEATH,
 				CHALLENGE, CURSED, TRAP, EVOKE, TOMB, ALERT, MELD, BOSS, BLAST, PLANT, RAY, BEACON,
 				TELEPORT, CHARMS, MASTERY, PUFF, ROCKS, BURNING, FALLING, GHOST, SECRET, BONES,
-				BEE, DEGRADE, MIMIC, DEBUFF, CHARGEUP, GAS, CHAINS, SCAN, SHEEP
+				BEE, DEGRADE, MIMIC, DEBUFF, CHARGEUP, GAS, CHAINS, SCAN, SHEEP,DROP
 		};
 	}
 
@@ -230,6 +231,7 @@ public class Assets {
 		public static final String ROGUE    = "splashes/rogue.jpg";
 		public static final String HUNTRESS = "splashes/huntress.jpg";
 		public static final String ADVENTURER="splashes/adventurer.jpg";
+		public static final String DUELIST="splashes/duelist.jpg";
 	}
 
 	public static class Sprites {
@@ -241,6 +243,7 @@ public class Assets {
 		public static final String ROGUE    = "sprites/rogue.png";
 		public static final String HUNTRESS = "sprites/huntress.png";
 		public static final String ADVENTURER="sprites/adventurer.png";
+		public static final String DUELIST="sprites/duelist.png";
 		public static final String AVATARS  = "sprites/avatars.png";
 		public static final String PET      = "sprites/pet.png";
 		public static final String AMULET   = "sprites/amulet.png";

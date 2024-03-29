@@ -34,25 +34,17 @@ public class Slime extends Mob {
 	
 	{
 		spriteClass = SlimeSprite.class;
-		
-		HP = HT = 25;
-		defenseSkill = 5;
-		
+
+		HP=HT=20; minDMG=2;maxDMG=5;minDR=0;maxDR=0;defenseSkill =5;attackSkill = 12;
+
+
 		EXP = 4;
 		maxLvl = 9;
 		
 		lootChance = 0.2f; //by default, see lootChance()
 	}
 	
-	@Override
-	public int damageRoll() {
-		return Random.NormalIntRange( 1, 6 );
-	}
-	
-	@Override
-	public int attackSkill( Char target ) {
-		return 12;
-	}
+
 	
 	@Override
 	public void damage(int dmg, Object src) {
@@ -76,7 +68,7 @@ public class Slime extends Mob {
 		Generator.Category c = Generator.Category.WEP_STAN;
 		MeleeWeapon w = (MeleeWeapon) Reflection.newInstance(c.classes[Random.chances(c.probs)]);
 		w.random();
-		w.tier=2;
+		w.setTier(2);
 		w.level(0);
 		return w;
 	}

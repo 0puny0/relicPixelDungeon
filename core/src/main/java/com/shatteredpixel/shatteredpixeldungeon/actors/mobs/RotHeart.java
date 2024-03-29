@@ -45,7 +45,9 @@ public class RotHeart extends Mob {
 
 		HP = HT = 80;
 		defenseSkill = 0;
-
+		minDMG=0;maxDMG=0;
+		minDR=4;maxDR=14;
+		attackSkill=0;
 		EXP = 4;
 
 		state = PASSIVE;
@@ -108,21 +110,6 @@ public class RotHeart extends Mob {
 	@Override
 	public boolean reset() {
 		return true;
-	}
-
-	@Override
-	public int damageRoll() {
-		return 0;
-	}
-
-	@Override
-	public int attackSkill( Char target ) {
-		return 0;
-	}
-
-	@Override
-	public int drRoll() {
-		return Random.NormalIntRange(0, 5);
 	}
 	
 	{

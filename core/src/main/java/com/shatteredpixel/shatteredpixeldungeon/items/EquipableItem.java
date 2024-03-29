@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.items;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BlessingPower;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
@@ -51,6 +52,7 @@ import java.util.ArrayList;
 
 public abstract class EquipableItem extends Item {
 
+	protected static final float TIME_TO_EQUIP = 1f;
 	public static final String AC_EQUIP		= "EQUIP";
 	public static final String AC_UNEQUIP	= "UNEQUIP";
 
@@ -106,51 +108,27 @@ public abstract class EquipableItem extends Item {
 			doUnequip( hero, true );
 		}
 		if(action.equals(AC_DETACH)&&inlay==Inlay.blessedPeal){
-
-			GameScene.show(new WndOptions(new ItemSprite(new  BlessedPearl()),
-					Messages.get(BlessedPearl.class, "name"),
-					Messages.get(BlessedPearl.class, "detach_intro"),
-					Messages.get(BlessedPearl.class,"confirm_detach"),
-					Messages.get(BlessedPearl.class,"cancel")){
-				@Override
-				protected void onSelect(int index) {
-					if (index == 0){
-						GLog.n( Messages.get(EquipableItem.class, "detach_pearl") );
-						detachPearl(hero);
-						hero.sprite.operate(hero.pos);
-						Sample.INSTANCE.play( Assets.Sounds.UNLOCK);
-					}
-					updateQuickslot();
-				}
-
-				@Override
-				public void onBackPressed() {
-					//do nothing
-				}
-			});
+			detachPearl(hero);
 
 		}
 	}
 	public   void  detachPearl(Hero hero){
-		if(isEquipped(hero)){
-			doUnequip(hero,false);
-		}else {
-			detach( hero.belongings.backpack );
-			onDetach();
-			Dungeon.quickslot.clearItem(this);
-			updateQuickslot();
-			hero.spend(1f);
-		}
+		hero.sprite.operate(hero.pos);
+		Sample.INSTANCE.play( Assets.Sounds.UNLOCK);
+		hero.spend(Actor.TICK);
 		inlay=Inlay.noThing;
 		if(this instanceof MeleeWeapon){
 			BlessingPower.setBlessWeapon(null);
 		}
+		level(trueLevel()-(Dungeon.hero.hasTalent(Talent.UPGRADE_TRANSFER)?pearl.level():1));
 		BlessedPearl newPearl=pearl;
 		pearl=null;
 		if (!newPearl.collect()){
 			Dungeon.level.drop(newPearl, hero.pos);
 		}
 		BlessingPower.setBlessedEquip(false);
+
+		updateQuickslot();
 	}
 	public void affixPearl(BlessedPearl pearl){
 		this.pearl = pearl;

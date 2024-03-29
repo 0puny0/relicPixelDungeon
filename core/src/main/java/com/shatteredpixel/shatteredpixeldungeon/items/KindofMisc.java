@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.items;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BlessingPower;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
@@ -36,11 +37,9 @@ import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 
 public abstract class KindofMisc extends EquipableItem {
 
-	private static final float TIME_TO_EQUIP = 1f;
-
 	@Override
 	public boolean doEquip(final Hero hero) {
-
+		boolean wasInInv = hero.belongings.contains(this);
 		boolean equipFull = false;
 		if ( this instanceof Artifact
 				&& hero.belongings.artifact != null
@@ -150,10 +149,23 @@ public abstract class KindofMisc extends EquipableItem {
 				equipCursed( hero );
 				GLog.n( Messages.get(this, "equip_cursed", this) );
 			}
-
-			hero.spendAndNext( TIME_TO_EQUIP );
+			if (wasInInv && hero.hasTalent(Talent.SWIFT_EQUIP)) {
+				if (hero.buff(Talent.SwiftEquipCooldown.class) == null){
+					hero.spendAndNext(-hero.cooldown());
+					Buff.affect(hero, Talent.SwiftEquipCooldown.class, 19f)
+							.secondUse = hero.pointsInTalent(Talent.SWIFT_EQUIP) == 2;
+					GLog.i(Messages.get(EquipableItem.class, "swift_equip"));
+				} else if (hero.buff(Talent.SwiftEquipCooldown.class).hasSecondUse()) {
+					hero.spendAndNext(-hero.cooldown());
+					hero.buff(Talent.SwiftEquipCooldown.class).secondUse = false;
+					GLog.i(Messages.get(EquipableItem.class, "swift_equip"));
+				} else {
+					hero.spendAndNext(TIME_TO_EQUIP);
+				}
+			} else {
+				hero.spendAndNext(TIME_TO_EQUIP);
+			}
 			return true;
-
 		}
 
 	}

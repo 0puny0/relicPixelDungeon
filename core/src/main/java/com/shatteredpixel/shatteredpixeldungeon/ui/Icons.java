@@ -47,9 +47,11 @@ public enum Icons {
 	ROGUE,
 	HUNTRESS,
 	ADVENTURER,
+	DUELIST,
 	STRENGTH,
 	MANNABARRIER,
 	WALL,
+	TIME,
 
 	//grey icons, mainly used for buttons, spacing for 16x16
 	EXIT,
@@ -173,6 +175,9 @@ public enum Icons {
 			case ADVENTURER:
 				icon.frame( icon.texture.uvRectBySize( 80, 16, 12, 12 ) );
 				break;
+			case DUELIST:
+				icon.frame( icon.texture.uvRectBySize( 96, 16, 13, 13 ) );
+				break;
 			case STRENGTH:
 				icon.frame(icon.texture.uvRectBySize( 144, 16, 13, 14 ));
 				break;
@@ -181,6 +186,9 @@ public enum Icons {
 				break;
 			case WALL:
 				icon.frame(icon.texture.uvRectBySize( 176, 16, 14, 13 ));
+				break;
+			case TIME:
+				icon.frame(icon.texture.uvRectBySize( 192, 16, 12, 12 ));
 				break;
 			case EXIT:
 				icon.frame( icon.texture.uvRectBySize( 0, 32, 15, 11 ) );
@@ -415,6 +423,8 @@ public enum Icons {
 			return get( HUNTRESS );
 			case ADVENTURER:
 				return get(ADVENTURER);
+			case DUELIST:
+				return get(DUELIST);
 		default:
 			return null;
 		}

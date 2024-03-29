@@ -50,8 +50,8 @@ public class Guard extends Mob {
 	{
 		spriteClass = GuardSprite.class;
 
-		HP = HT = 40;
-		defenseSkill = 8;
+		HP=HT=40; minDMG=4;maxDMG=12;minDR=2;maxDR=5;defenseSkill =10;attackSkill = 12;
+
 
 		EXP = 7;
 		maxLvl = 14;
@@ -64,10 +64,6 @@ public class Guard extends Mob {
 		HUNTING = new Hunting();
 	}
 
-	@Override
-	public int damageRoll() {
-		return Random.NormalIntRange(4, 12);
-	}
 
 	private boolean chain(int target){
 		if (chainsUsed || enemy.properties().contains(Property.IMMOVABLE))
@@ -130,16 +126,6 @@ public class Guard extends Mob {
 			Dungeon.observe();
 			GameScene.updateFog();
 		}
-	}
-
-	@Override
-	public int attackSkill( Char target ) {
-		return 12;
-	}
-
-	@Override
-	public int drRoll() {
-		return Random.NormalIntRange(1, 6);
 	}
 
 	@Override

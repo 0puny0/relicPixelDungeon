@@ -39,13 +39,10 @@ public class PotionOfShielding extends ExoticPotion {
 	@Override
 	public void apply(Hero hero) {
 		identify();
-
-		if (Dungeon.isChallenged(Challenges.NO_HEALING)){
-			PotionOfHealing.pharmacophobiaProc(hero);
-		} else {
-			//~75% of a potion of healing
-			Buff.affect(hero, Barrier.class).setShield((int) (0.6f * hero.HT + 10));
-		}
+		int shield=(int) (0.6f * hero.HT + 10);
+		if ( Dungeon.isChallenged(Challenges.NO_HEALING))shield/=2;
+		//~75% of a potion of healing
+		Buff.affect(hero, Barrier.class).setShield(shield);
 		Talent.onHealingPotionUsed( hero );
 	}
 }

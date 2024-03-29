@@ -15,7 +15,7 @@ allprojects {
         appPackageName = 'com.relicpixel.relicpixeldungeon'
 
         appVersionCode = 668
-        appVersionName = '0.3.5'
+        appVersionName = '0.4.1'
 
         appJavaCompatibility = JavaVersion.VERSION_1_8
 

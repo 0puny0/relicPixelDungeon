@@ -70,7 +70,7 @@ public class Hunger extends Buff implements Hero.Doom {
 
 	@Override
 	public boolean act() {
-		float stepValue=Dungeon.isChallenged(Challenges.NO_FOOD)?STEP*1.5f:STEP;
+		float stepValue=Dungeon.isChallenged(Challenges.NO_FOOD)?STEP*1.34f:STEP;
 		float stepTime=STEP;
 		if (Dungeon.level.locked
 				|| target.buff(WellFed.class) != null
@@ -123,8 +123,8 @@ public class Hunger extends Buff implements Hero.Doom {
 			if(target.buff( Shadows.class )!=null){
 				stepTime*=1.5f;
 			}
-			if(target.buff(Terraforming.RelaxVigilance.class)!=null){
-				stepTime*=Dungeon.hero.pointsInTalent(Talent.TEMPORARY_REST)==3?2f:1.5f;
+			if(target.buff(Terraforming.Sneak.class)!=null){
+				stepTime*=1.25f+Dungeon.hero.pointsInTalent(Talent.SNEAK_SHIELD)*0.25f;
 			}
 			spend(stepTime );
 
@@ -174,8 +174,8 @@ public class Hunger extends Buff implements Hero.Doom {
 		}
 
 		level += energy;
-		if (level > 450f && !overrideLimits) {
-			level = 450f;
+		if (level > WELLFED && !overrideLimits) {
+			level = WELLFED;
 		} else if (level < STARVING) {
 			float excess = STARVING-level;
 			level = STARVING;

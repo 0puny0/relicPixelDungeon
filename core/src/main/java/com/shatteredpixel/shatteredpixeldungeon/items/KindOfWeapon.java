@@ -26,6 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BlessingPower;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
@@ -38,8 +39,7 @@ import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 abstract public class KindOfWeapon extends EquipableItem {
-	
-	protected static final float TIME_TO_EQUIP = 1f;
+
 
 	protected String hitSound = Assets.Sounds.HIT;
 	protected float hitSoundPitch = 1f;
@@ -51,7 +51,7 @@ abstract public class KindOfWeapon extends EquipableItem {
 	
 	@Override
 	public boolean doEquip( Hero hero ) {
-
+		boolean wasInInv = hero.belongings.contains(this);
 		detachAll( hero.belongings.backpack );
 		
 		if (hero.belongings.weapon == null || hero.belongings.weapon.doUnequip( hero, true )) {
@@ -75,8 +75,23 @@ abstract public class KindOfWeapon extends EquipableItem {
 				equipCursed( hero );
 				GLog.n( Messages.get(KindOfWeapon.class, "equip_cursed") );
 			}
-			
-			hero.spendAndNext( TIME_TO_EQUIP );
+
+			if (wasInInv && hero.hasTalent(Talent.SWIFT_EQUIP)) {
+				if (hero.buff(Talent.SwiftEquipCooldown.class) == null){
+					hero.spendAndNext(-hero.cooldown());
+					Buff.affect(hero, Talent.SwiftEquipCooldown.class, 19f)
+							.secondUse = hero.pointsInTalent(Talent.SWIFT_EQUIP) == 2;
+					GLog.i(Messages.get(EquipableItem.class, "swift_equip"));
+				} else if (hero.buff(Talent.SwiftEquipCooldown.class).hasSecondUse()) {
+					hero.spendAndNext(-hero.cooldown());
+					hero.buff(Talent.SwiftEquipCooldown.class).secondUse = false;
+					GLog.i(Messages.get(EquipableItem.class, "swift_equip"));
+				} else {
+					hero.spendAndNext(TIME_TO_EQUIP);
+				}
+			} else {
+				hero.spendAndNext(TIME_TO_EQUIP);
+			}
 			return true;
 			
 		} else {

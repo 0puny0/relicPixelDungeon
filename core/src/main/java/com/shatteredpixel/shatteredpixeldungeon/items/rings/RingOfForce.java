@@ -22,14 +22,8 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.rings;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
-import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
-import com.watabou.utils.Random;
-
-import java.text.DecimalFormat;
 
 public class RingOfForce extends Ring {
 
@@ -41,76 +35,18 @@ public class RingOfForce extends Ring {
 	protected RingBuff buff( ) {
 		return new Force();
 	}
-
-	public static float breakMeleeDamageBonus(Char ch){
-		int lvl=getBuffedBonus( ch, Force.class);
-		if(lvl<=0){
-			return 0;
-		}else {
-			return (float)(1.2+lvl*0.3);
-		}
-	}
-
-	public static float extraStrengthBonus( Char target ){
-		return  1+getBuffedBonus(target, Force.class)*0.2f;
-	}
-	public static float halfExStrBonus( Char target ){
-
-		return 1+getBuffedBonus(target, Force.class)*0.1f;
-	}
-	// *** Weapon-like properties ***
-
-	private static float tier(int str){
-		float tier = Math.max(1, (str - 8)/2f);
-		//each str point after 18 is half as effective
-		if (tier > 5){
-			tier = 5 + (tier - 5) / 2f;
-		}
-		return tier;
-	}
-
-	public static int damageRoll( Hero hero ){
-		if (hero.buff(Force.class) != null) {
-			int level = getBuffedBonus(hero, Force.class);
-			float tier = tier(hero.STR());
-			return Random.NormalIntRange(min(level, tier), max(level, tier));
-		} else {
-			//attack without any ring of force influence
-			return Random.NormalIntRange(1, Math.max(hero.STR()-8, 1));
-		}
-	}
-
-	//same as equivalent tier weapon
-	private static int min(int lvl, float tier){
-		if (lvl <= 0) tier = 1; //tier is forced to 1 if cursed
-
-		return Math.max( 0, Math.round(
-				tier +  //base
-				lvl     //level scaling
-		));
-	}
-
-	//same as equivalent tier weapon
-	private static int max(int lvl, float tier){
-		if (lvl <= 0) tier = 1; //tier is forced to 1 if cursed
-
-		return Math.max( 0, Math.round(
-				5*(tier+1) +    //base
-				lvl*(tier+1)    //level scaling
-		));
-	}
-
 	@Override
 	public String statsInfo() {
-		float tier = tier(Dungeon.hero.STR());
 		if (isIdentified()) {
 			int level = soloBuffedBonus();
-			return Messages.get(this, "stats", min(level, tier), max(level, tier),soloBuffedBonus()*20);
+			return Messages.get(this, "stats", level*15);
 		} else {
-			return Messages.get(this, "typical_stats", min(1, tier), max(1, tier),20);
+			return Messages.get(this, "typical_stats", 15);
 		}
 	}
-
+	public static float damageMulti(){
+		return getBuffedBonus(Dungeon.hero, Force.class)*0.15f;
+	}
 	public class Force extends RingBuff {
 	}
 }

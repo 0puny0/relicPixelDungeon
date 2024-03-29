@@ -43,9 +43,9 @@ public class Swarm extends Mob {
 
 	{
 		spriteClass = SwarmSprite.class;
-		
-		HP = HT = 50;
-		defenseSkill = 5;
+
+		HP=HT=50; minDMG=1;maxDMG=4;minDR=0;maxDR=0;defenseSkill =5;attackSkill = 10;
+
 
 		EXP = 3;
 		maxLvl = 9;
@@ -74,11 +74,7 @@ public class Swarm extends Mob {
 		generation = bundle.getInt( GENERATION );
 		if (generation > 0) EXP = 0;
 	}
-	
-	@Override
-	public int damageRoll() {
-		return Random.NormalIntRange( 1, 4 );
-	}
+
 	
 	@Override
 	public int defenseProc( Char enemy, int damage ) {
@@ -114,11 +110,7 @@ public class Swarm extends Mob {
 		
 		return super.defenseProc(enemy, damage);
 	}
-	
-	@Override
-	public int attackSkill( Char target ) {
-		return 10;
-	}
+
 	
 	private Swarm split() {
 		Swarm clone = new Swarm();

@@ -75,10 +75,9 @@ public class TestMelee extends TestGenerator {
     }
 
     private Weapon modifyWeapon(Weapon w) {
-        w.initialize();
         if(w instanceof MagesStaff) w = new MagesStaff((Wand)Generator.random(Generator.Category.WAND));
         w.level(levelToGen);
-        w.tier=tierToGen;
+        w.setTier(tierToGen);
         Class<? extends Weapon.Enchantment> ench = generateEnchant(enchant_rarity, enchant_id);
         if (ench == null) {
             w.enchant(null);
@@ -187,12 +186,17 @@ public class TestMelee extends TestGenerator {
     }
     private void checkWeapons(){
         if(weapons==null){
-            Class<? extends Weapon>[] weaponsA=(Class<? extends Weapon>[]) Generator.Category.WEP_INI.classes.clone();
-            Class<? extends Weapon>[] weaponsB=(Class<? extends Weapon>[]) Generator.Category.WEP_STAN.classes.clone();
-            Class<? extends Weapon>[] weaponsC=(Class<? extends Weapon>[]) Generator.Category.WEP_SPE_T5.classes.clone();
-            weapons = Arrays.copyOf(weaponsA, weaponsA.length+weaponsB.length+weaponsC.length);
-            System.arraycopy(weaponsB, 0, weapons, weaponsA.length, weaponsB.length);
-            System.arraycopy(weaponsC, 0, weapons, weaponsA.length+weaponsB.length, weaponsC.length);
+            for (Generator.Category w :Generator.speMeleeTier){
+                Class<? extends Weapon>[] W=(Class<? extends Weapon>[]) w.classes.clone();
+                if (weapons!=null){
+                    Class<? extends Weapon>[] weaponsClone=weapons.clone();
+                    weapons= Arrays.copyOf(weaponsClone,weaponsClone.length+W.length);
+                    System.arraycopy(W, 0, weapons,weaponsClone.length, W.length);
+                }else {
+                    weapons=W;
+                }
+
+            }
         }
     }
     private Class<? extends Weapon>[] weaponList(int t) {
@@ -249,7 +253,7 @@ public class TestMelee extends TestGenerator {
         public SettingsWindow() {
             super();
             createWeaponArray();
-            o_number = new OptionSlider(Messages.get(this, "number"), "0", "5", 0, 5) {
+            o_number = new OptionSlider(Messages.get(this, "number"), "0", "4", 0, 4) {
                 @Override
                 protected void onChange() {
                     number = getSelectedValue();

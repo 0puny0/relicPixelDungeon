@@ -30,9 +30,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Honeypot;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.items.MerchantsBeacon;
 import com.shatteredpixel.shatteredpixeldungeon.items.Stylus;
 import com.shatteredpixel.shatteredpixeldungeon.items.Torch;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.LeatherArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.MailArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.PlateArmor;
@@ -44,17 +44,20 @@ import com.shatteredpixel.shatteredpixeldungeon.items.bags.PotionBandolier;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.ScrollHolder;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.VelvetPouch;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.BurgerLarger;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.BurgerLargest;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.BurgerSmaller;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.BurgerSmallest;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.SmallRation;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRemoveCurse;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Alchemize;
-import com.shatteredpixel.shatteredpixeldungeon.items.stones.Runestone;
-import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAugmentation;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfEnchantment;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfTransfiguration;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.TippedDart;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -156,44 +159,57 @@ public class ShopRoom extends SpecialRoom {
 		ArrayList<Item> itemsToSpawn = new ArrayList<>();
 
 		MeleeWeapon w;
+		MissileWeapon m;
+		Armor a;
 		switch (Dungeon.depth) {
 		case 6: default:
 			w = (MeleeWeapon) Generator.random(Generator.Category.WEP_STAN);
-			w.tier=2;
-			itemsToSpawn.add( Generator.random(Generator.misTiers[1]).quantity(2).identify(false) );
-			itemsToSpawn.add( new LeatherArmor().identify(false) );
+			w.setTier(2);
+			m=(MissileWeapon)Generator.random(Generator.Category.MIS_STAN);
+			m.setTier(2);
+			a=(Armor) new LeatherArmor().random();
 			break;
 
 		case 11:
 			w = (MeleeWeapon) Generator.random(Generator.Category.WEP_STAN);
-			w.tier=3;
-			itemsToSpawn.add( Generator.random(Generator.misTiers[2]).quantity(2).identify(false) );
-			itemsToSpawn.add( new MailArmor().identify(false) );
+			w.setTier(3);
+			m=(MissileWeapon)Generator.random(Generator.Category.MIS_STAN);
+			m.setTier(3);
+			a=(Armor) new MailArmor().random();
 			break;
 
 		case 16:
 			w = (MeleeWeapon) Generator.random(Generator.Category.WEP_STAN);
-			w.tier=4;
-			itemsToSpawn.add( Generator.random(Generator.misTiers[3]).quantity(2).identify(false) );
-			itemsToSpawn.add( new ScaleArmor().identify(false) );
+			w.setTier(4);
+			m=(MissileWeapon)Generator.random(Generator.Category.MIS_STAN);
+			m.setTier(4);
+			a=(Armor) new ScaleArmor().random();
 			break;
 
 		case 20: case 21:
 			w = (MeleeWeapon) Generator.random(Generator.Category.WEP_STAN);
-			w.tier=5;
-			itemsToSpawn.add( Generator.random(Generator.misTiers[4]).quantity(2).identify(false) );
-			itemsToSpawn.add( new PlateArmor().identify(false) );
+			w.setTier(5);
+			m=(MissileWeapon)Generator.random(Generator.Category.MIS_STAN);
+			m.setTier(5);
+			a=(Armor) new PlateArmor().random();
 			itemsToSpawn.add( new Torch() );
 			itemsToSpawn.add( new Torch() );
 			itemsToSpawn.add( new Torch() );
 			break;
 		}
-		w.enchant(null);
 		w.removeCurse(true);
-		w.level(0);
 		w.identify(false);
 		itemsToSpawn.add(w);
-		
+
+		m.quantity(2);
+		m.identify(false);
+		itemsToSpawn.add(m);
+
+		a.removeCurse(true);
+		a.identify(false);
+		itemsToSpawn.add(a);
+
+
 		itemsToSpawn.add( TippedDart.randomTipped(2) );
 
 		itemsToSpawn.add( new Alchemize().quantity(Random.IntRange(2, 3)));
@@ -268,8 +284,10 @@ public class ShopRoom extends SpecialRoom {
 			case 2:
 				rare = Generator.random( Generator.Category.ARTIFACT );
 				break;
-			case 3:
-			case 4:
+			case 3:case 4:
+				rare=new StoneOfEnchantment();
+				break;
+			case 5:
 				rare=new StoneOfTransfiguration();
 				break;
 			default:
@@ -277,16 +295,21 @@ public class ShopRoom extends SpecialRoom {
 		}
 		rare.removeCurse(true);
 		itemsToSpawn.add( rare );
-		Item stone;
-		switch (Random.Int(5)){
-			case 0: case 1: case 2:
-				stone=new StoneOfAugmentation();
+
+		switch (Random.Int(4)){
+			case 0:
+				itemsToSpawn.add( new BurgerLargest() );
 				break;
-			case 3: case 4: default:
-				stone=new StoneOfEnchantment();
+			case 1:
+				itemsToSpawn.add( new BurgerLarger() );
+				break;
+			case 2:
+				itemsToSpawn.add( new BurgerSmaller() );
+				break;
+			case 3:
+				itemsToSpawn.add( new BurgerSmallest() );
 				break;
 		}
-		itemsToSpawn.add(stone);
 		//hard limit is 63 items + 1 shopkeeper, as shops can't be bigger than 8x8=64 internally
 		if (itemsToSpawn.size() > 63) {
 			throw new RuntimeException("Shop attempted to carry more than 63 items!");

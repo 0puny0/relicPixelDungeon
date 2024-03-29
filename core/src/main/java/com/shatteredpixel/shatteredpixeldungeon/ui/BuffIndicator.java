@@ -122,6 +122,11 @@ public class BuffIndicator extends Component {
 	public static final int BLESSING_POWER=68;
 	public static final int SCIMITAR=69;
 	public static final int SUPER_ARMOR=70;
+	public static final int ARMOR_BREAK=71;
+	public static final int ADVANCE=72;
+	public static final int CHALLENGE=73;
+	public static final int DODGE=75;
+	public static final int SHELTER=76;
 
 
 	public static final int SIZE_SMALL  = 7;

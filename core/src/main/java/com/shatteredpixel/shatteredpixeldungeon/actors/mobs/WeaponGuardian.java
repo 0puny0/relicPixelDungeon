@@ -37,8 +37,10 @@ import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
+import com.watabou.utils.GameMath;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
+import com.watabou.utils.Reflection;
 
 import java.util.ArrayList;
 
@@ -53,12 +55,15 @@ public abstract class WeaponGuardian extends Mob{
     }
     public WeaponGuardian() {
         super();
-        weapon = Generator.randomMelee();
+        weapon = Generator.randomMelee(Dungeon.depth/5,0.35f);
         if (weapon.level() == 0 && Random.Int(2) == 0){
             weapon.upgrade();
         }
         HP = HT = 18 + Dungeon.depth * 6;
         defenseSkill = 4 + Dungeon.depth;
+        attackSkill=9 + Dungeon.depth;
+        minDMG=1+Dungeon.depth;maxDMG=2+Dungeon.depth*2;
+        minDR=Dungeon.depth/5;maxDR=Dungeon.depth;
     }
 
     public MeleeWeapon weapon;
@@ -87,27 +92,12 @@ public abstract class WeaponGuardian extends Mob{
         state = HUNTING;
     }
     @Override
-    public int damageRoll() {
-        return Random.NormalIntRange( 1+Dungeon.depth, 2+Dungeon.depth*2 );
-    }
-
-    @Override
-    public int attackSkill( Char target ) {
-        return (int)(9 + Dungeon.depth);
-
-    }
-
-    @Override
-    public int drRoll() {
-        return Random.NormalIntRange(Dungeon.depth/5, Dungeon.depth );
-    }
-
-    @Override
-    public void add(Buff buff) {
-        super.add(buff);
+    public boolean add(Buff buff) {
+        boolean b= super.add(buff);
         if (state == PASSIVE && buff.type == Buff.buffType.NEGATIVE){
            activate();
         }
+        return b;
     }
     @Override
     public void damage( int dmg, Object src ) {
@@ -450,6 +440,7 @@ public abstract class WeaponGuardian extends Mob{
     public static class Fury extends WeaponGuardian{
         {
             spriteClass=FurySprite.class;
+            minDR=Dungeon.depth/2;maxDR=Dungeon.depth*3/2;
         }
 
         @Override
@@ -461,11 +452,6 @@ public abstract class WeaponGuardian extends Mob{
         protected void activate() {
             Buff.affect(this, Amok.class, 999);
             super.activate();
-        }
-
-        @Override
-        public int drRoll() {
-            return Random.NormalIntRange(Dungeon.depth/2, Dungeon.depth*3/2 );
         }
         public static class FurySprite extends StatueSprite {
 

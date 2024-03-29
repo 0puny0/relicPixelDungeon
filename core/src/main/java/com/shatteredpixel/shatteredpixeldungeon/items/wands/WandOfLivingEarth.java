@@ -324,12 +324,9 @@ public class WandOfLivingEarth extends DamageWand {
 			HP = Math.min(HT, HP + healthToAdd);
 			//half of hero's evasion
 			defenseSkill = (hero.lvl + 4)/2;
-		}
-
-		@Override
-		public int attackSkill(Char target) {
-			//same as the hero
-			return 2*defenseSkill + 5;
+			attackSkill=2*defenseSkill + 5;
+			minDMG=2;maxDMG=4 + Dungeon.scalingDepth()/2;
+			minDR=wandLevel;maxDR=3 + 3 * wandLevel;
 		}
 
 		@Override
@@ -338,27 +335,10 @@ public class WandOfLivingEarth extends DamageWand {
 			return super.attackProc(enemy, damage);
 		}
 
-		@Override
-		public int damageRoll() {
-			return Random.NormalIntRange(2, 4 + Dungeon.scalingDepth()/2);
-		}
-
-		@Override
-		public int drRoll() {
-			if (Dungeon.isChallenged(Challenges.NO_ARMOR)){
-				return Random.NormalIntRange(wandLevel, 2 + wandLevel);
-			} else {
-				return Random.NormalIntRange(wandLevel, 3 + 3 * wandLevel);
-			}
-		}
 
 		@Override
 		public String description() {
-			if (Dungeon.isChallenged(Challenges.NO_ARMOR)){
-				return Messages.get(this, "desc", wandLevel, 2 + wandLevel);
-			} else {
-				return Messages.get(this, "desc", wandLevel, 3 + 3*wandLevel);
-			}
+			return Messages.get(this, "desc", wandLevel, 3 + 3*wandLevel);
 			
 		}
 		

@@ -27,7 +27,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RevealedArea;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TheHaywire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
@@ -73,7 +72,6 @@ public class SpiritBow extends MeleeWeapon {
 		hitSound = Assets.Sounds.HIT;
 		hitSoundPitch=1f;
         DMG=Attribute.lower;
-		ACC=Attribute.lower;
 		hasSkill=true;
         defaultAction = AC_WEAPONSKILL;
 		usesTargeting = true;
@@ -102,7 +100,6 @@ public class SpiritBow extends MeleeWeapon {
 		super.execute(hero, action);
 		
 		if (action.equals(AC_WEAPONSKILL)) {
-			
 			curUser = hero;
 			curItem = this;
 			GameScene.selectCell( shooter );
@@ -178,7 +175,6 @@ public class SpiritBow extends MeleeWeapon {
 	@Override
 	public String statsInfo() {
 		SpiritArrow arrow=new SpiritArrow(isEquipped(Dungeon.hero));
-		arrow.updateControGlove();
 		String info=Messages.get(this, "stats_desc",arrow.min(),arrow.max());
 		if(Dungeon.hero.subClass == HeroSubClass.SNIPER){
 			if(pursuitType==0){
@@ -209,16 +205,7 @@ public class SpiritBow extends MeleeWeapon {
 		return level;
 	}
 
-	@Override
-	public int buffedLvl() {
-		int lvl=level();
-		if (Dungeon.hero.buff(TheHaywire.class) != null&&this ==Dungeon.hero.belongings.weapon()){
-			lvl+=Dungeon.hero.buff(TheHaywire.class).lvl();
-		}
-		//level isn't affected by buffs/debuffs
-		return lvl;
-	}
-	
+
 	@Override
 	public boolean isUpgradable() {
 		return false;
@@ -285,10 +272,8 @@ public class SpiritBow extends MeleeWeapon {
 			Hero hero=Dungeon.hero;
 			dmg = 1 + hero.lvl/4
 					+ RingOfSharpshooting.levelDamageBonus(hero)
-					+ (curseInfusionBonus ? 1 + hero.lvl/30 : 0);
-			if (hero.buff(TheHaywire.class) != null&&isHand){
-				dmg+=Dungeon.hero.buff(TheHaywire.class).lvl();
-			}
+					+ (curseInfusionBonus ? 1 + hero.lvl/30 : 0)
+					+ +(buffedLvl()-level());
 			if (sniperSpecial){
 				dmg = Math.round(dmg* (1f + sniperSpecialBonusDamage));
 				switch (pursuitType){
@@ -325,10 +310,8 @@ public class SpiritBow extends MeleeWeapon {
 			Hero hero=Dungeon.hero;
 			float dmg =6 + (int)(hero.lvl/2f)
 					+ 2*RingOfSharpshooting.levelDamageBonus(hero)
-					+ (curseInfusionBonus ? 2 + hero.lvl/15 : 0);
-			if (hero.buff(TheHaywire.class) != null&&isHand){
-				dmg+=2*Dungeon.hero.buff(TheHaywire.class).lvl();
-			}
+					+ (curseInfusionBonus ? 2 + hero.lvl/15 : 0)
+					+ +(buffedLvl()-level())*2;
 			if (sniperSpecial){
 				dmg = Math.round(dmg* (1f + sniperSpecialBonusDamage));
 

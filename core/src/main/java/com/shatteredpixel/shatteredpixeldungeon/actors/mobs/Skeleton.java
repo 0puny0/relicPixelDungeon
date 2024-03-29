@@ -41,10 +41,10 @@ public class Skeleton extends Mob {
 	
 	{
 		spriteClass = SkeletonSprite.class;
-		
-		HP = HT = 25;
-		defenseSkill = 7;
-		
+
+		HP=HT=25; minDMG=2;maxDMG=10;minDR=1;maxDR=5;defenseSkill =8;attackSkill = 12;
+
+
 		EXP = 5;
 		maxLvl = 10;
 
@@ -54,11 +54,7 @@ public class Skeleton extends Mob {
 		properties.add(Property.UNDEAD);
 		properties.add(Property.INORGANIC);
 	}
-	
-	@Override
-	public int damageRoll() {
-		return Random.NormalIntRange( 2, 10 );
-	}
+
 	
 	@Override
 	public void die( Object cause ) {
@@ -104,17 +100,9 @@ public class Skeleton extends Mob {
 		Generator.Category c = Generator.Category.WEP_STAN;
 		MeleeWeapon w = (MeleeWeapon) Reflection.newInstance(c.classes[Random.chances(c.probs)]);
 		w.random();
+		w.setTier(Random.IntRange(2,5));
 		return w;
 	}
 
-	@Override
-	public int attackSkill( Char target ) {
-		return 12;
-	}
-	
-	@Override
-	public int drRoll() {
-		return Random.NormalIntRange(1, 5);
-	}
 
 }

@@ -16,16 +16,7 @@ public class KnifeFork extends MeleeWeapon {
         ASPD =Attribute.highest;
     }
 
-    @Override
-    public int proc(Char attacker, Char defender, int damage) {
-        if(form==Form.FORM1){
-            float procChance = 0.15f+(int)(Math.sqrt(8 * buffedLvl() + 1) - 1)/2*0.1f;
-            if (defender.HP <= damage && Random.Float() < procChance){
-                Buff.affect(defender, EatProc.class);
-            }
-        }
-        return super.proc(attacker, defender, damage);
-    }
+
     public float satisfyMultiplier(){
         switch (form){
             case FORM0:
@@ -44,11 +35,5 @@ public class KnifeFork extends MeleeWeapon {
             return  Messages.get(this, "typical_stats_desc",15);
         }
     }
-    public static class EatProc extends Buff {
-        @Override
-        public boolean act() {
-            detach();
-            return true;
-        }
-    }
+
 }

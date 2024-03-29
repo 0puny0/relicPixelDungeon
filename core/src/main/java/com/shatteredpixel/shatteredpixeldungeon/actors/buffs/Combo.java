@@ -59,10 +59,6 @@ import com.watabou.utils.PathFinder;
 
 public class Combo extends Buff implements ActionIndicator.Action {
 
-	{
-		type = buffType.POSITIVE;
-	}
-
 	private int count = 0;//连击数
 	private float comboTime = 0f;//消退时间
 	public boolean isFinish=false;//是否是终结技
@@ -417,13 +413,13 @@ public class Combo extends Buff implements ActionIndicator.Action {
 						for (Char ch : Actor.chars()) {
 							if (ch != enemy && ch.alignment == Char.Alignment.ENEMY
 									&& PathFinder.distance[ch.pos] < Integer.MAX_VALUE) {
-								int aoeHit = Math.round(target.damageRoll() * 0.15f * count);
+								int aoeHit = isFinish?Math.round(hero.damageRoll() * 0.15f * count):Math.round(hero.damageRoll() * 0.6f);
 								if (ch.buff(Vulnerable.class) != null) aoeHit *= 1.33f;
 								if (ch instanceof DwarfKing){
 									//change damage type for DK so that crush AOE doesn't count for DK's challenge badge
 									ch.damage(aoeHit, this);
 								} else {
-									ch.damage(aoeHit, target);
+									ch.damage(aoeHit, hero);
 								}
 								ch.sprite.bloodBurstA(enemy.sprite.center(), aoeHit);
 								ch.sprite.flash();
@@ -431,7 +427,7 @@ public class Combo extends Buff implements ActionIndicator.Action {
 								if (!ch.isAlive()) {
 									if (hero.hasTalent(Talent.LETHAL_DEFENSE) && hero.buff(BrokenSeal.WarriorShield.class) != null) {
 										BrokenSeal.WarriorShield shield = hero.buff(BrokenSeal.WarriorShield.class);
-										shield.supercharge(Math.round(shield.maxShield() * hero.pointsInTalent(Talent.LETHAL_DEFENSE) / 3f));
+										shield.recoverShield(Math.round(shield.maxShield() * hero.pointsInTalent(Talent.LETHAL_DEFENSE) *0.25f));
 									}
 								}
 							}
@@ -449,11 +445,16 @@ public class Combo extends Buff implements ActionIndicator.Action {
 		if(isFinish){
 			switch(moveBeingUsed) {
 				case CLEAVE:
-					if (!enemy.isAlive() || (!wasAlly && enemy.alignment == target.alignment)) {
+					if (!enemy.isAlive() || (!wasAlly && enemy.alignment == hero.alignment)) {
 						Combo.this.resetCombo();
 						count = count / 2 - 1;
 						hit();
 						couldUseTime = (count + 1) / 2;
+						hero.spendAndNext(hero.attackDelay());
+					}else {
+						detach();
+						Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
+						ActionIndicator.clearAction(Combo.this);
 						hero.spendAndNext(hero.attackDelay());
 					}
 					break;
@@ -462,8 +463,8 @@ public class Combo extends Buff implements ActionIndicator.Action {
 				case FURY:
 					count--;
 					if (count > 0 && enemy.isAlive() && hero.canAttack(enemy) &&
-							(wasAlly || enemy.alignment != target.alignment)){
-						target.sprite.attack(enemy.pos, new Callback() {
+							(wasAlly || enemy.alignment != hero.alignment)){
+						hero.sprite.attack(enemy.pos, new Callback() {
 							@Override
 							public void call() {
 								doAttack(enemy);
@@ -490,7 +491,7 @@ public class Combo extends Buff implements ActionIndicator.Action {
 					break;
 				case CLEAVE:
 					cleaveUsed=true;
-					if(!enemy.isAlive() || (!wasAlly && enemy.alignment == target.alignment)){
+					if(!enemy.isAlive() || (!wasAlly && enemy.alignment == hero.alignment)){
 						hit();hit();
 					}
 					hero.spendAndNext(hero.attackDelay());
@@ -498,8 +499,8 @@ public class Combo extends Buff implements ActionIndicator.Action {
 				case FURY:
 					furyUsed=true;
 					if (enemy.isAlive() && hero.canAttack(enemy)
-							&& (wasAlly || enemy.alignment != target.alignment)) {
-						target.sprite.attack(enemy.pos, new Callback() {
+							&& (wasAlly || enemy.alignment != hero.alignment)) {
+						hero.sprite.attack(enemy.pos, new Callback() {
 							@Override
 							public void call() {
 								if (hero.attack(enemy, 0.75f, 0, 0.85f)){
@@ -518,10 +519,10 @@ public class Combo extends Buff implements ActionIndicator.Action {
 			couldUseTime--;
 			if (couldUseTime<=0)ActionIndicator.clearAction(Combo.this);
 		}
-		if (!enemy.isAlive() || (!wasAlly && enemy.alignment == target.alignment)) {
+		if (!enemy.isAlive() || (!wasAlly && enemy.alignment == hero.alignment)) {
 			if (hero.hasTalent(Talent.LETHAL_DEFENSE) && hero.buff(BrokenSeal.WarriorShield.class) != null){
 				BrokenSeal.WarriorShield shield = hero.buff(BrokenSeal.WarriorShield.class);
-				shield.supercharge(Math.round(shield.maxShield() * hero.pointsInTalent(Talent.LETHAL_DEFENSE)/3f));
+				shield.recoverShield(Math.round(shield.maxShield() * hero.pointsInTalent(Talent.LETHAL_DEFENSE) *0.25f));
 			}
 		}
 	}
@@ -536,7 +537,7 @@ public class Combo extends Buff implements ActionIndicator.Action {
 					&&Dungeon.level.heroFOV[cell] &&!hero.isCharmedBy( enemy ));
 
 			if (moveBeingUsed==ComboMove.SPURT){
-				int range = 4;
+				int range = 3;
 				if (isFinish)range=count/2;
 				if (hero.rooted){
 					Camera.main.shake(1, 1f);
@@ -569,7 +570,7 @@ public class Combo extends Buff implements ActionIndicator.Action {
 						}
 						hero.pos = cell;
 						Dungeon.level.occupyCell(hero);
-						hero.spendAndNext(TICK);
+						hero.next();
 					}
 				});
 				if (isFinish){

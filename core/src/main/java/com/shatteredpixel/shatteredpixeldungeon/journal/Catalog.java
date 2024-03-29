@@ -35,12 +35,13 @@ import java.util.List;
 public enum Catalog {
 	
 	WEAPONS,
-	ARMOR,
+	MISSILES,
 	WANDS,
 	RINGS,
 	ARTIFACTS,
 	POTIONS,
 	SCROLLS;
+
 	
 	private LinkedHashMap<Class<? extends Item>, Boolean> seen = new LinkedHashMap<>();
 	
@@ -64,12 +65,36 @@ public enum Catalog {
 		for (Class weapon : Generator.Category.WEP_STAN.classes){
 			WEAPONS.seen.put( weapon, false);
 		}
+		for (Class weapon : Generator.Category.WEP_SPE_T2.classes){
+			WEAPONS.seen.put( weapon, false);
+		}
+		for (Class weapon : Generator.Category.WEP_SPE_T3.classes){
+			WEAPONS.seen.put( weapon, false);
+		}
+		for (Class weapon : Generator.Category.WEP_SPE_T4.classes){
+			WEAPONS.seen.put( weapon, false);
+		}
 		for (Class weapon : Generator.Category.WEP_SPE_T5.classes){
 			WEAPONS.seen.put( weapon, false);
 		}
 
-		for (Class armor : Generator.Category.ARMOR.classes){
-			ARMOR.seen.put( armor, false);
+		for (Class missile : Generator.Category.MIS_INI.classes){
+			MISSILES.seen.put( missile, false);
+		}
+		for (Class missile : Generator.Category.MIS_STAN.classes){
+			MISSILES.seen.put( missile, false);
+		}
+		for (Class missile : Generator.Category.MIS_SPE_T2.classes){
+			MISSILES.seen.put( missile, false);
+		}
+		for (Class missile : Generator.Category.MIS_SPE_T3.classes){
+			MISSILES.seen.put( missile, false);
+		}
+		for (Class missile : Generator.Category.MIS_SPE_T4.classes){
+			MISSILES.seen.put( missile, false);
+		}
+		for (Class missile : Generator.Category.MIS_SPE_T5.classes){
+			MISSILES.seen.put( missile, false);
 		}
 
 		for (Class wand : Generator.Category.WAND.classes){
@@ -97,7 +122,7 @@ public enum Catalog {
 	public static LinkedHashMap<Catalog, Badges.Badge> catalogBadges = new LinkedHashMap<>();
 	static {
 		catalogBadges.put(WEAPONS, Badges.Badge.ALL_WEAPONS_IDENTIFIED);
-		catalogBadges.put(ARMOR, Badges.Badge.ALL_ARMOR_IDENTIFIED);
+		catalogBadges.put(MISSILES, Badges.Badge.ALL_MISSILES_IDENTIFIED);
 		catalogBadges.put(WANDS, Badges.Badge.ALL_WANDS_IDENTIFIED);
 		catalogBadges.put(RINGS, Badges.Badge.ALL_RINGS_IDENTIFIED);
 		catalogBadges.put(ARTIFACTS, Badges.Badge.ALL_ARTIFACTS_IDENTIFIED);

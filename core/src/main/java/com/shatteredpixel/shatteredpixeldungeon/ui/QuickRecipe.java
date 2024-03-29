@@ -58,7 +58,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.spells.BeaconOfReturning;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.CurseInfusion;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.FeatherFall;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.MagicalInfusion;
-import com.shatteredpixel.shatteredpixeldungeon.items.spells.MagicalPorter;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.PhaseShift;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.ReclaimTrap;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Recycle;
@@ -67,6 +66,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.spells.TelekineticGrab;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.WildEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.Runestone;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Plant;
@@ -338,14 +338,23 @@ public class QuickRecipe extends Component {
 				}
 				return result;
 			case 6:
-				result.add(new QuickRecipe( new LiquidMetal.Recipe(),
+				result.add(new QuickRecipe( new LiquidMetal.MissilesRecipe(),
 						new ArrayList<Item>(Arrays.asList(new MissileWeapon.PlaceHolder())),
 						new LiquidMetal()));
-				result.add(new QuickRecipe( new LiquidMetal.Recipe(),
+				result.add(new QuickRecipe( new LiquidMetal.MissilesRecipe(),
 						new ArrayList<Item>(Arrays.asList(new MissileWeapon.PlaceHolder().quantity(2))),
 						new LiquidMetal()));
-				result.add(new QuickRecipe( new LiquidMetal.Recipe(),
+				result.add(new QuickRecipe( new LiquidMetal.MissilesRecipe(),
 						new ArrayList<Item>(Arrays.asList(new MissileWeapon.PlaceHolder().quantity(3))),
+						new LiquidMetal()));
+				result.add(new QuickRecipe( new LiquidMetal.MeleeRecipe(),
+						new ArrayList<Item>(Arrays.asList(new MeleeWeapon.PlaceHolder())),
+						new LiquidMetal()));
+				result.add(new QuickRecipe( new LiquidMetal.MeleeRecipe(),
+						new ArrayList<Item>(Arrays.asList(new MeleeWeapon.PlaceHolder().quantity(2))),
+						new LiquidMetal()));
+				result.add(new QuickRecipe( new LiquidMetal.MeleeRecipe(),
+						new ArrayList<Item>(Arrays.asList(new MeleeWeapon.PlaceHolder().quantity(3))),
 						new LiquidMetal()));
 				result.add(null);
 				result.add(null);

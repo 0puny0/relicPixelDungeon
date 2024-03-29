@@ -86,8 +86,10 @@ public class Tengu extends Mob {
 		spriteClass = TenguSprite.class;
 		
 		HP = HT = Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 250 : 200;
+		minDMG=6;maxDMG=12;
+		minDR=2;maxDR=6;
 		EXP = 20;
-		defenseSkill = 15;
+		defenseSkill = 15;attackSkill=10;
 		
 		HUNTING = new Hunting();
 		
@@ -107,34 +109,26 @@ public class Tengu extends Mob {
 		}
 		super.onAdd();
 	}
-	
-	@Override
-	public int damageRoll() {
-		return Random.NormalIntRange( 6, 12 );
-	}
+
 	
 	@Override
 	public int attackSkill( Char target ) {
 		if (Dungeon.level.adjacent(pos, target.pos)){
-			return 10;
+			return super.attackSkill(target);
 		} else {
-			return 20;
+			return super.attackSkill(target)*2;
 		}
-	}
-	
-	@Override
-	public int drRoll() {
-		return Random.NormalIntRange(2, 6);
 	}
 
 	boolean loading = false;
 
 	//Tengu is immune to debuffs and damage when removed from the level
 	@Override
-	public void add(Buff buff) {
+	public boolean add(Buff buff) {
 		if (Actor.chars().contains(this) || buff instanceof Doom || loading){
-			super.add(buff);
+			return super.add(buff);
 		}
+		return false;
 	}
 
 	@Override

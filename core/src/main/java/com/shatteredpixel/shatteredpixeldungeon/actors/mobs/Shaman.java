@@ -44,30 +44,15 @@ import com.watabou.utils.Random;
 public abstract class Shaman extends Mob {
 	
 	{
-		HP = HT = 30;
-		defenseSkill = 9;
-		
+		HP=HT=35; minDMG=5;maxDMG=10;minDR=2;maxDR=8;defenseSkill =11;attackSkill = 18;
+
 		EXP = 8;
 		maxLvl = 16;
 		
 		loot = Generator.Category.WAND;
 		lootChance = 0.03f; //initially, see lootChance()
 	}
-	
-	@Override
-	public int damageRoll() {
-		return Random.NormalIntRange( 5, 10 );
-	}
-	
-	@Override
-	public int attackSkill( Char target ) {
-		return 18;
-	}
-	
-	@Override
-	public int drRoll() {
-		return Random.NormalIntRange(1, 6);
-	}
+
 	
 	@Override
 	protected boolean canAttack( Char enemy ) {

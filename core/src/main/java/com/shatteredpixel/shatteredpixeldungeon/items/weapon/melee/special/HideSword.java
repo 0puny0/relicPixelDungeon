@@ -23,7 +23,7 @@ public class HideSword extends MeleeWeapon {
     public static final String AC_MARK	= "MARK";
 
     public int proc(Char attacker, Char defender, int damage) {
-        if (defender instanceof Mob && ((Mob) defender).surprisedBy(attacker)) {
+        if ( defender.surprisedBy(attacker)) {
             Buff.prolong( defender, Vulnerable.class,3+(int)(Math.sqrt(8 * buffedLvl() + 1) - 1)/2) ;
             Buff.prolong(defender, Cripple.class,2*(int)(Math.sqrt(8 * buffedLvl() + 1) - 1)/2);
         }

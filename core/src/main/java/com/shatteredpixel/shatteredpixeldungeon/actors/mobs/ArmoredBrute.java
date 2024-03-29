@@ -36,16 +36,11 @@ public class ArmoredBrute extends Brute {
 
 	{
 		spriteClass = ShieldedSprite.class;
-		
+		minDR=8;maxDR=12;
 		//see rollToDropLoot
 		loot = Generator.Category.ARMOR;
 		lootChance = 1f;
 		defenseSkill=9;
-	}
-	
-	@Override
-	public int drRoll() {
-		return Random.NormalIntRange(6, 13);
 	}
 	
 	@Override

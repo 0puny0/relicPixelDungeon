@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Berserk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BlessingPower;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terraforming;
@@ -112,20 +113,20 @@ public class TengusMask extends Item {
 		
 	}
 	public void initSubclassHero(HeroSubClass way){
-		if(way==HeroSubClass.SAVIOR){
-			Buff.affect(Dungeon.hero, BlessingPower.class);
-			BlessingPearl pearl=new BlessingPearl();
-			if (!pearl.collect()){
-				Dungeon.level.drop(pearl,Dungeon.hero.pos);
-			}
-		}else if(way==HeroSubClass.SURVIVOR){
-			Terraforming t= Buff.affect(Dungeon.hero, Terraforming.class);
-			for (int i = 0; i < 26; i++) {
-				t.grassOpps[i]=1;
-				t.waterOpps[i]=1;
-				t.doorOpps[i]=3;
-			}
-			ActionIndicator.setAction(t);
+		switch (way){
+			case SAVIOR:
+				Buff.affect(Dungeon.hero, BlessingPower.class);
+				BlessingPearl pearl=new BlessingPearl();
+				if (!pearl.collect()){
+					Dungeon.level.drop(pearl,Dungeon.hero.pos);
+				}
+				break;
+			case SURVIVOR:
+				Buff.affect(Dungeon.hero, Terraforming.class);
+				break;
+			case BERSERKER:
+				Buff.affect(Dungeon.hero, Berserk.class);
 		}
+
 	}
 }

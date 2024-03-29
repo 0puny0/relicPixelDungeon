@@ -40,10 +40,9 @@ public class Snake extends Mob {
 	
 	{
 		spriteClass = SnakeSprite.class;
-		
-		HP = HT = 5;
-		defenseSkill = 20;
-		
+
+		HP=HT=5; minDMG=1;maxDMG=4;minDR=0;maxDR=0;defenseSkill =20;attackSkill = 10;
+
 		EXP = 2;
 		maxLvl = 7;
 		
@@ -51,15 +50,7 @@ public class Snake extends Mob {
 		lootChance = 0.25f;
 	}
 	
-	@Override
-	public int damageRoll() {
-		return Random.NormalIntRange( 1, 4 );
-	}
-	
-	@Override
-	public int attackSkill( Char target ) {
-		return 10;
-	}
+
 	@Override
 	public void rollToDropLoot() {
 		Hero hero= Dungeon.hero;

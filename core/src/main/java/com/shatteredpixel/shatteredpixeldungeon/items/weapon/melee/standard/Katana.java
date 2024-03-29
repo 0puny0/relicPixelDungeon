@@ -2,11 +2,8 @@ package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.standard;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Aim;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Weakness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
-import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfForce;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfForceOut;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.utils.Random;
@@ -28,7 +25,7 @@ public class Katana extends MeleeWeapon {
                     max());
             int exStr = hero.STR() - STRReq();
             if (exStr > 0) {
-                damage +=   (int)(exStr * RingOfForce.extraStrengthBonus(hero ));
+                damage +=   (int)(exStr * RingOfForceOut.extraStrengthBonus(hero ));
             }
             return damage;
         }

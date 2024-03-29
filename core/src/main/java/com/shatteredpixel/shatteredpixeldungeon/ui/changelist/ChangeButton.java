@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,7 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.ui.changelist;
 
-import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.ChangesScene;
@@ -32,35 +31,35 @@ import com.watabou.noosa.ui.Component;
 
 //not actually a button, but functions as one.
 public class ChangeButton extends Component {
-	
+
 	protected Image icon;
 	protected String title;
-	protected String message;
-	
-	public ChangeButton( Image icon, String title, String message){
+	protected String[] messages;
+
+	public ChangeButton( Image icon, String title, String... messages){
 		super();
-		
+
 		this.icon = icon;
 		add(this.icon);
-		
+
 		this.title = Messages.titleCase(title);
-		this.message = message;
-		
+		this.messages = messages;
+
 		layout();
 	}
-	
+
 	public ChangeButton(Item item, String message ){
 		this( new ItemSprite(item), item.name(), message);
 	}
-	
+
 	protected void onClick() {
-		ChangesScene.showChangeInfo(new Image(icon), title, message);
+		ChangesScene.showChangeInfo(new Image(icon), title, messages);
 	}
-	
+
 	@Override
 	protected void layout() {
 		super.layout();
-		
+
 		icon.x = x + (width - icon.width()) / 2f;
 		icon.y = y + (height - icon.height()) / 2f;
 		PixelScene.align(icon);

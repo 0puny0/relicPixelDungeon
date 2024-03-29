@@ -57,7 +57,7 @@ public class PrismaticImage extends NPC {
 		state = HUNTING;
 		
 		WANDERING = new Wandering();
-		
+		HUNTING=new Hunting();
 		//before other mobs
 		actPriority = MOB_PRIO + 1;
 	}
@@ -151,11 +151,13 @@ public class PrismaticImage extends NPC {
 	
 	@Override
 	public int damageRoll() {
+
 		if (hero != null) {
-			return Random.NormalIntRange( 2 + hero.lvl/4, 4 + hero.lvl/2 );
+			minDMG=2 + hero.lvl/4;maxDMG=4+ hero.lvl/2 ;
 		} else {
-			return Random.NormalIntRange( 2, 4 );
+			minDMG=2;maxDMG=4;
 		}
+		return super.damageRoll();
 	}
 	
 	@Override
@@ -286,6 +288,21 @@ public class PrismaticImage extends NPC {
 			}
 		}
 		
+	}
+	private class Hunting extends Mob.Hunting{
+		@Override
+		public boolean act(boolean enemyInFOV, boolean justAlerted) {
+			if (!hero.getVisibleEnemies().contains(enemy)){
+				Buff.affect(hero, PrismaticGuard.class).set( HP );
+				destroy();
+				CellEmitter.get(pos).start( Speck.factory(Speck.LIGHT), 0.2f, 3 );
+				sprite.die();
+				Sample.INSTANCE.play( Assets.Sounds.TELEPORT );
+				return true;
+			} else {
+				return super.act(enemyInFOV, justAlerted);
+			}
+		}
 	}
 	
 }

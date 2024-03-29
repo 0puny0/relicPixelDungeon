@@ -24,16 +24,20 @@ package com.shatteredpixel.shatteredpixeldungeon.sprites;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.initial.SpiritBow;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.special.RuneSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.standard.Crossbow;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Bolas;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.FishingSpear;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.HeavyBoomerang;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Javelin;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Kunai;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Shuriken;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKnife;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingSpear;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Trident;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.initial.ThrowingSpike;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.special.BloodNail;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.special.Bolas;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.special.FishingSpear;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.special.HeavyBoomerang;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.special.KnifeMan;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.special.Kunai;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.special.Shuriken;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.initial.ThrowingKnife;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.special.ThrowingNeedle;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.special.ThrowingShield;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.standard.ThrowingSpear;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.watabou.noosa.Visual;
@@ -89,18 +93,22 @@ public class MissileSprite extends ItemSprite implements Tweener.Listener {
 	private static final HashMap<Class<?extends Item>, Integer> ANGULAR_SPEEDS = new HashMap<>();
 	static {
 		ANGULAR_SPEEDS.put(Dart.class,          0);
-		ANGULAR_SPEEDS.put(ThrowingKnife.class, 0);
-		ANGULAR_SPEEDS.put(FishingSpear.class,  0);
 		ANGULAR_SPEEDS.put(ThrowingSpear.class, 0);
+		ANGULAR_SPEEDS.put(ThrowingKnife.class, 0);
+		ANGULAR_SPEEDS.put(ThrowingSpike.class, 0);
+		ANGULAR_SPEEDS.put(FishingSpear.class,  0);
 		ANGULAR_SPEEDS.put(Kunai.class,         0);
-		ANGULAR_SPEEDS.put(Javelin.class,       0);
-		ANGULAR_SPEEDS.put(Trident.class,       0);
+		ANGULAR_SPEEDS.put(BloodNail.class,     0);
+		ANGULAR_SPEEDS.put(KnifeMan.class,     0);
+		ANGULAR_SPEEDS.put(ThrowingNeedle.class,     0);
 		
 		ANGULAR_SPEEDS.put(SpiritBow.SpiritArrow.class,       0);
+		ANGULAR_SPEEDS.put(RuneSword.SwordQi.class,       0);
 		ANGULAR_SPEEDS.put(ScorpioSprite.ScorpioShot.class,   0);
 		
 		//720 is default
-		
+
+		ANGULAR_SPEEDS.put(ThrowingShield.class,      2160);
 		ANGULAR_SPEEDS.put(HeavyBoomerang.class,1440);
 		ANGULAR_SPEEDS.put(Bolas.class,         1440);
 		
@@ -156,6 +164,8 @@ public class MissileSprite extends ItemSprite implements Tweener.Listener {
 				|| item instanceof ScorpioSprite.ScorpioShot
 				|| item instanceof TenguSprite.TenguShuriken){
 			speed *= 1.5f;
+		}else if(item instanceof RuneSword.SwordQi){
+			speed*=0.9f;
 		}
 		
 		PosTweener tweener = new PosTweener( this, to, d.length() / speed );

@@ -30,12 +30,18 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.CorrosiveGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AllyBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Preparation;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Wraith;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DirectableAlly;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost;
@@ -58,10 +64,12 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GhostSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -538,6 +546,7 @@ public class DriedRose extends Artifact {
 			HP = HT;
 		}
 
+
 		@Override
 		public void defendPos(int cell) {
 			yell(Messages.get(this, "directed_position_" + Random.IntRange(1, 5)));
@@ -563,6 +572,9 @@ public class DriedRose extends Artifact {
 			
 			//same dodge as the hero
 			defenseSkill = (Dungeon.hero.lvl+4);
+			attackSkill=Dungeon.hero.lvl + 9;
+			minDMG=0;maxDMG=5;
+			minDR=0;maxDR=0;
 			if (rose == null) return;
 			HT = 20 + 8*rose.level();
 		}
@@ -586,15 +598,24 @@ public class DriedRose extends Artifact {
 		public int attackSkill(Char target) {
 			
 			//same accuracy as the hero.
-			int acc = Dungeon.hero.lvl + 9;
-			
+			int acc = super.attackSkill(target);
 			if (rose != null && rose.weapon != null){
 				acc *= rose.weapon.accuracyFactor( this, target );
 			}
 			
 			return acc;
 		}
-		
+
+		@Override
+		public int defenseSkill(Char enemy) {
+			int defense = super.defenseSkill(enemy);
+
+			if (defense != 0 && rose != null && rose.armor != null ){
+				defense = Math.round(rose.armor.evasionFactor( this, defense ));
+			}
+
+			return defense;
+		}
 		@Override
 		public float attackDelay() {
 			float delay = super.attackDelay();
@@ -611,11 +632,9 @@ public class DriedRose extends Artifact {
 		
 		@Override
 		public int damageRoll() {
-			int dmg = 0;
+			int dmg = super.damageRoll();
 			if (rose != null && rose.weapon != null){
-				dmg += rose.weapon.damageRoll(this);
-			} else {
-				dmg += Random.NormalIntRange(0, 5);
+				dmg = rose.weapon.damageRoll(this);
 			}
 			
 			return dmg;
@@ -678,17 +697,7 @@ public class DriedRose extends Artifact {
 			
 			return speed;
 		}
-		
-		@Override
-		public int defenseSkill(Char enemy) {
-			int defense = super.defenseSkill(enemy);
 
-			if (defense != 0 && rose != null && rose.armor != null ){
-				defense = Math.round(rose.armor.evasionFactor( this, defense ));
-			}
-			
-			return defense;
-		}
 		
 		@Override
 		public float stealth() {
@@ -703,7 +712,7 @@ public class DriedRose extends Artifact {
 		
 		@Override
 		public int drRoll() {
-			int block = 0;
+			int block = super.drRoll();
 			if (rose != null && rose.armor != null){
 				block += Random.NormalIntRange( rose.armor.DRMin(), rose.armor.DRMax());
 			}
@@ -846,7 +855,17 @@ public class DriedRose extends Artifact {
 			yell( Messages.get( this, "blessed_ankh_" + Random.IntRange(1, 3) ));
 			Sample.INSTANCE.play( Assets.Sounds.GHOST );
 		}
-		
+
+		@Override
+		protected void moveEvent() {
+			super.moveEvent();
+			for (Mob m : Dungeon.level.mobs){
+				if (Dungeon.level.adjacent(m.pos, pos) && m.alignment != alignment){
+					return;
+				}
+			}
+			Buff.affect(this, GhostBody.class,GhostBody.DURATION);
+		}
 		{
 			immunities.add( ToxicGas.class );
 			immunities.add( CorrosiveGas.class );
@@ -857,7 +876,17 @@ public class DriedRose extends Artifact {
 		}
 
 	}
-	
+
+	public static class GhostBody extends Invisibility{
+		{
+		announced=false;
+		}
+
+		@Override
+		public int icon() {
+			return BuffIndicator.NONE;
+		}
+	}
 	private static class WndGhostHero extends Window{
 		
 		private static final int BTN_SIZE	= 32;

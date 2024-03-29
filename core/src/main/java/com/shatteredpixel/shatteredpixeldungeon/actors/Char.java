@@ -27,9 +27,9 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Electricity;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Adrenaline;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Aim;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AllyBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArcaneArmor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArmorBreak;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barkskin;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Berserk;
@@ -59,6 +59,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSleep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Momentum;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Ooze;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PhysicalEmpower;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Preparation;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ShieldBuff;
@@ -73,6 +74,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Weakness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.Challenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.rogue.DeathMark;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Endure;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Elemental;
@@ -81,17 +83,17 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Tengu;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.MirrorImage;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.PrismaticImage;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
-import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.AntiMagic;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Potential;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Viscosity;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CeremonialDagger;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfCleansing;
-import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfArcana;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfCommand;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfElements;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfForce;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRetribution;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfChallenge;
@@ -106,7 +108,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Grim;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Kinetic;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Shocking;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.special.CeremonialDagger;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.special.PiercingBlade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.initial.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.ShockingDart;
@@ -325,9 +326,7 @@ public abstract class Char extends Actor {
 
 		if (enemy.isInvulnerable(getClass())) {
 
-			if(buff(Aim.class)!=null){
-				buff(Aim.class).detach();
-			}
+
 			if (visibleFight) {
 				enemy.sprite.showStatus( CharSprite.POSITIVE, Messages.get(this, "invulnerable") );
 
@@ -336,8 +335,7 @@ public abstract class Char extends Actor {
 
 			return false;
 
-		} else if (hit( this, enemy, accMulti )) {
-
+		} else if (hit( this, enemy, accMulti )){
 			int dr = Math.round(enemy.drRoll() * AscensionChallenge.statModifier(enemy));
 
 			Barkskin bark = enemy.buff(Barkskin.class);
@@ -357,6 +355,7 @@ public abstract class Char extends Actor {
 					dr=0;
 				}
 			}
+
 			//we use a float here briefly so that we don't have to constantly round while
 			// potentially applying various multiplier effects
 			float dmg;
@@ -368,17 +367,27 @@ public abstract class Char extends Actor {
 				}
 			} else {
 				dmg = damageRoll();
-				if(this instanceof Mob&&alignment==Alignment.ALLY){
+			}
+
+			if(this instanceof Hero||(this instanceof Mob&&alignment==Alignment.ALLY)){
 				dmg+= RingOfCommand.armedDamageBonus(Dungeon.hero);
+			}
+			PhysicalEmpower emp = buff(PhysicalEmpower.class);
+			if (emp != null){
+				dmg += emp.dmgBoost;
+				emp.left--;
+				if (emp.left <= 0) {
+					emp.detach();
+				}
+				Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG, 0.75f, 1.2f);
+			}
+			if (this instanceof Hero){
+				dmgMulti+= RingOfForce.damageMulti();
+				if (buff(Berserk.class)!=null){
+					dmgMulti+=0.2f+(HT-HP*1f)/HT/2f;
 				}
 			}
-			if(buff(Aim.class)!=null){
-				buff(Aim.class).detach();
-			}
 			dmg = Math.round(dmg*dmgMulti);
-
-			Berserk berserk = buff(Berserk.class);
-			if (berserk != null) dmg = berserk.damageFactor(dmg);
 			BlessingPower blessingPower=buff(BlessingPower.class);
 			if(blessingPower!=null&&blessingPower.abilityCanUse()&&enemy.properties().contains(Property.DEMONIC)){
 				dmg*=1.3f;
@@ -386,7 +395,7 @@ public abstract class Char extends Actor {
 			}
 
 			if (buff( Fury.class ) != null) {
-				 dmg *= 1.5f;
+				dmg *= 1.5f;
 			}
 
 			for (ChampionEnemy buff : buffs(ChampionEnemy.class)){
@@ -417,13 +426,6 @@ public abstract class Char extends Actor {
 
 			int effectiveDamage = enemy.defenseProc( this, Math.round(dmg) );
 			effectiveDamage = Math.max( effectiveDamage - dr, 0 );
-
-			if(effectiveDamage!=0&&enemy.buff(BrokenSeal.ShieldFX.class)!=null){
-				effectiveDamage*=0.6f;
-				if(effectiveDamage==0){
-					effectiveDamage=1;
-				}
-			}
 			if (enemy.buff(Viscosity.ViscosityTracker.class) != null){
 				effectiveDamage = enemy.buff(Viscosity.ViscosityTracker.class).deferDamage(effectiveDamage);
 				enemy.buff(Viscosity.ViscosityTracker.class).detach();
@@ -433,9 +435,9 @@ public abstract class Char extends Actor {
 			if ( enemy.buff( Vulnerable.class ) != null){
 				effectiveDamage *= 1.33f;
 			}
-			
+
 			effectiveDamage = attackProc( enemy, effectiveDamage );
-			
+
 			if (visibleFight) {
 				if (effectiveDamage > 0 || !enemy.blockSound(Random.Float(0.96f, 1.05f))) {
 					hitSound(Random.Float(0.87f, 1.15f));
@@ -446,6 +448,10 @@ public abstract class Char extends Actor {
 			// This matters as defence procs can sometimes inflict self-damage, such as armor glyphs.
 			if (!enemy.isAlive()){
 				return true;
+			}
+			if(enemy instanceof Hero||(enemy instanceof Mob&&enemy.alignment==Alignment.ALLY)){
+				dmg=(int)Math.ceil(dmg * RingOfCommand.damageResistanceBonus( Dungeon.hero ));
+				if(dmg<=1)dmg=1;
 			}
 			enemy.damage( effectiveDamage, this );
 
@@ -468,7 +474,7 @@ public abstract class Char extends Actor {
 			enemy.sprite.flash();
 			if (!enemy.isAlive() && visibleFight) {
 				if (enemy == Dungeon.hero) {
-					
+
 					if (this == Dungeon.hero) {
 						return true;
 					}
@@ -479,31 +485,26 @@ public abstract class Char extends Actor {
 					}
 					Dungeon.fail( getClass() );
 					GLog.n( Messages.capitalize(Messages.get(Char.class, "kill", name())) );
-					
+
 				} else if (this == Dungeon.hero) {
 					GLog.i( Messages.capitalize(Messages.get(Char.class, "defeat", enemy.name())) );
 				}
 			}
-			
+
 			return true;
-			
+
 		} else {
-			if(this instanceof Hero){
-				Talent.onAttackDodged((Hero) this,enemy);
-			}
-			if(buff(Aim.class)!=null){
-				buff(Aim.class).detach();
-			}
+
 			enemy.sprite.showStatus( CharSprite.NEUTRAL, enemy.defenseVerb() );
 			if (visibleFight) {
 				//TODO enemy.defenseSound? currently miss plays for monks/crab even when they parry
 				Sample.INSTANCE.play(Assets.Sounds.MISS);
 			}
-			
 			return false;
-			
+
 		}
 	}
+
 	public static int INFINITE_ACCURACY = 1_000_000;
 	public static int INFINITE_EVASION = 1_000_000;
 	public static int UNABLE_EVASION=-1_000_000;
@@ -513,6 +514,7 @@ public abstract class Char extends Actor {
 	}
 
 	public static boolean hit( Char attacker, Char defender, float accMulti ) {
+
 		float acuStat = attacker.attackSkill( defender );
 		float defStat = defender.defenseSkill( attacker );
 		//invisible chars always hit (for the hero this is surprise attacking)
@@ -522,15 +524,13 @@ public abstract class Char extends Actor {
 		//if accuracy or evasion are large enough, treat them as infinite.
 		//note that infinite evasion beats infinite accuracy
 		if (defStat >= INFINITE_EVASION){
+			defender.beHit(attacker,defender,false);
 			return false;
 		} else if (acuStat >= INFINITE_ACCURACY||defStat <= UNABLE_EVASION){
+			defender.beHit(attacker,defender,true);
 			return true;
 		}
-
 		float acuRoll = Random.Float( acuStat );
-		if(attacker.buff(Aim.class)!=null){
-			acuRoll *=2.5f;
-		}
 		if (attacker.buff(Bless.class) != null||attacker.buff(BlessingPower.Blessing.class)!=null) acuRoll *= 1.25f;
 		if (attacker.buff(  Hex.class) != null) acuRoll *= 0.8f;
 		for (ChampionEnemy buff : attacker.buffs(ChampionEnemy.class)){
@@ -545,9 +545,10 @@ public abstract class Char extends Actor {
 			defRoll *= buff.evasionAndAccuracyFactor();
 		}
 		defRoll *= AscensionChallenge.statModifier(defender);
-		
+		defender.beHit(attacker,defender,(acuRoll * accMulti) >= defRoll);
 		return (acuRoll * accMulti) >= defRoll;
 	}
+	public  void beHit(Char attacker,Char defender,boolean doWell){}
 	public int attackSkill( Char target ) {
 		return 0;
 	}
@@ -570,7 +571,13 @@ public abstract class Char extends Actor {
 	
 	//TODO it would be nice to have a pre-armor and post-armor proc.
 	// atm attack is always post-armor and defence is already pre-armor
-	
+	public final boolean surprisedBy( Char enemy ){
+		return surprisedBy( enemy, true);
+	}
+
+	public boolean surprisedBy( Char enemy, boolean attacking ){
+		return false;
+	}
 	public int attackProc( Char enemy, int damage ) {
 		for (ChampionEnemy buff : buffs(ChampionEnemy.class)){
 			buff.onAttackProc( enemy );
@@ -707,7 +714,7 @@ public abstract class Char extends Actor {
 
 		int shielded = dmg;
 		//FIXME: when I add proper damage properties, should add an IGNORES_SHIELDS property to use here.
-		if (!(src instanceof Hunger)&&!(src instanceof CeremonialDagger)){
+		if (!(src instanceof Hunger||src instanceof Berserk||src instanceof CeremonialDagger)){
 			for (ShieldBuff s : buffs(ShieldBuff.class)){
 				dmg = s.absorbDamage(dmg);
 				if (dmg == 0) break;
@@ -720,7 +727,7 @@ public abstract class Char extends Actor {
 			if (((Char) src).buff(Kinetic.KineticTracker.class) != null){
 				int dmgToAdd = -HP;
 				dmgToAdd -= ((Char) src).buff(Kinetic.KineticTracker.class).conservedDamage;
-				dmgToAdd = Math.round(dmgToAdd * RingOfArcana.enchantPowerMultiplier((Char) src));
+				dmgToAdd = Math.round(dmgToAdd * Weapon.Enchantment.genericProcChanceMultiplier((Char) src));
 				if (dmgToAdd > 0) {
 					Buff.affect((Char) src, Kinetic.ConservedDamage.class).setBonus(dmgToAdd);
 				}
@@ -849,14 +856,17 @@ public abstract class Char extends Actor {
 		return false;
 	}
 
-	public synchronized void add( Buff buff ) {
+	public synchronized boolean add( Buff buff ) {
 
 		if (buff(PotionOfCleansing.Cleanse.class) != null) { //cleansing buff
 			if (buff.type == Buff.buffType.NEGATIVE
 					&& !(buff instanceof AllyBuff)
 					&& !(buff instanceof LostInventory)){
-				return;
+				return false;
 			}
+		}
+		if (sprite != null && buff(Challenge.SpectatorFreeze.class) != null){
+			return false; //can't add buffs while frozen and game is loaded
 		}
 
 		buffs.add( buff );
@@ -874,7 +884,7 @@ public abstract class Char extends Actor {
 					sprite.showStatus(CharSprite.NEUTRAL, Messages.titleCase(buff.name()));
 					break;
 			}
-
+		return true;
 	}
 	
 	public synchronized void remove( Buff buff ) {
@@ -1022,6 +1032,7 @@ public abstract class Char extends Actor {
 				new HashSet<Class>( Arrays.asList(AllyBuff.class, Dread.class) )),
 		MINIBOSS ( new HashSet<Class>(),
 				new HashSet<Class>( Arrays.asList(AllyBuff.class, Dread.class) )),
+		BOSS_MINION,
 		UNDEAD,
 		DEMONIC,
 		INORGANIC ( new HashSet<Class>(),

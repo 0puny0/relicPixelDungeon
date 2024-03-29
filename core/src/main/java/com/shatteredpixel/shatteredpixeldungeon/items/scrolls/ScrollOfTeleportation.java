@@ -131,9 +131,6 @@ public class ScrollOfTeleportation extends Scroll {
 				Dungeon.hero.interrupt();
 			}
 			if(ch instanceof Hero&&((Hero)ch).subClass== HeroSubClass.SURVIVOR){
-				if(((Hero)ch).hasTalent(Talent.TEMPORARY_REST)){
-					Terraforming.isClosed();
-				}
 				Terraforming.isSneak();
 			}
 			return true;

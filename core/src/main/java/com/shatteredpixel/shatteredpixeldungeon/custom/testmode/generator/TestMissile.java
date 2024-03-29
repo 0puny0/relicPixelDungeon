@@ -2,22 +2,26 @@ package com.shatteredpixel.shatteredpixeldungeon.custom.testmode.generator;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Bolas;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.FishingSpear;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ForceCube;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.HeavyBoomerang;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Javelin;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Kunai;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.initial.ThrowingSpike;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.special.BloodNail;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.special.Bolas;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.special.FishingSpear;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.special.ForceCube;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.special.HeavyBoomerang;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.special.KnifeMan;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.special.Kunai;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Shuriken;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingClub;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingHammer;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKnife;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingPlate;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingSpear;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingStone;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Tomahawk;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Trident;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.special.RottenEgg;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.special.Shuriken;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.special.ThrowingNeedle;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.special.ThrowingSaltBag;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.special.ThrowingShield;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.standard.ThrowingClub;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.initial.ThrowingKnife;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.initial.ThrowingPlate;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.standard.ThrowingSpear;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.initial.ThrowingStone;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.special.Tomahawk;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -94,45 +98,52 @@ public class TestMissile extends TestGenerator {
 
     private Class<? extends MissileWeapon> idToMissile(int id) {
         switch (id) {
-            case 0:
+            case 0: default:
                 return Dart.class;
             case 1:
-                return ThrowingPlate.class;
-            case 2:
-                return ThrowingKnife.class;
-            case 3:
-                return ThrowingStone.class;
-            case 4:
-                return FishingSpear.class;
-            case 5:
-                return Shuriken.class;
-            case 6:
                 return ThrowingClub.class;
-            case 7:
+            case 2:
                 return ThrowingSpear.class;
+            case 3:
+                return ThrowingPlate.class;
+            case 4:
+                return ThrowingKnife.class;
+            case 5:
+                return ThrowingStone.class;
+            case 6:
+                return ThrowingSpike.class;
+            case 7:
+                return Shuriken.class;
             case 8:
-                return Kunai.class;
+                return BloodNail.class;
             case 9:
-                return Bolas.class;
+                return ThrowingSaltBag.class;
             case 10:
-                return Javelin.class;
+                return FishingSpear.class;
             case 11:
-                return HeavyBoomerang.class;
+                return Kunai.class;
             case 12:
-            default:
-                return Tomahawk.class;
+                return Bolas.class;
             case 13:
-                return ThrowingHammer.class;
+                return ThrowingShield.class;
             case 14:
-                return Trident.class;
+                return KnifeMan.class;
             case 15:
+                return RottenEgg.class;
+            case 16:
+                return Tomahawk.class;
+            case 17:
+                return HeavyBoomerang.class;
+            case 18:
                 return ForceCube.class;
+            case 19:
+                return ThrowingNeedle.class;
         }
     }
 
     private void buildList() {
         if (missileList.isEmpty()) {
-            for (int i = 0; i < 16; ++i) {
+            for (int i = 0; i < 20; ++i) {
                 missileList.add(idToMissile(i));
             }
         }
@@ -213,7 +224,7 @@ public class TestMissile extends TestGenerator {
                 IconButton btn = new IconButton() {
                     @Override
                     protected void onClick() {
-                        selected = Math.min(j, 16);
+                        selected = Math.min(j, 20);
                         super.onClick();
                         updateText();
                     }

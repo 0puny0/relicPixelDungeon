@@ -34,7 +34,7 @@ public class Berry extends Food {
 
 	{
 		image = ItemSpriteSheet.BERRY;
-		energy = UNIT_ENERGY; //100 food value
+		energy = UNIT_ENERGY/3*2; //100 food value
 		eatTime=TIME_TO_EAT/3;
 		bones = false;
 	}

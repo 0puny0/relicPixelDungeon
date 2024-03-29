@@ -81,10 +81,10 @@ public class CloakOfShadows extends Artifact {
 
 	@Override
 	public void execute( Hero hero, String action ) {
-
 		super.execute(hero, action);
 
 		if (hero.buff(MagicImmune.class) != null) return;
+
 
 		if (action.equals( AC_STEALTH )) {
 

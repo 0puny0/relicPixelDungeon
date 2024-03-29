@@ -37,8 +37,10 @@ public class RotLasher extends Mob {
 		spriteClass = RotLasherSprite.class;
 
 		HP = HT = 40;
+		minDMG=8;maxDMG=15;
+		minDR=1;maxDR=8;
 		defenseSkill = 0;
-
+		attackSkill=15;
 		EXP = 1;
 
 		loot = Generator.Category.SEED;
@@ -90,21 +92,6 @@ public class RotLasher extends Mob {
 		return true;
 	}
 
-	@Override
-	public int damageRoll() {
-		return Random.NormalIntRange(8, 15);
-	}
-
-	@Override
-	public int attackSkill( Char target ) {
-		return 15;
-	}
-
-	@Override
-	public int drRoll() {
-		return Random.NormalIntRange(0, 8);
-	}
-	
 	{
 		immunities.add( ToxicGas.class );
 	}

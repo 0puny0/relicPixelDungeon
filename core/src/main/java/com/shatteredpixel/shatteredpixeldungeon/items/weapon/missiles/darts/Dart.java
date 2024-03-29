@@ -104,19 +104,6 @@ public class Dart extends MissileWeapon {
 		}
 	}
 
-	@Override
-	public int damageRoll(Char owner) {
-		if(bow != null){
-			int damage=Random.NormalIntRange( min(), max() );
-			if (owner instanceof Hero&&owner.buff(Momentum.class) != null && owner.buff(Momentum.class).freerunning()) {
-				damage = Math.round(damage * (1f + 0.15f * ((Hero) owner).pointsInTalent(Talent.PROJECTILE_MOMENTUM)));
-			}
-			return damage;
-		}else {
-			return super.damageRoll(owner);
-		}
-	}
-
 	private static Crossbow bow;
 	
 	private void updateCrossbow(){

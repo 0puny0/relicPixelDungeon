@@ -64,6 +64,7 @@ public class Statue extends Mob {
 		
 		HP = HT = 15 + Dungeon.depth * 5;
 		defenseSkill = 4 + Dungeon.depth;
+		attackSkill=9 + Dungeon.depth;
 	}
 	
 	private static final String WEAPON	= "weapon";
@@ -95,7 +96,7 @@ public class Statue extends Mob {
 	
 	@Override
 	public int attackSkill( Char target ) {
-		return (int)((9 + Dungeon.depth) * weapon.accuracyFactor( this, target ));
+		return (int)(super.attackSkill(target) * weapon.accuracyFactor( this, target ));
 	}
 	
 	@Override
@@ -112,13 +113,16 @@ public class Statue extends Mob {
 	public int drRoll() {
 		return Random.NormalIntRange(Dungeon.depth/5, Dungeon.depth + weapon.defenseFactor(this));
 	}
-	
+
 	@Override
-	public void add(Buff buff) {
-		super.add(buff);
-		if (state == PASSIVE && buff.type == Buff.buffType.NEGATIVE){
-			state = HUNTING;
+	public boolean add(Buff buff) {
+		if (super.add(buff)) {
+			if (state == PASSIVE && buff.type == Buff.buffType.NEGATIVE) {
+				state = HUNTING;
+			}
+			return true;
 		}
+		return false;
 	}
 
 	@Override

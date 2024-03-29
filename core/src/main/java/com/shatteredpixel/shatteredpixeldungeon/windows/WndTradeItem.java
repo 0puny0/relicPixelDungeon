@@ -58,7 +58,7 @@ public class WndTradeItem extends WndInfoItem {
 		this.owner = owner;
 
 		float pos = height;
-		int value=item.value();
+		int value=item.value()*5;
 		KindOfWeapon w=Dungeon.hero.belongings.weapon();
 		if(w instanceof GoldSword &&((GoldSword) w).form== MeleeWeapon.Form.FORM2){
 			value=Math.round(value* ((GoldSword) w).valueMulti());
@@ -195,7 +195,7 @@ public class WndTradeItem extends WndInfoItem {
 
 		//selling items in the sell interface doesn't spend time
 		hero.spend(-hero.cooldown());
-		int value=item.value();
+		int value=item.value()*5;
 		KindOfWeapon w=Dungeon.hero.belongings.weapon();
 		if(w instanceof GoldSword &&((GoldSword) w).form== MeleeWeapon.Form.FORM2){
 			value=Math.round(value* ((GoldSword) w).valueMulti());

@@ -83,7 +83,9 @@ public class YogDzewa extends Mob {
 		state = HUNTING;
 
 		viewDistance = 12;
-
+		attackSkill=INFINITE_ACCURACY;
+		defenseSkill=0;
+		minDR=maxDR=0;
 		properties.add(Property.BOSS);
 		properties.add(Property.IMMOVABLE);
 		properties.add(Property.DEMONIC);
@@ -156,11 +158,6 @@ public class YogDzewa extends Mob {
 	}
 
 	private ArrayList<Integer> targetedCells = new ArrayList<>();
-
-	@Override
-	public int attackSkill(Char target) {
-		return INFINITE_ACCURACY;
-	}
 
 	@Override
 	protected boolean act() {
@@ -620,42 +617,36 @@ public class YogDzewa extends Mob {
 			spriteClass = LarvaSprite.class;
 
 			HP = HT = 20;
-			defenseSkill = 12;
+			defenseSkill = 12;attackSkill=30;
+			minDMG=15;maxDMG=25;
+			minDR=1;maxDR=4;
 			viewDistance = Light.DISTANCE;
-
 			EXP = 5;
 			maxLvl = -2;
 
+			properties.add(Property.BOSS_MINION);
 			properties.add(Property.DEMONIC);
-		}
-
-		@Override
-		public int attackSkill( Char target ) {
-			return 30;
-		}
-
-		@Override
-		public int damageRoll() {
-			return Random.NormalIntRange( 15, 25 );
-		}
-
-		@Override
-		public int drRoll() {
-			return Random.NormalIntRange(1, 4);
 		}
 
 	}
 
 	//used so death to yog's ripper demons have their own rankings description
-	public static class YogRipper extends RipperDemon {}
+	public static class YogRipper extends RipperDemon {
+		{
+			maxLvl = -2;
+			properties.add(Property.BOSS_MINION);
+		}
+	}
 	public static class YogEye extends Eye {
 		{
 			maxLvl = -2;
+			properties.add(Property.BOSS_MINION);
 		}
 	}
 	public static class YogScorpio extends Scorpio {
 		{
 			maxLvl = -2;
+			properties.add(Property.BOSS_MINION);
 		}
 	}
 }
