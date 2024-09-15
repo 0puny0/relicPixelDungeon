@@ -101,7 +101,8 @@ public class Ghost extends NPC {
 	}
 	
 	@Override
-	public void add( Buff buff ) {
+	public boolean add( Buff buff ) {
+		return false;
 	}
 	
 	@Override
@@ -311,12 +312,14 @@ public class Ghost extends NPC {
 					case 4: armor = new ScaleArmor();  break;
 					case 5: armor = new PlateArmor();  break;
 				}
-				//40：40：20
 				MeleeWeapon w = Generator.randomMelee();
 				int wepTier= Random.chances(new float[]{0, 0, 10, 6, 3, 1});
-				w.tier=wepTier;
+				w.setTier(wepTier);
 				weapon = w;
-
+				//clear weapon's starting properties
+				weapon.level(0);
+				weapon.enchant(null);
+				weapon.removeCurse(true);
 				//50%:+0, 30%:+1, 15%:+2, 5%:+3
 				float itemLevelRoll = Random.Float();
 				int itemLevel;

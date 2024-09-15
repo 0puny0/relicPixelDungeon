@@ -19,7 +19,7 @@ public class TekkoKagi extends MeleeWeapon {
 
     @Override
     public int proc(Char attacker, Char defender, int damage) {
-        if (defender instanceof Mob && ((Mob) defender).surprisedBy(attacker)) {
+        if (defender.surprisedBy(attacker)) {
             Buff.affect( defender, Bleeding.class ).set( Math.round(damage) *0.75f);
             }
         return super.proc(attacker, defender, damage);

@@ -47,10 +47,9 @@ public class Warlock extends Mob implements Callback {
 	
 	{
 		spriteClass = WarlockSprite.class;
-		
-		HP = HT = 60;
-		defenseSkill = 10;
-		
+
+		HP=HT=70; minDMG=12;maxDMG=18;minDR=3;maxDR=10;defenseSkill =14;attackSkill = 25;
+
 		EXP = 11;
 		maxLvl = 21;
 		
@@ -59,21 +58,7 @@ public class Warlock extends Mob implements Callback {
 
 		properties.add(Property.UNDEAD);
 	}
-	
-	@Override
-	public int damageRoll() {
-		return Random.NormalIntRange( 10, 15 );
-	}
-	
-	@Override
-	public int attackSkill( Char target ) {
-		return 25;
-	}
-	
-	@Override
-	public int drRoll() {
-		return Random.NormalIntRange(2, 6);
-	}
+
 	
 	@Override
 	protected boolean canAttack( Char enemy ) {

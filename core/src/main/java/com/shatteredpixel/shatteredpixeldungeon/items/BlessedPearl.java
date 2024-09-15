@@ -105,28 +105,11 @@ public class BlessedPearl extends Item{
                 } else if (i.cursed ){
                     GLog.w(Messages.get(BlessedPearl.class, "cursed_equipment"));
                 }  else {
-                    GameScene.show(new WndOptions(new ItemSprite(new  BlessedPearl()),
-                            Messages.get(BlessedPearl.class, "name"),
-                            Messages.get(BlessedPearl.class, "affix_intro"),
-                            Messages.get(BlessedPearl.class,"confirm_affix"),
-                            Messages.get(BlessedPearl.class,"cancel")){
-                        @Override
-                        protected void onSelect(int index) {
-                            if (index == 0){
-                                GLog.p(Messages.get(BlessedPearl.class, "inlay"));
-                                Dungeon.hero.sprite.operate(Dungeon.hero.pos);
-                                Sample.INSTANCE.play(Assets.Sounds.UNLOCK);
-                                i.affixPearl((BlessedPearl) curItem);
-                            }
-                            updateQuickslot();
-                        }
-
-                        @Override
-                        public void onBackPressed() {
-                            //do nothing
-                        }
-                    });
-
+                    GLog.p(Messages.get(BlessedPearl.class, "inlay"));
+                    Dungeon.hero.sprite.operate(Dungeon.hero.pos);
+                    Sample.INSTANCE.play(Assets.Sounds.UNLOCK);
+                    i.affixPearl((BlessedPearl) curItem);
+                    updateQuickslot();
                 }
             }
         }

@@ -33,9 +33,10 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 public class GoldSword extends MeleeWeapon {
 	
 	{
-		image = ItemSpriteSheet.LONG_SWORD;
+		image = ItemSpriteSheet.GOLD_SWORD;
 		hitSound = Assets.Sounds.HIT_SLASH;
 		hitSoundPitch=1f;
+		ACC=Attribute.lower;
     }
 	public boolean isCastGold(){
 		return form==Form.FORM1&&Dungeon.gold>=Dungeon.depth/5*10;

@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Berserk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.adventurer.ElementalStrike;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.KindOfWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfArcana;
@@ -78,6 +79,9 @@ abstract public class Weapon extends KindOfWeapon {
 	
 	public Enchantment enchantment;
 	public boolean masteryPotionBonus = false;
+	public void setTier(int t){
+		tier=t;
+	}
 	@Override
 	public int proc( Char attacker, Char defender, int damage ) {
 		
@@ -112,10 +116,11 @@ abstract public class Weapon extends KindOfWeapon {
 	private static final String ENCHANTMENT	    = "enchantment";
 	private static final String CURSE_INFUSION_BONUS = "curse_infusion_bonus";
 	private static final String MASTERY_POTION_BONUS = "mastery_potion_bonus";
-
+	private static final String TIER	        = "tier";
 	@Override
 	public void storeInBundle( Bundle bundle ) {
 		super.storeInBundle( bundle );
+		bundle.put( TIER, tier );
 		bundle.put( USES_LEFT_TO_ID, usesLeftToID );
 		bundle.put( AVAILABLE_USES, availableUsesToID );
 		bundle.put( ENCHANTMENT, enchantment );
@@ -126,6 +131,7 @@ abstract public class Weapon extends KindOfWeapon {
 	@Override
 	public void restoreFromBundle( Bundle bundle ) {
 		super.restoreFromBundle( bundle );
+		tier = bundle.getInt(TIER);
 		usesLeftToID = bundle.getFloat( USES_LEFT_TO_ID );
 		availableUsesToID = bundle.getFloat( AVAILABLE_USES );
 		enchantment = (Enchantment)bundle.get( ENCHANTMENT );
@@ -182,7 +188,7 @@ abstract public class Weapon extends KindOfWeapon {
 	@Override
 	public int reachFactor(Char owner) {
 		if (hasEnchant(Projecting.class, owner)){
-			return RCH + Math.round(RingOfArcana.enchantPowerMultiplier(owner));
+			return RCH + Math.round(enchantment.procChanceMultiplier(owner));
 		} else {
 			return RCH;
 		}
@@ -297,13 +303,24 @@ abstract public class Weapon extends KindOfWeapon {
 		public abstract int proc( Weapon weapon, Char attacker, Char defender, int damage );
 
 		protected float procChanceMultiplier( Char attacker ){
+			return genericProcChanceMultiplier(attacker);
+
+		}
+		public static float genericProcChanceMultiplier( Char attacker ){
 			float multi = RingOfArcana.enchantPowerMultiplier(attacker);
-			Berserk rage = attacker.buff(Berserk.class);
-			if (rage != null) {
-				multi = rage.enchantFactor(multi);
+			if (attacker instanceof Hero && ((Hero) attacker).hasTalent(Talent.ENRAGED_CATALYST)){
+				Berserk rage = attacker.buff(Berserk.class);
+				Hero hero=(Hero) attacker;
+				if (rage != null) {
+					multi += (hero.HT-hero.HP*1f)/hero.HT*0.2f* hero.pointsInTalent(Talent.ENRAGED_CATALYST);
+				}
 			}
 			if(attacker.buff(Talent.ConcentrateShootTracker.class)!=null){
 				multi+=0.15f;
+			}
+			if (attacker.buff(ElementalStrike.DirectedPowerTracker.class) != null){
+				multi += attacker.buff(ElementalStrike.DirectedPowerTracker.class).enchBoost;
+				attacker.buff(ElementalStrike.DirectedPowerTracker.class).detach();
 			}
 			if (attacker.buff(Talent.SpiritBladesTracker.class) != null
 					&& ((Hero)attacker).pointsInTalent(Talent.SPIRIT_BLADES) == 4){
@@ -315,7 +332,6 @@ abstract public class Weapon extends KindOfWeapon {
 			}
 			return multi;
 		}
-
 		public String name() {
 			if (!curse())
 				return name( Messages.get(this, "enchant"));

@@ -42,10 +42,10 @@ public class Ghoul extends Mob {
 	
 	{
 		spriteClass = GhoulSprite.class;
-		
-		HP = HT = 45;
-		defenseSkill = 13;
-		
+
+		HP=HT=45; minDMG=16;maxDMG=22;minDR=2;maxDR=8;defenseSkill =9;attackSkill = 24;
+
+
 		EXP = 5;
 		maxLvl = 20;
 		
@@ -57,21 +57,6 @@ public class Ghoul extends Mob {
 		lootChance = 0.2f;
 		
 		properties.add(Property.UNDEAD);
-	}
-
-	@Override
-	public int damageRoll() {
-		return Random.NormalIntRange( 15, 20 );
-	}
-
-	@Override
-	public int attackSkill( Char target ) {
-		return 24;
-	}
-
-	@Override
-	public int drRoll() {
-		return Random.NormalIntRange(3, 11);
 	}
 
 	@Override

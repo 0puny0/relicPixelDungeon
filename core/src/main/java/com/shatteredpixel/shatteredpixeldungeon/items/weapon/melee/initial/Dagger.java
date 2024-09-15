@@ -27,9 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
-import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfForce;
-import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfForceOut;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.utils.Bundle;
@@ -47,7 +45,7 @@ public class Dagger extends MeleeWeapon {
 		if (owner instanceof Hero) {
 			Hero hero = (Hero)owner;
 			Char enemy = hero.enemy();
-			if (enemy instanceof Mob && ((Mob) enemy).surprisedBy(hero)) {
+			if (enemy.surprisedBy(hero)) {
 				float dmgeMulti;
 				switch (form){
 					case FORM0: default:
@@ -63,7 +61,7 @@ public class Dagger extends MeleeWeapon {
 				int damage = Math.round(Random.IntRange(min() , max())*dmgeMulti);
 				int exStr = hero.STR() - STRReq();
 				if (exStr > 0) {
-					damage +=  (int)(exStr * RingOfForce.extraStrengthBonus(hero ));
+					damage +=  (int)(exStr * RingOfForceOut.extraStrengthBonus(hero ));
 				}
 				return damage;
 			}
@@ -73,7 +71,7 @@ public class Dagger extends MeleeWeapon {
 
 	@Override
 	public int proc(Char attacker, Char defender, int damage) {
-		if(form==Form.FORM1&&defender instanceof Mob && ((Mob) defender).surprisedBy(attacker)){
+		if(form==Form.FORM1&&defender.surprisedBy(attacker)){
 			Buff.affect(defender, SilentProc.class);
 		}
 		return super.proc(attacker, defender, damage);

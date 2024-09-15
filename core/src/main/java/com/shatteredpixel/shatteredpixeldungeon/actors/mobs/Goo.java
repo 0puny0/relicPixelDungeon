@@ -53,7 +53,10 @@ public class Goo extends Mob {
 	{
 		HP = HT = Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 120 : 100;
 		EXP = 10;
+		minDMG=1;maxDMG=8;
+		minDR=0;maxDR=5;
 		defenseSkill = 8;
+		attackSkill=10;
 		spriteClass = GooSprite.class;
 
 		properties.add(Property.BOSS);
@@ -66,31 +69,24 @@ public class Goo extends Mob {
 
 	@Override
 	public int damageRoll() {
-		int min = 1;
-		int max = (HP*2 <= HT) ? 12 : 8;
+		maxDMG = (HP*2 <= HT) ? 12 : 8;
 		if (pumpedUp > 0) {
-			return Random.NormalIntRange( min*3, max*3 );
+			return super.damageRoll()*3;
 		} else {
-			return Random.NormalIntRange( min, max );
+			return super.damageRoll();
 		}
 	}
 
 	@Override
 	public int attackSkill( Char target ) {
-		int attack = 10;
-		if (HP*2 <= HT) attack = 15;
-		if (pumpedUp > 0) attack *= 5;
-		return attack;
+		if (HP*2 <= HT) attackSkill = 15;
+		if (pumpedUp > 0) attackSkill *= 5;
+		return super.attackSkill(target);
 	}
 
 	@Override
 	public int defenseSkill(Char enemy) {
 		return (int)(super.defenseSkill(enemy) * ((HP*2 <= HT)? 1.5 : 1));
-	}
-
-	@Override
-	public int drRoll() {
-		return Random.NormalIntRange(0, 5);
 	}
 
 	@Override

@@ -22,7 +22,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.armor;
 
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
-import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -31,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HoldFast;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Momentum;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.WarWall;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
@@ -59,9 +59,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Swiftness;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Thorns;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Viscosity;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfArcana;
-import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfForce;
-import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfMight;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfForceOut;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
@@ -79,7 +77,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Armor extends EquipableItem {
-	
 	public enum Augment {
 		EVASION (2f , -1f),
 		DEFENSE (-2f, 1f),
@@ -188,7 +185,8 @@ public class Armor extends EquipableItem {
 
 	@Override
 	public boolean doEquip( Hero hero ) {
-		
+
+		boolean wasInInv = hero.belongings.contains(this);
 		detach(hero.belongings.backpack);
 
 		if (hero.belongings.armor == null || hero.belongings.armor.doUnequip( hero, true, false )) {
@@ -206,9 +204,23 @@ public class Armor extends EquipableItem {
 			((HeroSprite)hero.sprite).updateArmor();
 			activate(hero);
 			Talent.onItemEquipped(hero, this);
-			hero.spendAndNext( time2equip( hero ) );
+			if (wasInInv && hero.hasTalent(Talent.SWIFT_EQUIP)) {
+				if (hero.buff(Talent.SwiftEquipCooldown.class) == null){
+					hero.spendAndNext(-hero.cooldown());
+					Buff.affect(hero, Talent.SwiftEquipCooldown.class, 19f)
+							.secondUse = hero.pointsInTalent(Talent.SWIFT_EQUIP) == 2;
+					GLog.i(Messages.get(EquipableItem.class, "swift_equip"));
+				} else if (hero.buff(Talent.SwiftEquipCooldown.class).hasSecondUse()) {
+					hero.spendAndNext(-hero.cooldown());
+					hero.buff(Talent.SwiftEquipCooldown.class).secondUse = false;
+					GLog.i(Messages.get(EquipableItem.class, "swift_equip"));
+				} else {
+					hero.spendAndNext(TIME_TO_EQUIP);
+				}
+			} else {
+				hero.spendAndNext(TIME_TO_EQUIP);
+			}
 			return true;
-			
 		} else {
 			
 			collect( hero.belongings.backpack );
@@ -278,9 +290,6 @@ public class Armor extends EquipableItem {
 	}
 
 	public int DRMax(int lvl){
-		if (Dungeon.isChallenged(Challenges.NO_ARMOR)){
-			return 1 + tier + lvl + augment.defenseFactor(lvl);
-		}
 
 		int max = tier * (2 + lvl) + augment.defenseFactor(lvl);
 		if (lvl > max){
@@ -295,10 +304,6 @@ public class Armor extends EquipableItem {
 	}
 
 	public int DRMin(int lvl){
-		if (Dungeon.isChallenged(Challenges.NO_ARMOR)){
-			return 0;
-		}
-
 		int max = DRMax(lvl);
 		if (lvl >= max){
 			return (lvl - max);
@@ -315,11 +320,11 @@ public class Armor extends EquipableItem {
 		
 		if (owner instanceof Hero){
 			int aEnc = STRReq() - ((Hero) owner).STR();
-			if (aEnc > 0) evasion /= Math.pow(1.5, (int)(aEnc* RingOfForce.extraStrengthBonus(owner)));
+			if (aEnc > 0) evasion /= Math.pow(1.5, (int)(aEnc* RingOfForceOut.extraStrengthBonus(owner)));
 			
 			Momentum momentum = owner.buff(Momentum.class);
 			if (momentum != null){
-				evasion += momentum.evasionBonus(((Hero) owner).lvl, Math.max(0, -(int)(aEnc*RingOfForce.extraStrengthBonus(owner))));
+				evasion += momentum.evasionBonus(((Hero) owner).lvl, Math.max(0, -(int)(aEnc* RingOfForceOut.extraStrengthBonus(owner))));
 			}
 		}
 		
@@ -343,7 +348,8 @@ public class Armor extends EquipableItem {
 				}
 			}
 			if (!enemyNear) speed *= (1.2f + 0.04f * buffedLvl()) * RingOfArcana.enchantPowerMultiplier(owner);
-		} else if (hasGlyph(Flow.class, owner) && Dungeon.level.water[owner.pos]){
+		}
+		if (hasGlyph(Flow.class, owner) && Dungeon.level.water[owner.pos]){
 			speed *= (2f + 0.25f*buffedLvl()) * RingOfArcana.enchantPowerMultiplier(owner);
 		}
 		
@@ -380,8 +386,8 @@ public class Armor extends EquipableItem {
 		if(Dungeon.hero.buff(BlessingPower.Blessing.class)!=null&&inlay==Inlay.blessedPeal){
 			lvl+=Dungeon.hero.buff(BlessingPower.Blessing.class).extraLevel();
 		}
-		if(Dungeon.hero.buff(HoldFast.class)!=null&&isEquipped(Dungeon.hero)){
-			lvl+=Dungeon.hero.pointsInTalent(Talent.HOLD_FAST)+1;
+		if (Dungeon.hero.buff(WarWall.class)!=null&&isEquipped(Dungeon.hero)){
+			lvl+=Dungeon.hero.buff(WarWall.class).lvl();
 		}
 		return  lvl;
 	}
@@ -446,7 +452,7 @@ public class Armor extends EquipableItem {
 		if (glyph != null && defender.buff(MagicImmune.class) == null) {
 			damage = glyph.proc( this, attacker, defender, damage );
 		}
-		if (seal!=null&&seal.getGlyph()!=null&& defender.buff(MagicImmune.class) == null){
+		if (seal!=null&&seal.getGlyph()!=null&&seal.getGlyph()!=glyph&& defender.buff(MagicImmune.class) == null){
 			damage = seal.getGlyph().proc( this, attacker, defender, damage );
 		}
 		
@@ -558,7 +564,7 @@ public class Armor extends EquipableItem {
 		//30% chance to be cursed
 		//15% chance to be inscribed
 		float effectRoll = Random.Float();
-		if (effectRoll < 0.25f) {
+		if (effectRoll < 0.3f) {
 			cursed = true;
 			inscribe(Glyph.randomCurse());
 		} else if (effectRoll >= 0.85f){

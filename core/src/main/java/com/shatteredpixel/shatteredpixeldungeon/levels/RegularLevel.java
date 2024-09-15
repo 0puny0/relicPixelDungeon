@@ -374,7 +374,8 @@ public abstract class RegularLevel extends Level {
 			}
 
 			if ((toDrop instanceof Artifact && Random.Int(2) == 0) ||
-					(toDrop.isUpgradable() && Random.Int(4 - toDrop.level()) == 0)){
+					(toDrop.isUpgradable() && Random.Int(4 - toDrop.level()) == 0)||
+					toDrop.treasure){
 
 				if (Dungeon.depth > 1 && Random.Int(10) == 0 && findMob(cell) == null){
 					mobs.add(Mimic.spawnAt(cell, toDrop, GoldenMimic.class));
@@ -385,7 +386,7 @@ public abstract class RegularLevel extends Level {
 						addItemToSpawn(new GoldenKey(Dungeon.depth));
 					}
 				}
-			} else {
+			}else {
 				Heap dropped = drop( toDrop, cell );
 				dropped.type = type;
 				if (type == Heap.Type.SKELETON){

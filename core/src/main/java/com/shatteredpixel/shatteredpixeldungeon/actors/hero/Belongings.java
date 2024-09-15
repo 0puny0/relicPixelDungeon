@@ -41,6 +41,7 @@ import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 
 public class Belongings implements Iterable<Item> {
@@ -323,7 +324,17 @@ public class Belongings implements Iterable<Item> {
 
 		return Random.element( backpack.items );
 	}
-	
+	public EquipableItem randomEquipped(){
+		ArrayList<EquipableItem> equippde = new ArrayList<>();
+		if (weapon()!=null)equippde.add(weapon());
+		if (armor()!=null)equippde.add(armor());
+		if (artifact()!=null)equippde.add(artifact());
+		if (misc()!=null)equippde.add(misc());
+		if (ring()!=null)equippde.add(ring());
+		if (equippde.isEmpty())return null;
+		Collections.shuffle(equippde);
+		return equippde.get(0);
+	}
 	public int charge( float charge ) {
 		
 		int count = 0;

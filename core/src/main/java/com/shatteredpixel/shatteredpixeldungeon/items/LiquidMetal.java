@@ -29,9 +29,9 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.TippedDart;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -139,11 +139,11 @@ public class LiquidMetal extends Item {
 				float durabilityPerMetal = 100 / (float)maxToUse;
 
 				//we remove a tiny amount here to account for rounding errors
-				float percentDurabilityLost = 0.999f - (m.durabilityLeft()/100f);
+				float percentDurabilityLost = 0.999f - (m.durabilityLeft()%m.MAX_DURABILITY/100f);
 				maxToUse = (int)Math.ceil(maxToUse*percentDurabilityLost);
 				float durPerUse = m.durabilityPerUse()/100f;
 				if (maxToUse == 0 ||
-						Math.ceil(m.durabilityLeft()/ m.durabilityPerUse()) >= Math.ceil(m.MAX_DURABILITY/ m.durabilityPerUse()) ){
+						m.durabilityLeft()/ m.durabilityPerUse() >= (m.MAX_DURABILITY*m.quantity())/ m.durabilityPerUse() ){
 					GLog.w(Messages.get(LiquidMetal.class, "already_fixed"));
 					return;
 				} else if (maxToUse < quantity()) {
@@ -165,7 +165,7 @@ public class LiquidMetal extends Item {
 		}
 	};
 
-	public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe {
+	public static class MissilesRecipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe {
 
 		@Override
 		public boolean testIngredients(ArrayList<Item> ingredients) {
@@ -206,6 +206,53 @@ public class LiquidMetal extends Item {
 				MissileWeapon m = (MissileWeapon) i;
 				float quantity = m.quantity()-1;
 				quantity += 0.25f + 0.0075f*m.durabilityLeft();
+				quantity *= Math.pow(2, Math.min(3, m.level()));
+				metalQuantity += Math.round((5*(m.tier+1))*quantity);
+			}
+
+			return new LiquidMetal().quantity(metalQuantity);
+		}
+	}
+	public static class MeleeRecipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe {
+
+		@Override
+		public boolean testIngredients(ArrayList<Item> ingredients) {
+			for (Item i : ingredients){
+				if (!(i instanceof MeleeWeapon)){
+					return false;
+				}
+			}
+
+			return !ingredients.isEmpty();
+		}
+
+		@Override
+		public int cost(ArrayList<Item> ingredients) {
+			int cost = 3;
+			for (Item i : ingredients){
+				cost += i.quantity()*2;
+			}
+			return cost;
+		}
+
+		@Override
+		public Item brew(ArrayList<Item> ingredients) {
+			Item result = sampleOutput(ingredients);
+
+			for (Item i : ingredients){
+				i.quantity(0);
+			}
+
+			return result;
+		}
+
+		@Override
+		public Item sampleOutput(ArrayList<Item> ingredients) {
+			int metalQuantity = 0;
+
+			for (Item i : ingredients){
+				MeleeWeapon m = (MeleeWeapon)  i;
+				float quantity = 1;
 				quantity *= Math.pow(2, Math.min(3, m.level()));
 				metalQuantity += Math.round((5*(m.tier+1))*quantity);
 			}

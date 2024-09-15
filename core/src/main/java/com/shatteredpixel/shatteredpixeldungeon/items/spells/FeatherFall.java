@@ -34,24 +34,23 @@ import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
 
+import java.util.ArrayList;
+
 public class FeatherFall extends Spell {
 	
 	{
 		image = ItemSpriteSheet.FEATHER_FALL;
+		defaultAction=AC_THROW;
 	}
-	
+	@Override
+	public ArrayList<String> actions(Hero hero ) {
+		ArrayList<String> actions = super.actions( hero );
+		actions.remove( AC_CAST );
+		return actions;
+	}
 	@Override
 	protected void onCast(Hero hero) {
-		Buff.append(hero, FeatherBuff.class, FeatherBuff.DURATION);
-		hero.sprite.operate(hero.pos);
-		Sample.INSTANCE.play(Assets.Sounds.READ );
-		hero.sprite.emitter().burst( Speck.factory( Speck.JET ), 20);
-		
-		GLog.p(Messages.get(this, "light"));
-		
-		detach( curUser.belongings.backpack );
-		updateQuickslot();
-		hero.spendAndNext( 1f );
+
 	}
 	
 	public static class FeatherBuff extends FlavourBuff {

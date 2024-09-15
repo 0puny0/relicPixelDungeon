@@ -58,20 +58,13 @@ public class PotionOfHealing extends Potion {
 	}
 
 	public static void heal( Char ch ){
-		if (ch == Dungeon.hero && Dungeon.isChallenged(Challenges.NO_HEALING)){
-			pharmacophobiaProc(Dungeon.hero);
-		} else {
-			//starts out healing 30 hp, equalizes with hero health total at level 11
-			Buff.affect(ch, Healing.class).setHeal((int) (0.8f * ch.HT + 14), 0.25f, 0);
-			if (ch == Dungeon.hero){
-				GLog.p( Messages.get(PotionOfHealing.class, "heal") );
-			}
+		int heal=(int) (0.8f * ch.HT + 14);
+		if ( Dungeon.isChallenged(Challenges.NO_HEALING))heal/=2;
+		//starts out healing 30 hp, equalizes with hero health total at level 11
+		Buff.affect(ch, Healing.class).setHeal(heal, 0.25f, 0);
+		if (ch == Dungeon.hero){
+			GLog.p( Messages.get(PotionOfHealing.class, "heal") );
 		}
-	}
-
-	public static void pharmacophobiaProc( Hero hero ){
-		// harms the hero for ~40% of their max HP in poison
-		Buff.affect( hero, Poison.class).set(4 + hero.lvl/2);
 	}
 	
 	public static void cure( Char ch ) {

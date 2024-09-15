@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Fire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Speed;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -45,7 +46,8 @@ public class GnollTrickster extends Gnoll {
 
 		HP = HT = 20;
 		defenseSkill = 5;
-
+		attackSkill=16;
+		baseSpeed = 0.9f;
 		EXP = 5;
 
 		state = WANDERING;
@@ -58,11 +60,6 @@ public class GnollTrickster extends Gnoll {
 	}
 
 	private int combo = 0;
-
-	@Override
-	public int attackSkill( Char target ) {
-		return 16;
-	}
 
 	@Override
 	protected boolean canAttack( Char enemy ) {

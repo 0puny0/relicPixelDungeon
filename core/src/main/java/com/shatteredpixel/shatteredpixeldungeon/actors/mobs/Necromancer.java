@@ -47,10 +47,10 @@ public class Necromancer extends Mob {
 	
 	{
 		spriteClass = NecromancerSprite.class;
-		
-		HP = HT = 25;
-		defenseSkill = 14;
-		
+
+		HP=HT=40; minDMG=0;maxDMG=0;minDR=1;maxDR=2;defenseSkill =13;attackSkill = 0;
+
+
 		EXP = 7;
 		maxLvl = 14;
 		
@@ -77,11 +77,6 @@ public class Necromancer extends Mob {
 			if (sprite instanceof NecromancerSprite) ((NecromancerSprite) sprite).cancelSummoning();
 		}
 		return super.act();
-	}
-	
-	@Override
-	public int drRoll() {
-		return Random.NormalIntRange(0, 2);
 	}
 	
 	@Override

@@ -13,13 +13,7 @@ public class CursedSword extends MeleeWeapon {
         hitSound = Assets.Sounds.HIT_SLASH;
         hitSoundPitch = 1f;
         DMG = Attribute.lower;
-        isBonus=true;
     }
-    public boolean isBonus;
-    public String nowDesc="desc";
-    protected int elseImage = ItemSpriteSheet.CURSED_SWORD_;
-    protected Attribute elseDMG = Attribute.highest;
-    protected String elseDesc="typical_desc";
 
     @Override
     public Weapon enchant( Enchantment ench) {
@@ -34,25 +28,33 @@ public class CursedSword extends MeleeWeapon {
 
     @Override
     public boolean removeCurse(boolean extraEffect) {
-        if(isBonus&&!hasCurseEnchant()){
+        boolean hCE=hasCurseEnchant();
+        boolean doWell =super.removeCurse(extraEffect);
+        if(extraEffect&&hCE){
             modeSwitch();
         }
-        return super.removeCurse(extraEffect);
+        return doWell;
     }
 
     public void modeSwitch() {
-        int Image0 = image;
-        Attribute DMG0 = DMG;
-        String Desc0=nowDesc;
-        image = elseImage;
-        DMG = elseDMG;
-        nowDesc=elseDesc;
-        elseImage = Image0;
-        elseDMG = DMG0;
-        elseDesc=Desc0;
+        if(hasCurseEnchant()){
+            image = ItemSpriteSheet.CURSED_SWORD_;
+            hitSound = Assets.Sounds.HIT_SLASH;
+            DMG = Attribute.highest;
+            ACC=Attribute.lower;
+        }else{
+            image = ItemSpriteSheet.CURSED_SWORD;
+            hitSound = Assets.Sounds.HIT_SLASH;
+            DMG = Attribute.lower;
+            ACC=Attribute.common;
+        }
     }
     public String desc() {
-            return Messages.get(this,nowDesc);
+            if (hasCurseEnchant()){
+                return Messages.get(this,"typical_desc");
+            }else {
+                return Messages.get(this,"desc");
+            }
     }
     @Override
     public void restoreFromBundle( Bundle bundle ) {

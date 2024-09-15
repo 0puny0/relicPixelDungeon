@@ -71,8 +71,15 @@ public class HeroIcon extends Image {
 	//ADVENTURER
 	public static final int SAVIOR=36;
 	public static final int SURVIVOR=37;
+	public static final int ELEMENTAL_STRIKE=39;
+	public static final int ALERT_SCAN=40;
 	public static final int BLESSING=42;
 	public static final int TERRAFORMING=43;
+	//DUELIST
+	public static final int SHADOWWARRIOR=45;
+	public static final int EXECUTIONER=46;
+	public static final int CHALLENGE=48;
+	public static final int FEINT=50;
 
 	//abilities
 

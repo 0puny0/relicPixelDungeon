@@ -3,7 +3,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfForce;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfForceOut;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -55,7 +55,7 @@ public class KnightLance extends MeleeWeapon {
             if (owner instanceof Hero) {
                 int exStr = ((Hero)owner).STR() - STRReq();
                 if (exStr > 0) {
-                    damage +=   (int)(exStr * RingOfForce.extraStrengthBonus(hero ));
+                    damage +=   (int)(exStr * RingOfForceOut.extraStrengthBonus(hero ));
                 }
             }
             return damage;

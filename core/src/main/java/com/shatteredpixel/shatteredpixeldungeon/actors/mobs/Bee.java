@@ -83,9 +83,11 @@ public class Bee extends Mob {
 	
 	public void spawn( int level ) {
 		this.level = level;
-		
 		HT = (2 + level) * 4;
+		minDMG=HT/10;maxDMG=HT/4;
+		minDR=maxDR=0;
 		defenseSkill = 9 + level;
+		attackSkill=defenseSkill;
 	}
 
 	public void setPotInfo(int potPos, Char potHolder){
@@ -105,16 +107,6 @@ public class Bee extends Mob {
 	}
 	
 	@Override
-	public int attackSkill( Char target ) {
-		return defenseSkill;
-	}
-	
-	@Override
-	public int damageRoll() {
-		return Random.NormalIntRange( HT / 10, HT / 4 );
-	}
-	
-	@Override
 	public int attackProc( Char enemy, int damage ) {
 		damage = super.attackProc( enemy, damage );
 		if (enemy instanceof Mob) {
@@ -124,14 +116,18 @@ public class Bee extends Mob {
 	}
 
 	@Override
-	public void add(Buff buff) {
-		super.add(buff);
-		//TODO maybe handle honeyed bees with their own ally buff?
-		if (buff instanceof AllyBuff){
-			intelligentAlly = false;
-			setPotInfo(-1, null);
+	public boolean add(Buff buff) {
+		if (super.add(buff)) {
+			//TODO maybe handle honeyed bees with their own ally buff?
+			if (buff instanceof AllyBuff) {
+				intelligentAlly = false;
+				setPotInfo(-1, null);
+			}
+			return true;
 		}
+		return false;
 	}
+
 
 	@Override
 	protected Char chooseEnemy() {

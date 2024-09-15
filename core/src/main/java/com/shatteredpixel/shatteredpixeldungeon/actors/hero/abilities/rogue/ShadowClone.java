@@ -154,7 +154,7 @@ public class ShadowClone extends ArmorAbility {
 			spriteClass = ShadowSprite.class;
 
 			HP = HT = 80;
-
+			minDMG=10;maxDMG=20;
 			immunities.add(AllyBuff.class);
 		}
 
@@ -171,6 +171,7 @@ public class ShadowClone extends ArmorAbility {
 				HP += hpBonus;
 			}
 			defenseSkill = heroLevel + 5; //equal to base hero defense skill
+			attackSkill=defenseSkill+5;
 		}
 
 		@Override
@@ -201,15 +202,9 @@ public class ShadowClone extends ArmorAbility {
 			GLog.i(Messages.get(this, "direct_attack"));
 			super.targetChar(ch);
 		}
-
-		@Override
-		public int attackSkill(Char target) {
-			return defenseSkill+5; //equal to base hero attack skill
-		}
-
 		@Override
 		public int damageRoll() {
-			int damage = Random.NormalIntRange(10, 20);
+			int damage = super.damageRoll();
 			int heroDamage = Dungeon.hero.damageRoll();
 			heroDamage /= Dungeon.hero.attackDelay(); //normalize hero damage based on atk speed
 			heroDamage = Math.round(0.08f * Dungeon.hero.pointsInTalent(Talent.SHADOW_BLADE) * heroDamage);

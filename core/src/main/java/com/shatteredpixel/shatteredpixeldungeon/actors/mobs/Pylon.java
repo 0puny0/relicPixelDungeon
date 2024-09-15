@@ -59,10 +59,12 @@ public class Pylon extends Mob {
 		spriteClass = PylonSprite.class;
 
 		HP = HT = Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 80 : 50;
-
+		minDR=maxDR=0;
+		defenseSkill=0;
 		maxLvl = -2;
 
 		properties.add(Property.MINIBOSS);
+		properties.add(Property.BOSS_MINION);
 		properties.add(Property.INORGANIC);
 		properties.add(Property.ELECTRIC);
 		properties.add(Property.IMMOVABLE);
@@ -168,11 +170,12 @@ public class Pylon extends Mob {
 	}
 
 	@Override
-	public void add(Buff buff) {
+	public boolean add(Buff buff) {
 		//immune to all buffs/debuffs when inactive
 		if (alignment != Alignment.NEUTRAL) {
-			super.add(buff);
+			return super.add(buff);
 		}
+		return false;
 	}
 
 	@Override

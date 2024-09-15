@@ -60,10 +60,6 @@ public class AlchemicalCatalyst extends Potion {
 	@Override
 	public void apply(Hero hero) {
 		Potion p = Reflection.newInstance(Random.chances(potionChances));
-		//Don't allow this to roll healing in pharma
-		while (Dungeon.isChallenged(Challenges.NO_HEALING) && p instanceof PotionOfHealing){
-			p = Reflection.newInstance(Random.chances(potionChances));
-		}
 		p.anonymize();
 		p.apply(hero);
 	}

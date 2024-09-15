@@ -83,26 +83,12 @@ public class DM300 extends Mob {
 
 		HP = HT = Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 400 : 300;
 		EXP = 30;
-		defenseSkill = 15;
-
+		defenseSkill = 15;attackSkill=20;
+		minDMG=15;maxDMG=25;
+		minDR=4;maxDR=12;
 		properties.add(Property.BOSS);
 		properties.add(Property.INORGANIC);
 		properties.add(Property.LARGE);
-	}
-
-	@Override
-	public int damageRoll() {
-		return Random.NormalIntRange( 15, 25 );
-	}
-
-	@Override
-	public int attackSkill( Char target ) {
-		return 20;
-	}
-
-	@Override
-	public int drRoll() {
-		return Random.NormalIntRange(4, 12);
 	}
 
 	public int pylonsActivated = 0;

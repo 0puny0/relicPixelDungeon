@@ -27,6 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.WraithSprite;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.tweeners.AlphaTweener;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
@@ -43,9 +44,8 @@ public class Wraith extends Mob {
 
 		HP = HT = 1;
 		EXP = 0;
-
+		minDR=maxDR=0;
 		maxLvl = -2;
-		
 		flying = true;
 
 		properties.add(Property.UNDEAD);
@@ -66,19 +66,11 @@ public class Wraith extends Mob {
 		adjustStats( level );
 	}
 	
-	@Override
-	public int damageRoll() {
-		return Random.NormalIntRange( 1 + level/2, 2 + level );
-	}
-	
-	@Override
-	public int attackSkill( Char target ) {
-		return 10 + level;
-	}
-	
 	public void adjustStats( int level ) {
 		this.level = level;
+		attackSkill=10+level;
 		defenseSkill = attackSkill( null ) * 4;
+		minDMG=1+level/2;maxDMG=2+level;
 		enemySeen = true;
 	}
 
@@ -113,7 +105,7 @@ public class Wraith extends Mob {
 			w.sprite.parent.add( new AlphaTweener( w.sprite, 1, 0.5f ) );
 			
 			w.sprite.emitter().burst( ShadowParticle.CURSE, 5 );
-			
+
 			return w;
 		} else {
 			return null;

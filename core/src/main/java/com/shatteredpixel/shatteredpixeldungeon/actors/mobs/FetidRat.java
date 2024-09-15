@@ -37,26 +37,15 @@ public class FetidRat extends Rat {
 		spriteClass = FetidRatSprite.class;
 
 		HP = HT = 22;
+		minDR=0;maxDR=2;
 		defenseSkill = 5;
-
+		attackSkill=12;
 		EXP = 4;
-
 		state = WANDERING;
 
 		properties.add(Property.MINIBOSS);
 		properties.add(Property.DEMONIC);
 	}
-
-	@Override
-	public int attackSkill( Char target ) {
-		return 12;
-	}
-
-	@Override
-	public int drRoll() {
-		return Random.NormalIntRange(0, 2);
-	}
-
 	@Override
 	public int attackProc( Char enemy, int damage ) {
 		damage = super.attackProc( enemy, damage );

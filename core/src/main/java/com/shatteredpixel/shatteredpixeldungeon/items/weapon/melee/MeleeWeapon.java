@@ -26,18 +26,22 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BlessingPower;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SharpenWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TheHaywire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.KindOfWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.journal.Guidebook;
-import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfForce;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfForceOut;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Wayward;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MissileSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ActionIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton;
@@ -71,7 +75,7 @@ public class MeleeWeapon extends Weapon {
 			case higher:
 				return 1.2f;
 			case highest:
-				return 1.7f;
+				return 1.5f;
 		}
 	}
 	public static float getDMG(Attribute dmg){
@@ -79,7 +83,7 @@ public class MeleeWeapon extends Weapon {
 			case lowest:
 				return 0.5f;
 			case lower:
-				return 0.8f;
+				return 0.85f;
 			case common:default:
 				return 1f;
 			case higher:
@@ -300,8 +304,11 @@ public class MeleeWeapon extends Weapon {
 	@Override
 	public int buffedLvl() {
 		int lvl =super.buffedLvl();
-		if (Dungeon.hero.buff(TheHaywire.class) != null &&this ==Dungeon.hero.belongings.weapon()){
+		if (Dungeon.hero.buff(TheHaywire.class) != null){
 			lvl+=Dungeon.hero.buff(TheHaywire.class).lvl();
+		}
+		if (Dungeon.hero.buff(SharpenWeapon.class) != null&&isEquipped(Dungeon.hero)){
+			lvl+=Dungeon.hero.buff(SharpenWeapon.class).lvl();
 		}
 		if(Dungeon.hero.buff(BlessingPower.Blessing.class)!=null&&inlay==Inlay.blessedPeal){
 			lvl+=Dungeon.hero.buff(BlessingPower.Blessing.class).extraLevel();
@@ -311,7 +318,6 @@ public class MeleeWeapon extends Weapon {
 
 	@Override
 	public Item random() {
-		tier=Random.IntRange(2,5);
 		//+0: 75% (3/4)
 		//+1: 20% (4/20)
 		//+2: 5%  (1/20)
@@ -323,10 +329,10 @@ public class MeleeWeapon extends Weapon {
 			}
 		}
 		level(n);
-		//25% chance to be cursed
+		//30% chance to be cursed
 		//10% chance to be enchanted
 		float effectRoll = Random.Float();
-		if (effectRoll < 0.25f) {
+		if (effectRoll < 0.3f) {
 			getCurse(true);
 		}  else if (effectRoll >= 0.9f){
 			enchant();
@@ -335,7 +341,7 @@ public class MeleeWeapon extends Weapon {
 	}
 	@Override
 	public void getCurse(boolean extraEffect){
-		if(extraEffect==true){
+		if(extraEffect){
 			if(enchantment!=null){
 				enchant(Enchantment.randomCurse(enchantment.getClass()));
 			}else {
@@ -377,12 +383,31 @@ public class MeleeWeapon extends Weapon {
 	}
 
 	@Override
+	public float accuracyFactor(Char owner, Char target) {
+		int encumbrance = 0;
+		float acc = getACC(ACC);
+		if( owner instanceof Hero ){
+			encumbrance = STRReq() - ((Hero)owner).STR();
+		}
+
+		if (owner.buff(Wayward.WaywardBuff.class) != null && enchantment instanceof Wayward){
+			acc /= 5;
+		}
+		return encumbrance > 0 ? (float)(acc / Math.pow( 1.5, encumbrance )) : acc;
+	}
+
+	@Override
+	public float delayFactor(Char owner) {
+		return baseDelay(owner) * (getDLY(ASPD)/speedMultiplier(owner));
+	}
+
+	@Override
 	public int damageRoll(Char owner) {
 		int damage = Random.NormalIntRange( min(), max() );
 		if (owner instanceof Hero) {
 			int exStr = ((Hero)owner).STR() - STRReq();
 			if (exStr > 0) {
-				damage += ASPD ==Attribute.lowest?(int)(exStr*RingOfForce.halfExStrBonus(owner)):(int)(exStr * RingOfForce.extraStrengthBonus(owner ));
+				damage += ASPD ==Attribute.lowest?(int)(exStr* RingOfForceOut.halfExStrBonus(owner)):(int)(exStr * RingOfForceOut.extraStrengthBonus(owner ));
 			}
 		}
 		return damage;
@@ -396,7 +421,7 @@ public class MeleeWeapon extends Weapon {
 			case common:default:
 				return Messages.get(MeleeWeapon.class,"common");
 			case higher:
-				return Messages.get(MeleeWeapon.class,"highest");
+				return Messages.get(MeleeWeapon.class,"higher");
 			case highest:
 				return Messages.get(MeleeWeapon.class,"highest");
 		}
@@ -416,7 +441,7 @@ public class MeleeWeapon extends Weapon {
 		String statsInfo = statsInfo();
 		if (!statsInfo.equals("")) info += "\n\n" +statsInfo;
 		info += "\n\n" +attribute(true);
-		info += "\n\n" +Messages.get(MeleeWeapon.class,"form")+"\n"+Messages.get(this,"form_intro") ;
+//		info += "\n\n" +Messages.get(MeleeWeapon.class,"form")+"\n"+Messages.get(this,"form_intro") ;
 		return  info;
 	}
 
@@ -429,10 +454,10 @@ public class MeleeWeapon extends Weapon {
 			info += "\n\n" + Messages.get(MeleeWeapon.class, "stats_known", tier, min(), max(),STRReq());
 			int diffStr=Dungeon.hero.STR()-STRReq();
 			if (diffStr<0) {
-				info +=Messages.get(Weapon.class, "too_heavy");
+				info +=Messages.get(MeleeWeapon.class, "too_heavy");
 			} else if (diffStr>0){
-				info += Messages.get(MeleeWeapon.class, "excess_str", ASPD ==Attribute.lowest?(int)(diffStr*RingOfForce.halfExStrBonus(Dungeon.hero)):
-						(int)(diffStr * RingOfForce.extraStrengthBonus(Dungeon.hero )));
+				info += Messages.get(MeleeWeapon.class, "excess_str", ASPD ==Attribute.lowest?(int)(diffStr* RingOfForceOut.halfExStrBonus(Dungeon.hero)):
+						(int)(diffStr * RingOfForceOut.extraStrengthBonus(Dungeon.hero )));
 			}else if(diffStr==0){
 				info +=Messages.get(MeleeWeapon.class, "just_right");
 			}
@@ -517,24 +542,37 @@ public class MeleeWeapon extends Weapon {
 		return price;
 	}
 
-	private static final String TIER	        = "tier";
+
 	private static final String DEFAULTACTION ="defaultaction";
 
 	@Override
 	public void storeInBundle( Bundle bundle ) {
 		super.storeInBundle( bundle );
-		bundle.put( TIER, tier );
 		bundle.put( DEFAULTACTION, defaultAction);
 	}
 
 	@Override
 	public void restoreFromBundle( Bundle bundle ) {
 		super.restoreFromBundle( bundle );
-		tier = bundle.getInt(TIER);
 		defaultAction = bundle.getString(DEFAULTACTION);
 		if(defaultAction==""){
 			defaultAction=null;
 		}
 	}
+	public static class PlaceHolder extends MeleeWeapon {
 
+		{
+			image = ItemSpriteSheet.WEAPON_HOLDER;
+		}
+
+		@Override
+		public boolean isSimilar(Item item) {
+			return item instanceof MeleeWeapon;
+		}
+
+		@Override
+		public String info() {
+			return "";
+		}
+	}
 }

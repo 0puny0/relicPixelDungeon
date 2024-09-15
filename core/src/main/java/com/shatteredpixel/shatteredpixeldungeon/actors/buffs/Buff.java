@@ -72,10 +72,7 @@ public class Buff extends Actor {
 		if (target.isImmune( getClass() )) {
 			return false;
 		}
-		//战士纹章的霸体
-		if(target.buff(BrokenSeal.ShieldFX.class)!=null&&type==buffType.NEGATIVE){
-			return false;
-		}
+
 
 		this.target = target;
 		target.add( this );

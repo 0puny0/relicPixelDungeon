@@ -61,6 +61,9 @@ public abstract class YogFist extends Mob {
 	{
 		HP = HT = 300;
 		defenseSkill = 20;
+		attackSkill=36;
+		minDMG=18;maxDMG=36;
+		minDR=5;maxDR=16;
 
 		viewDistance = Light.DISTANCE;
 
@@ -144,21 +147,6 @@ public abstract class YogFist extends Mob {
 	public void onZapComplete(){
 		zap();
 		next();
-	}
-
-	@Override
-	public int attackSkill( Char target ) {
-		return 36;
-	}
-
-	@Override
-	public int damageRoll() {
-		return Random.NormalIntRange( 18, 36 );
-	}
-
-	@Override
-	public int drRoll() {
-		return Random.NormalIntRange(5, 15);
 	}
 
 	{
@@ -419,15 +407,10 @@ public abstract class YogFist extends Mob {
 	public static class RustedFist extends YogFist {
 
 		{
+			minDMG=22;maxDMG=24;
 			spriteClass = FistSprite.Rusted.class;
-
 			properties.add(Property.LARGE);
 			properties.add(Property.INORGANIC);
-		}
-
-		@Override
-		public int damageRoll() {
-			return Random.NormalIntRange( 22, 44 );
 		}
 
 		@Override
@@ -460,7 +443,7 @@ public abstract class YogFist extends Mob {
 			spriteClass = FistSprite.Bright.class;
 
 			properties.add(Property.ELECTRIC);
-
+			minDR=4;maxDR=10;
 			canRangedInMelee = false;
 		}
 
@@ -518,17 +501,13 @@ public abstract class YogFist extends Mob {
 				GameScene.flash(0x80FFFFFF);
 			}
 		}
-		@Override
-		public int drRoll() {
-			return Random.NormalIntRange(4,10 );
-		}
 	}
 
 	public static class DarkFist extends YogFist {
 
 		{
 			spriteClass = FistSprite.Dark.class;
-
+			minDR=4;maxDR=10;
 			canRangedInMelee = false;
 		}
 
@@ -595,10 +574,6 @@ public abstract class YogFist extends Mob {
 				}
 				GameScene.flash(0, false);
 			}
-		}
-		@Override
-		public int drRoll() {
-			return Random.NormalIntRange(4,10 );
 		}
 	}
 

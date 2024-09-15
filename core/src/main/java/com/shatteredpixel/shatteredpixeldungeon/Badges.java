@@ -54,6 +54,7 @@ public class Badges {
 		MASTERY_ROGUE,
 		MASTERY_HUNTRESS,
 		MASTERY_ADVENTURER,
+		MASTERY_DUELIST,
 		FOUND_RATMOGRIFY,
 
 		//bronze
@@ -106,6 +107,7 @@ public class Badges {
 		BOSS_SLAIN_1_ROGUE,
 		BOSS_SLAIN_1_HUNTRESS,
 		BOSS_SLAIN_1_ADVENTURER,
+		BOSS_SLAIN_1_DUELIST,
 		BOSS_SLAIN_1_ALL_CLASSES    ( 54, true ),
 		GAMES_PLAYED_2              ( 55, true ),
 		HIGH_SCORE_2                ( 56 ),
@@ -144,7 +146,7 @@ public class Badges {
 		LEVEL_REACHED_5             ( 97 ),
 		HAPPY_END                   ( 98 ),
 		ALL_WEAPONS_IDENTIFIED      ( 99 ),
-		ALL_ARMOR_IDENTIFIED        ( 100 ),
+		ALL_MISSILES_IDENTIFIED        ( 100 ),
 		ALL_WANDS_IDENTIFIED        ( 101 ),
 		ALL_ITEMS_IDENTIFIED        ( 102, true ),
 		VICTORY_WARRIOR,
@@ -152,6 +154,7 @@ public class Badges {
 		VICTORY_ROGUE,
 		VICTORY_HUNTRESS,
 		VICTORY_ADVENTURER,
+		VICTORY_DUELIST,
 		VICTORY_ALL_CLASSES         ( 103, true ),
 		DEATH_FROM_ALL              ( 104, true ),
 		BOSS_SLAIN_3_GLADIATOR,
@@ -164,6 +167,8 @@ public class Badges {
 		BOSS_SLAIN_3_WARDEN,
 		BOSS_SLAIN_3_SAVIOR,
 		BOSS_SLAIN_3_SURVIVOR,
+		BOSS_SLAIN_3_SHADOWWARRIOR,
+		BOSS_SLAIN_3_EXECUTIONER,
 		BOSS_SLAIN_3_ALL_SUBCLASSES ( 105, true ),
 		BOSS_CHALLENGE_3            ( 106 ),
 		BOSS_CHALLENGE_4            ( 107 ),
@@ -594,7 +599,7 @@ public class Badges {
 		}
 		
 		if (isUnlocked( Badge.ALL_WEAPONS_IDENTIFIED ) &&
-				isUnlocked( Badge.ALL_ARMOR_IDENTIFIED ) &&
+				isUnlocked( Badge.ALL_MISSILES_IDENTIFIED ) &&
 				isUnlocked( Badge.ALL_WANDS_IDENTIFIED ) &&
 				isUnlocked( Badge.ALL_RINGS_IDENTIFIED ) &&
 				isUnlocked( Badge.ALL_ARTIFACTS_IDENTIFIED ) &&
@@ -705,6 +710,7 @@ public class Badges {
 		firstBossClassBadges.put(HeroClass.ROGUE, Badge.BOSS_SLAIN_1_ROGUE);
 		firstBossClassBadges.put(HeroClass.HUNTRESS, Badge.BOSS_SLAIN_1_HUNTRESS);
 		firstBossClassBadges.put(HeroClass.ADVENTURER, Badge.BOSS_SLAIN_1_ADVENTURER);
+		firstBossClassBadges.put(HeroClass.DUELIST, Badge.BOSS_SLAIN_1_DUELIST);
 	}
 
 	private static LinkedHashMap<HeroClass, Badge> victoryClassBadges = new LinkedHashMap<>();
@@ -714,6 +720,7 @@ public class Badges {
 		victoryClassBadges.put(HeroClass.ROGUE, Badge.VICTORY_ROGUE);
 		victoryClassBadges.put(HeroClass.HUNTRESS, Badge.VICTORY_HUNTRESS);
 		victoryClassBadges.put(HeroClass.ADVENTURER, Badge.VICTORY_ADVENTURER);
+		victoryClassBadges.put(HeroClass.DUELIST, Badge.VICTORY_DUELIST);
 	}
 
 	private static LinkedHashMap<HeroSubClass, Badge> thirdBossSubclassBadges = new LinkedHashMap<>();
@@ -728,6 +735,8 @@ public class Badges {
 		thirdBossSubclassBadges.put(HeroSubClass.WARDEN, Badge.BOSS_SLAIN_3_WARDEN);
 		thirdBossSubclassBadges.put(HeroSubClass.SAVIOR, Badge.BOSS_SLAIN_3_SAVIOR);
 		thirdBossSubclassBadges.put(HeroSubClass.SURVIVOR, Badge.BOSS_SLAIN_3_SURVIVOR);
+		thirdBossSubclassBadges.put(HeroSubClass.SHADOWWARRIOR, Badge.BOSS_SLAIN_3_SHADOWWARRIOR);
+		thirdBossSubclassBadges.put(HeroSubClass.EXECUTIONER, Badge.BOSS_SLAIN_3_EXECUTIONER);
 	}
 	
 	public static void validateBossSlain() {
@@ -825,7 +834,7 @@ public class Badges {
 		
 		Badge badge = null;
 		switch (Dungeon.hero.heroClass) {
-			case WARRIOR:
+			case WARRIOR: default:
 				badge = Badge.MASTERY_WARRIOR;
 				break;
 			case MAGE:
@@ -839,6 +848,9 @@ public class Badges {
 				break;
 			case ADVENTURER:
 				badge=Badge.MASTERY_ADVENTURER;
+				break;
+			case DUELIST:
+				badge=Badge.MASTERY_DUELIST;
 				break;
 		}
 		
@@ -1095,7 +1107,7 @@ public class Badges {
 			{Badge.DEATH_FROM_GRIM_TRAP, Badge.DEATH_FROM_ALL},
 
 			{Badge.ALL_WEAPONS_IDENTIFIED, Badge.ALL_ITEMS_IDENTIFIED},
-			{Badge.ALL_ARMOR_IDENTIFIED, Badge.ALL_ITEMS_IDENTIFIED},
+			{Badge.ALL_MISSILES_IDENTIFIED, Badge.ALL_ITEMS_IDENTIFIED},
 			{Badge.ALL_WANDS_IDENTIFIED, Badge.ALL_ITEMS_IDENTIFIED},
 			{Badge.ALL_RINGS_IDENTIFIED, Badge.ALL_ITEMS_IDENTIFIED},
 			{Badge.ALL_ARTIFACTS_IDENTIFIED, Badge.ALL_ITEMS_IDENTIFIED},

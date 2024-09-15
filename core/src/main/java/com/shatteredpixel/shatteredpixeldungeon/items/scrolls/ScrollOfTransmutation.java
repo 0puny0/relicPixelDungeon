@@ -177,21 +177,20 @@ public class ScrollOfTransmutation extends InventoryScroll {
 			float chance=Random.Float();
 			if(chance<0.05f){
 				c = Generator.Category.WEP_INI;
-			}else if(chance<0.15f){
+			}else if(chance<0.25f){
 				c=Generator.speMeleeTier[w.tier];
 			}else {
 				c = Generator.Category.WEP_STAN;
 			}
 		} else {
-			c = Generator.misTiers[((MissileWeapon)w).tier - 1];
+			c = Generator.speMisTiers[((MissileWeapon)w).tier - 1];
 		}
 		
 		do {
 			n = (Weapon) Reflection.newInstance(c.classes[Random.chances(c.probs)]);
 		} while (Challenges.isItemBlocked(n) || n.getClass() == w.getClass());
-		n.initialize();
 		if (w instanceof MeleeWeapon) {
-			((MeleeWeapon)n).tier=((MeleeWeapon) w).tier;
+			n.setTier(w.tier);
 		}
 		int level = w.trueLevel();
 		if (level > 0) {

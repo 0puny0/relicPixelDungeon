@@ -99,6 +99,7 @@ public class ScrollOfRemoveCurse extends InventoryScroll {
 					loseRemove=true;
 				}
 				item.removeCurse(true);
+				item.cursedKnown=true;
 			}
 		}
 

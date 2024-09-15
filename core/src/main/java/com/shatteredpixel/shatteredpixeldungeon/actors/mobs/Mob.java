@@ -37,6 +37,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Charm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corruption;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Dread;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Executioner;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
@@ -47,26 +48,27 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TheHaywire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DirectableAlly;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
-import com.shatteredpixel.shatteredpixeldungeon.effects.SpellSprite;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Surprise;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Wound;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CeremonialDagger;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArmband;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
-import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfCommand;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfWealth;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfSirensSong;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAggression;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.initial.Dagger;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.initial.KnifeFork;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.standard.Scimitar;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.special.SoulDevourerScythe;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.initial.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Lucky;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
@@ -93,7 +95,6 @@ public abstract class Mob extends Char {
 
 	{
 		actPriority = MOB_PRIO;
-		
 		alignment = Alignment.ENEMY;
 	}
 	
@@ -115,7 +116,14 @@ public abstract class Mob extends Char {
 	
 	protected int target = -1;
 	
-	public int defenseSkill = 0;
+	public int defenseSkill = 999;
+	public int attackSkill = 0;
+
+	public int minDMG=0;
+	public int maxDMG=0;
+	public int minDR=999;
+	public int maxDR=999;
+
 	
 	public int EXP = 1;
 	public int maxLvl = Hero.MAX_LEVEL-1;
@@ -196,7 +204,57 @@ public abstract class Mob extends Char {
 	public CharSprite sprite() {
 		return Reflection.newInstance(spriteClass);
 	}
-	
+
+	@Override
+	public int damageRoll() {
+		if (Dungeon.isChallenged(Challenges.NO_ARMOR)&&alignment==Alignment.ENEMY){
+			return Random.NormalIntRange(minDMG, (int)(maxDMG*1.25f));
+		}else {
+			return Random.NormalIntRange(minDMG, maxDMG);
+		}
+	}
+	@Override
+	public int drRoll() {
+		return Random.NormalIntRange(minDR, maxDR);
+	}
+
+	@Override
+	public int attackSkill(Char target) {
+		if ( Dungeon.isChallenged(Challenges.NO_ARMOR)&&alignment==Alignment.ENEMY){
+			return (int)(this.attackSkill*1.15f);
+		}else {
+			return this.attackSkill;
+		}
+	}
+
+	@Override
+	public int defenseSkill( Char enemy ) {
+		if ( !surprisedBy(enemy)
+				&& paralysed == 0
+				&& !(alignment == Alignment.ALLY && enemy == Dungeon.hero)) {
+
+			if ( Dungeon.isChallenged(Challenges.NO_ARMOR)&&alignment==Alignment.ENEMY){
+				return (int)(this.defenseSkill*1.25f);
+			}else {
+				return this.defenseSkill;
+			}
+
+		} else {
+			return 0;
+		}
+	}
+
+	@Override
+	public void beHit(Char attacker, Char defender, boolean doWell) {
+		super.beHit(attacker, defender, doWell);
+		if (attacker instanceof Hero){
+			Hero hero=(Hero) attacker;
+			if (hero.subClass== HeroSubClass.EXECUTIONER&&doWell){
+				Buff.affect(hero, Executioner.class).countUp(1);
+			}
+		}
+	}
+
 	@Override
 	protected boolean act() {
 		
@@ -381,20 +439,24 @@ public abstract class Mob extends Char {
 		} else
 			return enemy;
 	}
-	
+
 	@Override
-	public void add( Buff buff ) {
-		super.add( buff );
-		if (buff instanceof Amok || buff instanceof AllyBuff) {
-			state = HUNTING;
-		} else if (buff instanceof Terror || buff instanceof Dread) {
-			state = FLEEING;
-		} else if (buff instanceof Sleep) {
-			state = SLEEPING;
-			postpone( Sleep.SWS );
+	public boolean add( Buff buff ) {
+		if (super.add( buff )) {
+			if (buff instanceof Amok || buff instanceof AllyBuff) {
+				state = HUNTING;
+			} else if (buff instanceof Terror || buff instanceof Dread) {
+				state = FLEEING;
+			} else if (buff instanceof Sleep) {
+				state = SLEEPING;
+				postpone(Sleep.SWS);
+			}
+			return true;
 		}
+		return false;
 	}
-	
+
+
 	@Override
 	public void remove( Buff buff ) {
 		super.remove( buff );
@@ -422,7 +484,9 @@ public abstract class Mob extends Char {
 	}
 	
 	protected boolean getCloser( int target ) {
-		
+		if (alignment == Alignment.ALLY && enemy == null && buff(ScrollOfSirensSong.Enthralled.class)!=null){
+			target = Dungeon.hero.pos;
+		}
 		if (rooted || target == pos) {
 			return false;
 		}
@@ -547,8 +611,8 @@ public abstract class Mob extends Char {
 			}
 		}
 		if (step != -1) {
-			moveEvent();
 			move( step );
+			moveEvent();
 			return true;
 		} else {
 			return false;
@@ -606,17 +670,7 @@ public abstract class Mob extends Char {
 		spend( attackDelay() );
 		super.onAttackComplete();
 	}
-	
-	@Override
-	public int defenseSkill( Char enemy ) {
-		if ( !surprisedBy(enemy)
-				&& paralysed == 0
-				&& !(alignment == Alignment.ALLY && enemy == Dungeon.hero)) {
-			return this.defenseSkill;
-		} else {
-			return 0;
-		}
-	}
+
 	
 	@Override
 	public int defenseProc( Char enemy, int damage ) {
@@ -674,23 +728,23 @@ public abstract class Mob extends Char {
 		return super.speed() * AscensionChallenge.enemySpeedModifier(this);
 	}
 
-	public final boolean surprisedBy( Char enemy ){
-		return surprisedBy( enemy, true);
+	@Override
+	public boolean surprisedBy(Char enemy, boolean attacking) {
+		return  (enemy.invisible > 0 || !enemySeen)
+				&& (!attacking || enemy.canSurpriseAttack());
 	}
 
-	public boolean surprisedBy( Char enemy, boolean attacking ){
-		return enemy == Dungeon.hero
-				&& (enemy.invisible > 0 || !enemySeen)
-				&& (!attacking || ((Hero)enemy).canSurpriseAttack());
-	}
-
-	public void aggro( Char ch ) {
+	public void aggro(Char ch ) {
 		enemy = ch;
 		if (state != PASSIVE){
 			state = HUNTING;
 		}
 	}
-	
+	public void clearEnemy(){
+		enemy = null;
+		enemySeen = false;
+		if (state == HUNTING) state = WANDERING;
+	}
 	public boolean isTargeting( Char ch){
 		return enemy == ch;
 	}
@@ -704,11 +758,11 @@ public abstract class Mob extends Char {
 		if (state != HUNTING && !(src instanceof Corruption)) {
 			alerted = true;
 		}
-
-		if(alignment==Alignment.ALLY){
-			dmg=(int)Math.ceil(dmg * RingOfCommand.damageResistanceBonus( Dungeon.hero ));
-			if(dmg<=1)dmg=1;
+		Hero hero=Dungeon.hero;
+		if (distance(hero)<3&&hero.buff( CeremonialDagger.DaggerRegen.class )!=null){
+			hero.buff( CeremonialDagger.DaggerRegen.class ).gainBloodValue(Math.min(dmg,HP),false);
 		}
+
 		super.damage( dmg, src );
 	}
 	
@@ -725,7 +779,6 @@ public abstract class Mob extends Char {
 		}
 
 		if (Dungeon.hero.isAlive()) {
-			
 			if (alignment == Alignment.ENEMY) {
 				Statistics.enemiesSlain++;
 				Badges.validateMonstersSlain();
@@ -746,6 +799,10 @@ public abstract class Mob extends Char {
 				}
 				Dungeon.hero.earnExp(exp, getClass());
 			}
+			Artifact.ArtifactBuff dRegen =Dungeon.hero.buff(CeremonialDagger.DaggerRegen.class);
+			if (!(this instanceof Wraith)&&dRegen!=null&&dRegen.isCursed()&&Random.Float()<0.2f){
+				Wraith.spawnAt(pos);
+			}
 		}
 	}
 	
@@ -765,6 +822,20 @@ public abstract class Mob extends Char {
 					&& Dungeon.hero.hasTalent(Talent.LETHAL_MOMENTUM)
 					&& Random.Float() < 0.34f + 0.33f* Dungeon.hero.pointsInTalent(Talent.LETHAL_MOMENTUM)){
 				Buff.affect(Dungeon.hero, Talent.LethalMomentumTracker.class);
+			}
+			if (cause == Dungeon.hero
+					&& Dungeon.hero.hasTalent(Talent.POSTWAR_INSPECT)
+					&& Random.Float() < 0.34f + 0.33f* Dungeon.hero.pointsInTalent(Talent.POSTWAR_INSPECT)){
+				ArrayList<Buff> nBuffs=new ArrayList<>();
+				for (Buff buff:Dungeon.hero.buffs()){
+					if (buff.type== Buff.buffType.NEGATIVE){
+						nBuffs.add(buff);
+					}
+				}
+				if (!nBuffs.isEmpty()) {
+					nBuffs.get(Random.index(nBuffs)).detach();
+					Dungeon.hero.sprite.emitter().burst(Speck.factory(Speck.LIGHT), 5);
+				}
 			}
 		}
 		if(buff(Dagger.SilentProc.class)!=null){
@@ -803,7 +874,7 @@ public abstract class Mob extends Char {
 		}
 		if(Dungeon.hero.isAlive() &&Dungeon.hero.hasTalent(Talent.THE_HAYWIRE)
 				&& Dungeon.level.heroFOV[pos]&&alignment==Alignment.ENEMY){
-			Buff.prolong(Dungeon.hero, TheHaywire.class,4f);
+			Buff.prolong(Dungeon.hero, TheHaywire.class,2+Dungeon.hero.pointsInTalent(Talent.THE_HAYWIRE)/3);
 		}
 	}
 
@@ -827,8 +898,12 @@ public abstract class Mob extends Char {
 	}
 	
 	public void rollToDropLoot(){
-		if (Dungeon.hero.lvl > maxLvl + 2) return;
 
+		if(buff(SoulDevourerScythe.GrowProc.class)!=null){
+			buff(SoulDevourerScythe.GrowProc.class).Grow();
+		}
+
+		if (Dungeon.hero.lvl > maxLvl + 2) return;
 		MasterThievesArmband.StolenTracker stolen = buff(MasterThievesArmband.StolenTracker.class);
 		if (stolen == null || !stolen.itemWasStolen()) {
 			if (Random.Float() < lootChance()) {
@@ -855,15 +930,6 @@ public abstract class Mob extends Char {
 		if (buff(Lucky.LuckProc.class) != null){
 			Dungeon.level.drop(buff(Lucky.LuckProc.class).genLoot(), pos).sprite.drop();
 			Lucky.showFlare(sprite);
-		}
-		if(buff(KnifeFork.EatProc.class)!=null){
-			SpellSprite.show(Dungeon.hero, SpellSprite.FOOD );
-			Buff.affect(Dungeon.hero, Hunger.class).affectHunger(40,false);
-			Talent.onFoodEaten(Dungeon.hero, Dungeon.hero.attackDelay(),  Food.UNIT_ENERGY,null);
-		}
-		if(buff(Scimitar.GrowProc.class)!=null){
-			sprite.emitter().burst( ShadowParticle.CURSE, 3);
-			buff(Scimitar.GrowProc.class).Grow();
 		}
 		//soul eater talent
 		if (buff(SoulMark.class) != null &&
@@ -1197,8 +1263,7 @@ public abstract class Mob extends Char {
 				
 			//preserve intelligent allies if they are near the hero
 			} else if (mob.alignment == Alignment.ALLY
-					&& mob.intelligentAlly
-					&& Dungeon.level.distance(holdFromPos, mob.pos) <= 5){
+					&&(mob.intelligentAlly||mob.buff(ScrollOfSirensSong.Enthralled.class)!=null)){
 				level.mobs.remove( mob );
 				heldAllies.add(mob);
 			}

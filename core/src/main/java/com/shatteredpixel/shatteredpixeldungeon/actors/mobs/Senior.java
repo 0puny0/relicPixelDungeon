@@ -29,7 +29,7 @@ public class Senior extends Monk {
 
 	{
 		spriteClass = SeniorSprite.class;
-
+		minDMG=16;maxDMG=25;
 		loot = new Pasty();
 		lootChance = 1f;
 	}
@@ -41,10 +41,5 @@ public class Senior extends Monk {
 		if (travelling) focusCooldown -= 1.66f;
 		super.move( step, travelling);
 	}
-	
-	@Override
-	public int damageRoll() {
-		return Random.NormalIntRange( 16, 25 );
-	}
-	
+
 }

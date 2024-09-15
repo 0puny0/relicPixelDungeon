@@ -57,7 +57,9 @@ public class Piranha extends Mob {
 	
 	public Piranha() {
 		super();
-		
+		minDMG=Dungeon.depth;maxDMG=4+Dungeon.depth*2;
+		minDR=Dungeon.depth/2;maxDR=Dungeon.depth;
+		attackSkill=20+Dungeon.depth*2;
 		HP = HT = 10 + Dungeon.depth * 5;
 		defenseSkill = 10 + Dungeon.depth * 2;
 	}
@@ -72,25 +74,10 @@ public class Piranha extends Mob {
 			return super.act();
 		}
 	}
-	
-	@Override
-	public int damageRoll() {
-		return Random.NormalIntRange( Dungeon.depth, 4 + Dungeon.depth * 2 );
-	}
-	
-	@Override
-	public int attackSkill( Char target ) {
-		return 20 + Dungeon.depth * 2;
-	}
-	
-	@Override
-	public int drRoll() {
-		return Random.NormalIntRange(0, Dungeon.depth);
-	}
 
 	@Override
 	public boolean surprisedBy(Char enemy, boolean attacking) {
-		if (enemy == Dungeon.hero && (!attacking || ((Hero)enemy).canSurpriseAttack())){
+		if ((!attacking || enemy.canSurpriseAttack())){
 			if (fieldOfView == null || fieldOfView.length != Dungeon.level.length()){
 				fieldOfView = new boolean[Dungeon.level.length()];
 				Dungeon.level.updateFieldOfView( this, fieldOfView );

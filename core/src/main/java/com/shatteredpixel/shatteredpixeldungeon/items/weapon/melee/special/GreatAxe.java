@@ -39,11 +39,6 @@ public class GreatAxe extends MeleeWeapon {
 	}
 
 	@Override
-	public int min(int lvl) {
-		return max(lvl)/3;
-	}
-
-	@Override
 	public boolean doEquip(Hero hero) {
 		GLog.w(Messages.get(GreatAxe.class, "equip") );
 		defaultAction=AC_UNEQUIP;

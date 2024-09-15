@@ -3,17 +3,28 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.custom.messages.M;
+import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.CursedWand;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.DamageWand;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.initial.MagesStaff;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.initial.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.MissileSprite;
+import com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
@@ -24,27 +35,14 @@ public class RuneSword extends MeleeWeapon {
         hitSound = Assets.Sounds.HIT_SLASH;
         hitSoundPitch=1f;
         DMG=Attribute.lower;
-        ACC=Attribute.lower;
+        ACC=Attribute.higher;
         usesTargeting = true;
         hasSkill=true;
         defaultAction=AC_WEAPONSKILL;
     }
-
-    private SwordQi swordQi;
-    public RuneSword() {
-        swordQi = null;
-    }
     public static final String AC_FILL		="FILL";
-    @Override
-    public void initialize() {
-        swordQi=new SwordQi();
-        swordQi.cursed = false;
-        swordQi.identify();
-        updateSwordQi(tier);
-        swordQi.curCharges=swordQi.maxCharges;
-        super.initialize();
-    }
-
+    private int maxCharges=4;
+    private int curCharges=0;
     @Override
     public ArrayList<String> actions(Hero hero) {
         ArrayList<String> actions=super.actions(hero);
@@ -62,107 +60,112 @@ public class RuneSword extends MeleeWeapon {
             return;
         }
         if (action.equals(AC_WEAPONSKILL)) {
-            if(swordQi.curCharges>0){
-                swordQi.Hit(hero);
+            if(curCharges>0){
+                onZap();
             }else {
-                Fill();
-                updateQuickslot();
+                onFill();
             }
         }
         if (action.equals(AC_FILL)){
-            Fill();
-            updateQuickslot();
+            onFill();
         }
     }
 
     @Override
     public String statsInfo() {
         if(isIdentified()){
-            return  Messages.get(this, "stats_desc",swordQi.min(),swordQi.max());
+            return  Messages.get(this, "stats_desc",tier+buffedLvl(),Math.round(tier/2f*(6+buffedLvl())));
         }else {
-            return  Messages.get(this, "typical_stats_desc",1,7);
+            return  Messages.get(this, "typical_stats_desc",tier,3*tier);
         }
 
     }
-    private static final String SWORDQI="swordqi";
+    private static final String CUR_CHARGES    = "curcharges";
+    private static final String MAX_CHARGES    = "maxcharges";
     @Override
     public void storeInBundle( Bundle bundle ) {
         super.storeInBundle( bundle );
-        bundle.put(SWORDQI,swordQi);
+        bundle.put(CUR_CHARGES,curCharges);
+        bundle.put(MAX_CHARGES,maxCharges);
     }
-
     @Override
     public void restoreFromBundle( Bundle bundle ) {
         super.restoreFromBundle( bundle );
-        swordQi=(SwordQi) bundle.get(SWORDQI);
+        curCharges=bundle.getInt(CUR_CHARGES);
+        maxCharges=bundle.getInt(MAX_CHARGES);
+        modeSwitch();
     }
-    @Override
-    public int damageRoll(Char owner) {
-        int damage=super.damageRoll(owner);
-        if(swordQi.curCharges>0){
-            swordQi.curCharges--;
-            updateQuickslot();
-            damage+= Random.NormalIntRange( min()/2, max()/2);
+    public void modeSwitch() {
+        if(curCharges>0){
+            image = ItemSpriteSheet.RUNE_SWORD_;
+            DMG=Attribute.higher;
+        }else {
+            image = ItemSpriteSheet.RUNE_SWORD;
+            DMG=Attribute.lower;
         }
-        return damage;
     }
-
-    @Override
-    public Item upgrade(boolean enchant) {
-         super.upgrade(enchant);
-         updateSwordQi(tier);
-        return this;
-    }
-    @Override
-    public Item degrade() {
-        super.degrade();
-        updateSwordQi(tier);
-        return this;
+    public void useCharge(){
+        if(curCharges>0) curCharges--;
+        modeSwitch();
+        updateQuickslot();
     }
     @Override
     public String status() {
-        if (swordQi == null) return super.status();
-        else return swordQi.status();
+        if (levelKnown) {
+            return (isIdentified() ? curCharges : "?") + "/" + maxCharges;
+        } else {
+            return null;
+        }
     }
-
     @Override
     public int buffedLvl() {
-        if(swordQi==null) return super.buffedLvl();
-        return super.buffedLvl()+(swordQi.buffedLvl()-swordQi.level());
+        return super.buffedLvl()+slashSwordQi().buffedLvl();
     }
-    private void Fill(){
-        swordQi.curCharges=swordQi.maxCharges;
+    private void onFill(){
+        curCharges=maxCharges;
         curUser.sprite.operate(curUser.pos);
         Sample.INSTANCE.play(Assets.Sounds.READ );
         curUser.spendAndNext( 1f );
+        modeSwitch();
+        updateQuickslot();
     }
-    public void updateSwordQi(int tier){
-        if (swordQi!= null) {
-            int curCharges = swordQi.curCharges;
-            swordQi.level(level());
-            swordQi.tier=tier;
-            //gives the wand one additional max charge
-            swordQi.maxCharges = Math.min(swordQi.maxCharges, 10);
-            swordQi.curCharges = Math.min(curCharges , swordQi.maxCharges);
-            updateQuickslot();
-        }
+    private void onZap(){
+        curUser = Dungeon.hero;
+        curItem = this;
+        GameScene.selectCell( shooter );
+        updateQuickslot();
+    }
+    public SwordQi slashSwordQi(){
+        return new SwordQi();
     }
 
+    @Override
+    public int proc(Char attacker, Char defender, int damage) {
+        useCharge();
+        return super.proc(attacker, defender, damage);
+    }
 
-    public  static class SwordQi extends DamageWand {
-        public int tier;
-        public void Hit(Hero hero){
-            execute(hero,"ZAP");
+    public  class SwordQi extends DamageWand {
+        {
+            image = ItemSpriteSheet.SWORD_QI;
         }
 
         @Override
+        public void fx(Ballistica bolt, Callback callback) {
+            Sample.INSTANCE.play( Assets.Sounds.MISS);
+            ((MissileSprite) curUser.sprite.parent.recycle(MissileSprite.class)).
+                    reset(curUser.sprite,
+                            bolt.collisionPos,
+                            this,callback);
+        }
+        @Override
         public int min(int lvl) {
-            return (tier+lvl)/2;
+            return RuneSword.this.tier+RuneSword.this.buffedLvl();
         }
 
         @Override
         public int max(int lvl) {
-            return (int) Math.ceil((tier+1)*(6+lvl)*0.375f);
+            return Math.round(RuneSword.this.tier/2f*(6+RuneSword.this.buffedLvl()));
         }
 
         @Override
@@ -172,37 +175,52 @@ public class RuneSword extends MeleeWeapon {
             if (ch != null) {
                 wandProc(ch, chargesPerCast());
                 int dis= Dungeon.level.distance(bolt.collisionPos,bolt.sourcePos)-1;
-                if(dis<0)dis=0;
-                int dmg=Math.round(damageRoll()*(1f-dis*0.14f));
-                if(dmg<0)dmg=0;
-                ch.damage(dmg, this);
+                ch.damage(damageRoll(), this);
                 Sample.INSTANCE.play( Assets.Sounds.HIT_MAGIC, 1-dis*0.2f, Random.Float(0.87f, 1.15f) );
 
-                ch.sprite.burst(0xFFFFFFFF, buffedLvl() / 2 + 2);
+                ch.sprite.burst(0x38c3c3, RuneSword.this.buffedLvl() / 3 + 1);
             } else {
                 Dungeon.level.pressCell(bolt.collisionPos);
             }
         }
+
         @Override
         public void onHit(MagesStaff staff, Char attacker, Char defender, int damage) {
 
         }
-        @Override
-        public void updateLevel() {
-            maxCharges = Math.min( initialCharges() + (int)(Math.sqrt(8 * level() + 1) - 1)/2, 10 );
-            curCharges = Math.min( curCharges, maxCharges );
-        }
-        private static final String TIER="tier";
-        @Override
-        public void storeInBundle( Bundle bundle ) {
-            super.storeInBundle( bundle );
-            bundle.put(TIER,tier);
-        }
-
-        @Override
-        public void restoreFromBundle( Bundle bundle ) {
-            super.restoreFromBundle( bundle );
-            tier=bundle.getInt(TIER);
-        }
     }
+    private CellSelector.Listener shooter = new CellSelector.Listener() {
+        @Override
+        public void onSelect( Integer target ) {
+            if (target != null) {
+                if (Dungeon.hero.buff(MagicImmune.class) != null){
+                    GLog.w( Messages.get(Wand.class, "no_magic") );
+                    return ;
+                }
+                SwordQi swordQi =slashSwordQi();
+                final Ballistica shot = new Ballistica(curUser.pos, target, Ballistica.MAGIC_BOLT);
+                int cell = shot.collisionPos;
+                curUser.sprite.zap(cell);
+                //attempts to target the cell aimed at if something is there, otherwise targets the collision pos.
+                if (Actor.findChar(target) != null){
+                    QuickSlotButton.target(Actor.findChar(target));
+                } else{
+                    QuickSlotButton.target(Actor.findChar(cell));
+                }
+                curUser.busy();
+                swordQi.fx(shot, new Callback() {
+                        public void call() {
+                            swordQi.onZap(shot);
+                            Invisibility.dispel();
+                            curUser.spendAndNext( 1f);
+                            useCharge();
+                        }
+                    });
+            }
+        }
+        @Override
+        public String prompt() {
+            return Messages.get(SpiritBow.class, "prompt");
+        }
+    };
 }

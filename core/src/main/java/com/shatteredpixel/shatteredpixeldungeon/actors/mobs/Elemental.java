@@ -53,9 +53,9 @@ import java.util.ArrayList;
 public abstract class Elemental extends Mob {
 
 	{
-		HP = HT = 80;
-		defenseSkill = 11;
-		
+		HP=HT=60; minDMG=20;maxDMG=25;minDR=3;maxDR=11;defenseSkill =14;attackSkill = 25;
+
+
 		EXP = 10;
 		maxLvl = 20;
 		
@@ -63,38 +63,15 @@ public abstract class Elemental extends Mob {
 	}
 
 	private boolean summonedALly;
-	
-	@Override
-	public int damageRoll() {
-		if (!summonedALly) {
-			return Random.NormalIntRange(15, 25);
-		} else {
-			int regionScale = Math.max(2, (1 + Dungeon.scalingDepth()/5));
-			return Random.NormalIntRange(5*regionScale, 5 + 5*regionScale);
-		}
-	}
-	
-	@Override
-	public int attackSkill( Char target ) {
-		if (!summonedALly) {
-			return 25;
-		} else {
-			int regionScale = Math.max(2, (1 + Dungeon.scalingDepth()/5));
-			return 5 + 5*regionScale;
-		}
-	}
 
 	public void setSummonedALly(){
 		summonedALly = true;
 		//sewers are prison are equivalent, otherwise scales as normal (2/2/3/4/5)
 		int regionScale = Math.max(2, (1 + Dungeon.scalingDepth()/5));
-		defenseSkill = 5*regionScale;
+		defenseSkill = 5*regionScale;attackSkill=5 + 5*regionScale;
 		HT = 15*regionScale;
-	}
-	
-	@Override
-	public int drRoll() {
-		return Random.NormalIntRange(2, 6);
+		minDMG=5*regionScale;maxDMG= 5 + 5*regionScale;
+
 	}
 	
 	protected int rangedCooldown = Random.NormalIntRange( 3, 5 );
@@ -162,13 +139,14 @@ public abstract class Elemental extends Mob {
 		zap();
 		next();
 	}
-	
+
 	@Override
-	public void add( Buff buff ) {
+	public boolean add( Buff buff ) {
 		if (harmfulBuffs.contains( buff.getClass() )) {
 			damage( Random.NormalIntRange( HT/2, HT * 3/5 ), buff );
+			return false;
 		} else {
-			super.add( buff );
+			return super.add( buff );
 		}
 	}
 	

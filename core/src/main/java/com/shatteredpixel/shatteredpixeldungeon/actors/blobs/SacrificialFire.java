@@ -43,6 +43,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SacrificeRoom;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
@@ -81,7 +82,9 @@ public class SacrificialFire extends Blob {
 								if (Dungeon.level.heroFOV[cell+k] && ch.buff( Marked.class ) == null) {
 									CellEmitter.get(cell+k).burst( SacrificialParticle.FACTORY, 5 );
 								}
+
 								Buff.prolong( ch, Marked.class, Marked.DURATION );
+
 							}
 						}
 
@@ -211,6 +214,7 @@ public class SacrificialFire extends Blob {
 	}
 
 	public static class Marked extends FlavourBuff {
+
 
 		public static final float DURATION	= 2f;
 

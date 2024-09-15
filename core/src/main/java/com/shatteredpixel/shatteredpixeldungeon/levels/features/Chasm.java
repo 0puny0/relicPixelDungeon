@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels.features;
 
+import static com.shatteredpixel.shatteredpixeldungeon.items.Item.updateQuickslot;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -103,12 +105,6 @@ public class Chasm implements Hero.Doom {
 		
 		jumpConfirmed = false;
 		Hero hero=Dungeon.hero;
-		if(hero.subClass== HeroSubClass.SURVIVOR){
-			Terraforming.isSneak();
-			if(hero.hasTalent(Talent.TEMPORARY_REST)){
-				Terraforming.isClosed();
-			}
-		}
 		Sample.INSTANCE.play( Assets.Sounds.FALLING );
 
 		TimekeepersHourglass.timeFreeze timeFreeze = hero.buff(TimekeepersHourglass.timeFreeze.class);
@@ -150,7 +146,14 @@ public class Chasm implements Hero.Doom {
 			b.detach();
 			return;
 		}
-		
+		FeatherFall f=(FeatherFall) hero.belongings.getSimilar(new FeatherFall());
+		if (f!=null){
+			GLog.p(Messages.get(FeatherFall.class,"safe_fall"));
+			hero.sprite.emitter().burst( Speck.factory( Speck.JET ), 20);
+			f.detach( hero.belongings.backpack );
+			updateQuickslot();
+			return;
+		}
 		Camera.main.shake( 4, 1f );
 
 		Dungeon.level.occupyCell(hero );

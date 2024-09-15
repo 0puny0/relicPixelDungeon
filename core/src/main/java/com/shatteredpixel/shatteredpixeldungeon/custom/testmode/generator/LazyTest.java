@@ -30,6 +30,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfCle
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfMagicalSight;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.GooBlob;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.MetalShard;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEnergy;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEvasion;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfHaste;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfLullaby;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping;
@@ -45,11 +48,11 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPsionicBlast;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.ArcaneCatalyst;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.SummonElemental;
-import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAugmentation;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfBlast;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfBlink;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfFlock;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.special.GoldSword;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.standard.LongSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Blindweed;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Earthroot;
@@ -105,10 +108,16 @@ public class LazyTest extends TestGenerator {
             plateArmor.level(15);
             plateArmor.identify().collect();
 
-            GoldSword sword = new GoldSword();
+            LongSword sword = new LongSword();
             sword.level(15);
-            sword.tier=5;
+            sword.setTier(5);
             sword.identify().collect();
+            RingOfEnergy ring1=new RingOfEnergy();
+            ring1.level(20);
+            ring1.identify().collect();
+            RingOfHaste ring2=new RingOfHaste();
+            ring2.level(20);
+            ring2.identify().collect();
 
             new Gold().quantity(16000000).doPickUp(hero);
 
@@ -140,8 +149,6 @@ public class LazyTest extends TestGenerator {
             new StoneOfBlast().quantity(100).collect();
 
             new StoneOfBlink().quantity(100).collect();
-
-            new StoneOfAugmentation().quantity(100).collect();
 
             new Blindweed.Seed().quantity(100).identify().collect();
             new Mageroyal.Seed().quantity(100).identify().collect();

@@ -40,8 +40,8 @@ public class DM200 extends Mob {
 	{
 		spriteClass = DM200Sprite.class;
 
-		HP = HT = 60;
-		defenseSkill = 6;
+		HP=HT=80; minDMG=10;maxDMG=25;minDR=2;maxDR=13;defenseSkill =7;attackSkill = 20;
+
 
 		EXP = 9;
 		maxLvl = 17;
@@ -55,20 +55,6 @@ public class DM200 extends Mob {
 		HUNTING = new Hunting();
 	}
 
-	@Override
-	public int damageRoll() {
-		return Random.NormalIntRange( 5, 18 );
-	}
-
-	@Override
-	public int attackSkill( Char target ) {
-		return 20;
-	}
-
-	@Override
-	public int drRoll() {
-		return Random.NormalIntRange(6, 13);
-	}
 
 	@Override
 	public float lootChance(){

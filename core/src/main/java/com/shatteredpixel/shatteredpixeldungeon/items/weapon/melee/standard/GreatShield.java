@@ -24,7 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.standard;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfForce;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfForceOut;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -49,7 +49,7 @@ public class GreatShield extends MeleeWeapon {
 		return (tier+1)+(tier+1)/2*buffedLvl();
 	}
 	public int minDef(){
-		float extraDef=excessSTR(Dungeon.hero)*RingOfForce.extraStrengthBonus(Dungeon.hero);
+		float extraDef=excessSTR(Dungeon.hero)* RingOfForceOut.extraStrengthBonus(Dungeon.hero);
 	return extraDef< defenseFactor(Dungeon.hero)?
 		 Math.round(extraDef):defenseFactor(Dungeon.hero);
 	}

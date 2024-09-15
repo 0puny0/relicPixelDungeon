@@ -52,9 +52,9 @@ public class Succubus extends Mob {
 	
 	{
 		spriteClass = SuccubusSprite.class;
-		
-		HP = HT = 80;
-		defenseSkill = 13;
+
+		HP=HT=80; minDMG=25;maxDMG=30;minDR=4;maxDR=18;defenseSkill =17;attackSkill = 40;
+
 		viewDistance = Light.DISTANCE;
 		
 		EXP = 12;
@@ -65,11 +65,7 @@ public class Succubus extends Mob {
 
 		properties.add(Property.DEMONIC);
 	}
-	
-	@Override
-	public int damageRoll() {
-		return Random.NormalIntRange( 25, 30 );
-	}
+
 	
 	@Override
 	public int attackProc( Char enemy, int damage ) {
@@ -151,16 +147,7 @@ public class Succubus extends Mob {
 		blinkCooldown = Random.IntRange(4, 6);
 		return true;
 	}
-	
-	@Override
-	public int attackSkill( Char target ) {
-		return 40;
-	}
-	
-	@Override
-	public int drRoll() {
-		return Random.NormalIntRange(4, 14);
-	}
+
 
 	@Override
 	public Item createLoot() {

@@ -34,6 +34,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Recharging;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ScrollEmpower;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SoulMark;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TheHaywire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
@@ -360,7 +361,9 @@ public abstract class Wand extends Item {
 			if (charger.target.buff(ScrollEmpower.class) != null){
 				lvl += 3;
 			}
-
+			if (charger.target.buff(TheHaywire.class) != null){
+				lvl+=charger.target.buff(TheHaywire.class).lvl();
+			}
 			WandOfMagicMissile.MagicCharge buff = charger.target.buff(WandOfMagicMissile.MagicCharge.class);
 			if (buff != null && buff.level() > lvl){
 				return buff.level();
@@ -439,7 +442,7 @@ public abstract class Wand extends Item {
 				&& charger.target == Dungeon.hero){
 
 			//if the wand is owned by the hero, but not in their inventory, it must be in the staff
-			if (!Dungeon.hero.belongings.contains(this)&&!(this instanceof RuneSword.SwordQi)) {
+			if (!Dungeon.hero.belongings.contains(this)) {
 				if (curCharges == 0 && Dungeon.hero.hasTalent(Talent.BACKUP_BARRIER)) {
 					//grants 3/5 shielding
 					Buff.affect(Dungeon.hero, Barrier.class).setShield(1 + 2 * Dungeon.hero.pointsInTalent(Talent.BACKUP_BARRIER));

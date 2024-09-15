@@ -36,9 +36,8 @@ public class Crab extends Mob {
 
 	{
 		spriteClass = CrabSprite.class;
-		
-		HP = HT = 13;
-		defenseSkill = 5;
+
+		HP=HT=15; minDMG=1;maxDMG=7;minDR=0;maxDR=4;defenseSkill =5;attackSkill = 12;
 		baseSpeed = 2f;
 		
 		EXP = 4;
@@ -48,20 +47,7 @@ public class Crab extends Mob {
 		lootChance = 0.167f;
 	}
 	
-	@Override
-	public int damageRoll() {
-		return Random.NormalIntRange( 1, 6 );
-	}
-	
-	@Override
-	public int attackSkill( Char target ) {
-		return 12;
-	}
-	
-	@Override
-	public int drRoll() {
-		return Random.NormalIntRange(1, 5);
-	}
+
 	@Override
 	public void rollToDropLoot() {
 		Hero hero= Dungeon.hero;

@@ -99,6 +99,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.Tag;
 import com.shatteredpixel.shatteredpixeldungeon.ui.TargetHealthIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Toast;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Toolbar;
+import com.shatteredpixel.shatteredpixeldungeon.ui.WeaponIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndBag;
@@ -190,6 +191,7 @@ public class GameScene extends PixelScene {
 
 	private AttackIndicator attack;
 	private LootIndicator loot;
+	private WeaponIndicator weapon;
 	private ActionIndicator action;
 	private ResumeIndicator resume;
 
@@ -369,6 +371,10 @@ public class GameScene extends PixelScene {
 		loot = new LootIndicator();
 		loot.camera = uiCamera;
 		add( loot );
+
+		weapon = new WeaponIndicator();
+		weapon.camera = uiCamera;
+		add( weapon );
 
 		action = new ActionIndicator();
 		action.camera = uiCamera;
@@ -747,17 +753,20 @@ public class GameScene extends PixelScene {
 
 		if (tagAttack != attack.active ||
 				tagLoot != loot.visible ||
+				tagWeapon != weapon.visible ||
 				tagAction != action.visible ||
 				tagResume != resume.visible) {
 
 			//we only want to change the layout when new tags pop in, not when existing ones leave.
 			boolean tagAppearing = (attack.active && !tagAttack) ||
 									(loot.visible && !tagLoot) ||
+									(weapon.visible && !tagWeapon) ||
 									(action.visible && !tagAction) ||
 									(resume.visible && !tagResume);
 
 			tagAttack = attack.active;
 			tagLoot = loot.visible;
+			tagWeapon = weapon.visible;
 			tagAction = action.visible;
 			tagResume = resume.visible;
 
@@ -785,6 +794,7 @@ public class GameScene extends PixelScene {
 
 	private boolean tagAttack    = false;
 	private boolean tagLoot      = false;
+	private boolean tagWeapon     = false;
 	private boolean tagAction    = false;
 	private boolean tagResume    = false;
 
@@ -840,6 +850,11 @@ public class GameScene extends PixelScene {
 			scene.loot.setRect( tagLeft, pos - Tag.SIZE, tagWidth, Tag.SIZE );
 			scene.loot.flip(tagsOnLeft);
 			pos = scene.loot.top();
+		}
+		if (scene.tagWeapon) {
+			scene.weapon.setRect( tagLeft, pos - Tag.SIZE, tagWidth, Tag.SIZE );
+			scene.weapon.flip(tagsOnLeft);
+			pos = scene.weapon.top();
 		}
 
 		if (scene.tagAction) {
